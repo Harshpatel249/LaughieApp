@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../rewidgets/bottomNavBar.dart';
+import 'editProfile.dart';
 
 class UserProfile extends StatelessWidget {
   static String id = 'user_profile';
@@ -234,7 +235,10 @@ class UserProfile extends StatelessWidget {
                   height: 30,
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => EditProfile()));
+                  },
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                     child: Text(

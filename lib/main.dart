@@ -21,6 +21,16 @@ class MyApp extends StatelessWidget {
         ),
         bottomAppBarColor: Color(0xFFf6f6f6),
         scaffoldBackgroundColor: Color(0xFFf6f6f6),
+        textTheme: TextTheme(
+          bodyText1: TextStyle(
+            color: Colors.black,
+            fontFamily: 'Poppins',
+          ),
+          bodyText2: TextStyle(
+            color: Colors.black,
+            fontFamily: 'Poppins',
+          ),
+        ),
       ),
       home: Test(),
     );
