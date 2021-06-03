@@ -4,13 +4,22 @@ import '../rewidgets/bottomNavBar.dart';
 
 class UserProfile extends StatelessWidget {
   static String id = 'user_profile';
+  final String userName = 'UserName';
+  final String fullName = 'Ozzy Osbourne';
+  final String cityName = 'Birmingham';
+  final String countryName = 'England';
+  final String userEmail = 'ozzy@gmail.com';
+  final String userProfession = 'Student';
+  final String userContact = '9494264669';
+  final String userDob = '24/09/2000';
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'UserName',
+            userName,
             style: TextStyle(color: Colors.black),
           ),
           centerTitle: true,
@@ -111,14 +120,14 @@ class UserProfile extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Ozzy Osbourne',
+                                  fullName,
                                   style: TextStyle(
                                     fontFamily: 'Poppins',
                                     fontSize: 16,
                                   ),
                                 ),
                                 Text(
-                                  'Birmingham, England',
+                                  cityName + ', ' + countryName,
                                   style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 16,
@@ -146,7 +155,7 @@ class UserProfile extends StatelessWidget {
                                         color: Colors.black45),
                                   ),
                                   Text(
-                                    'ozzy@gmail.com',
+                                    userEmail,
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 16,
@@ -163,7 +172,7 @@ class UserProfile extends StatelessWidget {
                                         color: Colors.black45),
                                   ),
                                   Text(
-                                    '9494264669',
+                                    userContact,
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 16,
@@ -186,7 +195,7 @@ class UserProfile extends StatelessWidget {
                                         color: Colors.black45),
                                   ),
                                   Text(
-                                    'Student',
+                                    userProfession,
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 16,
@@ -203,7 +212,7 @@ class UserProfile extends StatelessWidget {
                                         color: Colors.black45),
                                   ),
                                   Text(
-                                    '24/09/2000',
+                                    userDob,
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 16,
