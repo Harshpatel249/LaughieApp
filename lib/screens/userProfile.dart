@@ -7,9 +7,8 @@ class UserProfile extends StatelessWidget {
   static String id = 'user_profile';
   final String userName = 'UserName';
   final String fullName = 'Ozzy Osbourne';
-  final String cityName = 'Birmingham';
   final String countryName = 'England';
-  final String userEmail = 'ozzy@gmail.com';
+  final String userEmail = 'ozzycrazysobourne@gmail.com';
   final String userProfession = 'Student';
   final String userContact = '9494264669';
   final String userDob = '24/09/2000';
@@ -90,56 +89,62 @@ class UserProfile extends StatelessWidget {
                       ],
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
                           height: 20,
                         ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 40,
-                            ),
-                            Container(
-                              child: CircleAvatar(
-                                radius: 30,
-                                backgroundImage: AssetImage(
-                                  'assets/images/profile.png',
-                                ),
-                              ),
-                              decoration: new BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: new Border.all(
-                                  color: Colors.black,
-                                  width: 1.0,
-                                ),
+                        Center(
+                          child: Container(
+                            child: CircleAvatar(
+                              radius: 30,
+                              backgroundImage: AssetImage(
+                                'assets/images/profile.png',
                               ),
                             ),
-                            SizedBox(
-                              width: 20,
+                            decoration: new BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: new Border.all(
+                                color: Colors.black,
+                                width: 1.0,
+                              ),
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  fullName,
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                Text(
-                                  cityName + ', ' + countryName,
-                                  style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 16,
-                                      color: Colors.black45),
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
                         SizedBox(
-                          height: 40,
+                          height: 5,
+                        ),
+                        Center(
+                          child: Text(
+                            fullName,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25.0),
+                          child: Text(
+                            'Email',
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                                color: Colors.black45),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25.0),
+                          child: Text(
+                            userEmail,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
                         ),
                         Row(
                           children: [
@@ -149,35 +154,32 @@ class UserProfile extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Email',
+                                    'DoB',
                                     style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 16,
                                         color: Colors.black45),
                                   ),
                                   Text(
-                                    userEmail,
+                                    userDob,
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 16,
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
                                   Text(
-                                    'Number',
+                                    'Country',
                                     style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 16,
                                         color: Colors.black45),
                                   ),
                                   Text(
-                                    userContact,
+                                    countryName,
                                     style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 16,
-                                    ),
+                                        fontFamily: 'Poppins',
+                                        fontSize: 16,
+                                        color: Colors.black),
                                   ),
                                 ],
                               ),
@@ -206,14 +208,14 @@ class UserProfile extends StatelessWidget {
                                     height: 10,
                                   ),
                                   Text(
-                                    'DoB',
+                                    'Number',
                                     style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 16,
                                         color: Colors.black45),
                                   ),
                                   Text(
-                                    userDob,
+                                    userContact,
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 16,

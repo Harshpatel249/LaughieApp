@@ -35,7 +35,7 @@ class _EditProfileState extends State<EditProfile> {
             hintText: "Name",
             errorText: _nameValid ? null : "name cannot be empty",
           ),
-        )
+        ),
       ],
     );
   }
