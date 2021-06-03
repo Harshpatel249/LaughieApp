@@ -85,7 +85,7 @@ class _EditProfileState extends State<EditProfile> {
               borderSide: BorderSide(color: Color(0xFFC3C2C3), width: 2.0),
             ),
             hintText: "Email",
-            errorText: _usernameValid ? null : "username cannot be empty",
+            errorText: _emailValid ? null : "Email cannot be empty",
           ),
         )
       ],
