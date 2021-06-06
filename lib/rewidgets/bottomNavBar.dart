@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/userProfile.dart';
 
 class BottomNavBar extends StatefulWidget {
   String id;
@@ -67,14 +68,16 @@ class _BottomNavBarState extends State<BottomNavBar> {
               icon: Icon(
                 Icons.person,
                 size: 35,
-                color: Colors.black,
-                // this.id == UserProfile.id
-                //     ? Colors.white
-                //     : Color(0xFFC3C2C3),
+                color: this.id == UserProfile.id
+                    ? Color(0xfffbb313)
+                    : Colors.black,
               ),
-              // onPressed: () {
-              //
-              // },
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => UserProfile()),
+                    (route) => false);
+              },
             ),
           ),
         ],
