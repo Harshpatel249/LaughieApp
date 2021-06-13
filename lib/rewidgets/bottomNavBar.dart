@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/userProfile.dart';
+import '../screens/signUp.dart';
 
 class BottomNavBar extends StatefulWidget {
   String id;
@@ -26,8 +27,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 color: Color(0xfffbb313),
                 //this.id == HomeScreen.id ? Colors.white : Color(0xFFC3C2C3),
               ),
-              // onPressed: () {
-              // },
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignUp()),
+                    (route) => false);
+              },
             ),
           ),
           Padding(
