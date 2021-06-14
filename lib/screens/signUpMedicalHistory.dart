@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'signUpPrescription.dart';
 
 class SignUpMedicalHistory extends StatefulWidget {
   @override
@@ -125,10 +126,11 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => PerscriptionForm()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SignUpPrescription()),
+                    );
                   },
                   child: Text(
                     'Next',
