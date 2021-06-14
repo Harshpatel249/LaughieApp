@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'signUpPersonalDetails.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -223,11 +224,11 @@ class _SignUpState extends State<SignUp> {
                           confirmPassword = confirmPasswordCon.text;
                         }
                       });
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => Persocaldetailform()),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SignUpPersonalDetails()),
+                      );
                     },
                     child: Text(
                       'Signup',
