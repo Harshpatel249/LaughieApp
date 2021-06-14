@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'resetPassword.dart';
 
 class ResetPassAuthOTP extends StatefulWidget {
   @override
@@ -39,7 +40,7 @@ class _ResetPassAuthOTPState extends State<ResetPassAuthOTP> {
                     height: 10,
                   ),
                   Text(
-                    'Please enter the OTP:',
+                    'Please enter the OTP',
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(
@@ -73,11 +74,11 @@ class _ResetPassAuthOTPState extends State<ResetPassAuthOTP> {
                           oTP = oTPCon.text;
                         }
                       });
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => SignUpPersonalDetails()),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ResetPassword()),
+                      );
                     },
                     child: Text(
                       'Authenticate',

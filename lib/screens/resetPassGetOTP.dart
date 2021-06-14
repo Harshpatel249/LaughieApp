@@ -40,7 +40,7 @@ class _ResetPassGetOTPState extends State<ResetPassGetOTP> {
                     height: 10,
                   ),
                   Text(
-                    'Please enter your registered Email id or phone number:',
+                    'Please enter your registered Email id or phone number',
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(
