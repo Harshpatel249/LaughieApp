@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'resetPassAuthOTP.dart';
 
-class ResetPassGetOTP extends StatefulWidget {
+class ResetPassAuthOTP extends StatefulWidget {
   @override
-  _ResetPassGetOTPState createState() => _ResetPassGetOTPState();
+  _ResetPassAuthOTPState createState() => _ResetPassAuthOTPState();
 }
 
-class _ResetPassGetOTPState extends State<ResetPassGetOTP> {
-  String emailPhone;
+class _ResetPassAuthOTPState extends State<ResetPassAuthOTP> {
+  String oTP;
 
   final _formKey = GlobalKey<FormState>();
-  final emailPhoneCon = new TextEditingController();
+  final oTPCon = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,7 @@ class _ResetPassGetOTPState extends State<ResetPassGetOTP> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Reset Password',
+            'OTP Authenticate',
             style: TextStyle(color: Colors.black),
           ),
           centerTitle: true,
@@ -40,16 +39,15 @@ class _ResetPassGetOTPState extends State<ResetPassGetOTP> {
                     height: 10,
                   ),
                   Text(
-                    'Please enter your registered Email id or phone number:',
+                    'Please enter the OTP:',
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   TextField(
-                    controller: emailPhoneCon,
+                    controller: oTPCon,
                     style: TextStyle(color: Colors.black),
-                    keyboardType: TextInputType.emailAddress,
                     decoration: new InputDecoration(
                       focusedBorder: OutlineInputBorder(
                         borderSide:
@@ -59,9 +57,9 @@ class _ResetPassGetOTPState extends State<ResetPassGetOTP> {
                         borderSide:
                             BorderSide(color: Color(0xFFC3C2C3), width: 2.0),
                       ),
-                      labelText: 'Email/Phone',
+                      labelText: 'OTP',
                       labelStyle: TextStyle(color: Colors.black45),
-                      hintText: 'Email/Phone',
+                      hintText: 'OTP',
                       hintStyle: TextStyle(color: Colors.black45),
                     ),
                   ),
@@ -72,17 +70,17 @@ class _ResetPassGetOTPState extends State<ResetPassGetOTP> {
                     onPressed: () {
                       setState(() {
                         if (_formKey.currentState.validate()) {
-                          emailPhone = emailPhoneCon.text;
+                          oTP = oTPCon.text;
                         }
                       });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ResetPassAuthOTP()),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => SignUpPersonalDetails()),
+                      // );
                     },
                     child: Text(
-                      'Send OTP',
+                      'Authenticate',
                       style: TextStyle(fontSize: 18),
                     ),
                     style: ElevatedButton.styleFrom(
