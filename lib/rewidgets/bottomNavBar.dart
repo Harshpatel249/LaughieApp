@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/userProfile.dart';
-import '../screens/signUp.dart';
+import '../screens/signIn.dart';
 
 class BottomNavBar extends StatefulWidget {
   String id;
@@ -30,7 +30,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => SignUp()),
+                    MaterialPageRoute(builder: (context) => SignIn()),
                     (route) => false);
               },
             ),
