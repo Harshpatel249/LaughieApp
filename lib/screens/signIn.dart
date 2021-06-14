@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'signUp.dart';
+import 'resetPassGetOTP.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -136,7 +137,10 @@ class _SignInState extends State<SignIn> {
               ),
               TextButton(
                 onPressed: () {
-                  //navigateToSubPage(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ResetPassGetOTP()),
+                  );
                 },
                 child: Text(
                   'Forgot Password?',
