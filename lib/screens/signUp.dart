@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'signUpPersonalDetails.dart';
+import 'signIn.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -291,7 +292,13 @@ class _SignUpState extends State<SignUp> {
                               style: TextButton.styleFrom(
                                 primary: Color(0xfffbb313),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SignIn()),
+                                );
+                              },
                               child: Text("Login"))
                         ],
                       ),
