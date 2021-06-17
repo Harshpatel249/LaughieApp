@@ -66,7 +66,7 @@ class UserProfile extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: screenHeight * 0.03,
+                  height: screenHeight * 0.01,
                 ),
                 Center(
                   child: Container(
@@ -91,7 +91,7 @@ class UserProfile extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: screenHeight * 0.03,
+                  height: screenHeight * 0.04,
                 ),
                 Container(
                   width: mediaQuery.size.width * 0.90,

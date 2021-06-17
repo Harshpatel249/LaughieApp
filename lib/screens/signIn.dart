@@ -20,33 +20,47 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Color(0xfffbb313),
-        title: Text(
-          'Login',
-          style: TextStyle(
-            color: Colors.black,
-          ),
-        ),
+    final mediaQuery = MediaQuery.of(context);
+    final appBar = AppBar(
+      title: Text(
+        'Log In',
+        style: TextStyle(color: Colors.black),
       ),
+      centerTitle: true,
+    );
+
+    final bottomBarHeight = MediaQuery.of(context).size.height * 0.08;
+
+    final padding = mediaQuery.size.width * 0.05;
+
+    final screenHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        mediaQuery.padding.top -
+        bottomBarHeight;
+
+    return Scaffold(
+      appBar: appBar,
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.only(left: padding, right: padding),
         child: Form(
           key: _formKey,
           child: ListView(
             children: <Widget>[
               SizedBox(
-                height: 10,
+                height: screenHeight * 0.03,
               ),
               Center(
                 child: Container(
-                  child: CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage(
-                      'assets/images/nlogo_circle.png',
-                    ),
+                  height: screenHeight * 0.15,
+                  child: LayoutBuilder(
+                    builder: (ctx, constraints) {
+                      return CircleAvatar(
+                        radius: constraints.maxHeight / 2,
+                        backgroundImage: AssetImage(
+                          'assets/images/nlogo_circle.png',
+                        ),
+                      );
+                    },
                   ),
                   decoration: new BoxDecoration(
                     shape: BoxShape.circle,
@@ -58,26 +72,32 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
               SizedBox(
-                height: 15,
+                height: screenHeight * 0.01,
               ),
               Center(
-                child: Text(
-                  'Laughie',
-                  style: TextStyle(
-                    fontFamily: 'Pattaya',
-                    fontSize: 40,
-                    shadows: <Shadow>[
-                      Shadow(
-                        offset: Offset(8.0, 3.0),
-                        blurRadius: 10.0,
-                        color: Color.fromARGB(69, 0, 0, 0),
+                child: Container(
+                  height: screenHeight * 0.08,
+                  child: FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: Text(
+                      'Laughie',
+                      style: TextStyle(
+                        fontFamily: 'Pattaya',
+                        fontSize: 100,
+                        shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(8.0, 3.0),
+                            blurRadius: 10.0,
+                            color: Color.fromARGB(69, 0, 0, 0),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
               SizedBox(
-                height: 30,
+                height: screenHeight * 0.04,
               ),
               TextField(
                 controller: emailCon,
@@ -99,7 +119,7 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: screenHeight * 0.02,
               ),
               TextFormField(
                 obscureText: visi1,

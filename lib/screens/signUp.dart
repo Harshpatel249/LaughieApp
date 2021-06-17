@@ -22,14 +22,26 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'SignUp',
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
+    final mediaQuery = MediaQuery.of(context);
+    final appBar = AppBar(
+      title: Text(
+        'Sign Up',
+        style: TextStyle(color: Colors.black),
       ),
+      centerTitle: true,
+    );
+
+    final bottomBarHeight = MediaQuery.of(context).size.height * 0.08;
+
+    final padding = mediaQuery.size.width * 0.05;
+
+    final screenHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        mediaQuery.padding.top -
+        bottomBarHeight;
+
+    return Scaffold(
+      appBar: appBar,
       body: Container(
           padding: const EdgeInsets.all(20),
           child: SingleChildScrollView(
@@ -39,17 +51,21 @@ class _SignUpState extends State<SignUp> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  // Image.asset(
-                  //   'assets/images/logo.png',
-                  //   height: 130,
-                  // ),
+                  SizedBox(
+                    height: screenHeight * 0.03,
+                  ),
                   Center(
                     child: Container(
-                      child: CircleAvatar(
-                        radius: 40,
-                        backgroundImage: AssetImage(
-                          'assets/images/nlogo_circle.png',
-                        ),
+                      height: screenHeight * 0.15,
+                      child: LayoutBuilder(
+                        builder: (ctx, constraints) {
+                          return CircleAvatar(
+                            radius: constraints.maxHeight / 2,
+                            backgroundImage: AssetImage(
+                              'assets/images/nlogo_circle.png',
+                            ),
+                          );
+                        },
                       ),
                       decoration: new BoxDecoration(
                         shape: BoxShape.circle,
@@ -61,26 +77,32 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   SizedBox(
-                    height: 15,
+                    height: screenHeight * 0.01,
                   ),
                   Center(
-                    child: Text(
-                      'Laughie',
-                      style: TextStyle(
-                        fontFamily: 'Pattaya',
-                        fontSize: 40,
-                        shadows: <Shadow>[
-                          Shadow(
-                            offset: Offset(8.0, 3.0),
-                            blurRadius: 10.0,
-                            color: Color.fromARGB(69, 0, 0, 0),
+                    child: Container(
+                      height: screenHeight * 0.08,
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Text(
+                          'Laughie',
+                          style: TextStyle(
+                            fontFamily: 'Pattaya',
+                            fontSize: 100,
+                            shadows: <Shadow>[
+                              Shadow(
+                                offset: Offset(8.0, 3.0),
+                                blurRadius: 10.0,
+                                color: Color.fromARGB(69, 0, 0, 0),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 30,
+                    height: screenHeight * 0.04,
                   ),
                   TextField(
                     controller: emailCon,
