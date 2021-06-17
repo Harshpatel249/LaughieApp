@@ -31,14 +31,11 @@ class _SignUpState extends State<SignUp> {
       centerTitle: true,
     );
 
-    final bottomBarHeight = MediaQuery.of(context).size.height * 0.08;
-
     final padding = mediaQuery.size.width * 0.05;
 
     final screenHeight = mediaQuery.size.height -
         appBar.preferredSize.height -
-        mediaQuery.padding.top -
-        bottomBarHeight;
+        mediaQuery.padding.top;
 
     return Scaffold(
       appBar: appBar,
