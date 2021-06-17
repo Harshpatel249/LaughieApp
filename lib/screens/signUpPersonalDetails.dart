@@ -119,7 +119,6 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                       height: screenHeight * 0.02,
                     ),
                     Container(
-                      height: screenHeight * 0.10,
                       child: DateTimeFormField(
                         ///Add date validation and color theme correction
                         decoration: const InputDecoration(
