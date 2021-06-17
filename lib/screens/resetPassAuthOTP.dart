@@ -14,6 +14,9 @@ class _ResetPassAuthOTPState extends State<ResetPassAuthOTP> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final padding = mediaQuery.size.width * 0.05;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -24,7 +27,7 @@ class _ResetPassAuthOTPState extends State<ResetPassAuthOTP> {
           centerTitle: true,
         ),
         body: Container(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(padding),
           child: SingleChildScrollView(
             child: Form(
               key: _formKey,
