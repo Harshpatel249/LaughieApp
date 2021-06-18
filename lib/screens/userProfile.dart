@@ -168,7 +168,8 @@ class UserProfile extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 25.0),
+                            padding:
+                                const EdgeInsets.only(left: 25.0, right: 15.0),
                             child: Container(
                               height: constraints.maxHeight * 0.092,
                               child: FittedBox(

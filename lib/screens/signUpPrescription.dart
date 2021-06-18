@@ -147,7 +147,7 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                   child: FittedBox(
                     fit: BoxFit.fitHeight,
                     child: Text(
-                      '''Prescribed By?                                  ''',
+                      'Prescribed By?',
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
