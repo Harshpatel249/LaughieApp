@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/userProfile.dart';
 import '../screens/signIn.dart';
-import '../screens/daily_track_card.dart';
+import '../screens/stats_page.dart';
 
 class BottomNavBar extends StatefulWidget {
   String id;
@@ -57,14 +57,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
               icon: Icon(
                 Icons.assessment,
                 size: bottomBarHeight * 0.69,
-                color: this.id == DailyTrackCard.id
-                    ? Color(0xfffbb313)
-                    : Colors.black,
+                color:
+                    this.id == StatsPage.id ? Color(0xfffbb313) : Colors.black,
               ),
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => DailyTrackCard()),
+                    MaterialPageRoute(builder: (context) => StatsPage()),
                     (route) => false);
               },
             ),

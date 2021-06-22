@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'session_builder.dart';
-import '../rewidgets/bottomNavBar.dart';
 
 class DailyTrackCard extends StatelessWidget {
-  static String id = 'stats_page';
   final String startMonth;
   final String endMonth;
   final String currentMonth;
@@ -50,7 +48,6 @@ class DailyTrackCard extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavBar(id: DailyTrackCard.id),
       body: Container(
         padding: EdgeInsets.all(16.0),
         child: Column(

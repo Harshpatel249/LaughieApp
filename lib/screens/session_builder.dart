@@ -32,6 +32,7 @@ class SessionBuilder extends StatelessWidget {
           minLeadingWidth: 0.0,
           horizontalTitleGap: 0,
           leading: Container(
+            height: 10,
             width: 10.0,
             color: Colors.orange,
           ),
