@@ -24,6 +24,7 @@ class _StatsPageState extends State<StatsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
     final appBar = AppBar(
       title: Text(
         'Statistics',
@@ -32,110 +33,179 @@ class _StatsPageState extends State<StatsPage> {
       centerTitle: true,
     );
 
+    final bottomBarHeight = MediaQuery.of(context).size.height * 0.08;
+
+    final screenHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        mediaQuery.padding.top -
+        bottomBarHeight;
+    final padding = mediaQuery.size.width * 0.05;
+
     return SafeArea(
       child: Scaffold(
         appBar: appBar,
         bottomNavigationBar: BottomNavBar(),
         body: Container(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.only(left: padding, right: padding),
           child: ListView(
             children: [
               Column(
                 children: [
+                  SizedBox(
+                    height: screenHeight * 0.02,
+                  ),
                   Container(
-                    alignment: Alignment.centerRight,
-                    padding: EdgeInsets.only(right: 16.0),
-                    child: Text(
-                      '$startMonth - $endMonth',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  TableCalendar(
-                    firstDay: DateTime.utc(2021, 4, 1),
-                    lastDay: DateTime.utc(2021, 6, 31),
-                    focusedDay: DateTime.now(),
-                    onDaySelected: (date, events) {
-                      print(date.toUtc()); //On click services
-                    },
-                    headerStyle: HeaderStyle(
-                      formatButtonVisible: false,
-                      titleCentered: true,
-                      titleTextFormatter: (date, locale) =>
-                          DateFormat.MMM(locale).format(date),
-                      titleTextStyle: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30.0,
-                  ),
-                  Card(
-                    elevation: 5.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        'Total time spent on Laughter Therapy',
+                    height: screenHeight * 0.10,
+                    padding:
+                        EdgeInsets.only(top: padding / 2, bottom: padding / 2),
+                    child: FittedBox(
+                      fit: BoxFit.fitHeight,
+                      child: Text(
+                        '$startMonth - $endMonth',
+                        textAlign: TextAlign.end,
                         style: TextStyle(
-                          fontSize: 14.0,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      trailing: Text(
-                        '$timeSpent mins',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFfbb313),
+                    ),
+                  ),
+                  Container(
+                    child: TableCalendar(
+                      rowHeight: screenHeight * 0.08,
+                      firstDay: DateTime.utc(2021, 4, 1),
+                      lastDay: DateTime.utc(2021, 6, 31),
+                      focusedDay: DateTime.now(),
+                      onDaySelected: (date, events) {
+                        print(date.toUtc()); //On click services
+                      },
+                      headerStyle: HeaderStyle(
+                        formatButtonVisible: false,
+                        titleCentered: true,
+                        titleTextFormatter: (date, locale) =>
+                            DateFormat.MMM(locale).format(date),
+                        titleTextStyle: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 30.0,
+                    height: screenHeight * 0.02,
                   ),
-                  Card(
-                    elevation: 5.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        'Time left',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
-                        ),
+                  Container(
+                    height: screenHeight * 0.1,
+                    child: Card(
+                      elevation: 5.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
-                      trailing: Text(
-                        '$timeLeft Days',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFfbb313),
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: padding,
+                          ),
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              'Time spent on Laughie',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          Spacer(
+                            flex: 1,
+                          ),
+                          FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: Text(
+                              '$timeSpent mins',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFfbb313),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: padding,
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  RaisedButton(onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DailyTrackCard(
-                          startMonth: this.startMonth,
-                          endMonth: this.endMonth,
-                          currentMonth: 'May',
+                  SizedBox(
+                    height: screenHeight * 0.02,
+                  ),
+                  Container(
+                    height: screenHeight * 0.1,
+                    child: Card(
+                      elevation: 5.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: padding,
+                          ),
+                          FittedBox(
+                            fit: BoxFit.fill,
+                            child: Text(
+                              'Days left',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          Spacer(
+                            flex: 1,
+                          ),
+                          FittedBox(
+                            fit: BoxFit.fill,
+                            child: Text(
+                              '$timeLeft days',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFfbb313),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: padding,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.02,
+                  ),
+                  Container(
+                    height: screenHeight * 0.08,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Text(
+                          'Daily track',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 100),
                         ),
                       ),
-                    );
-                  })
+                      style: ElevatedButton.styleFrom(
+                          primary: Color(0xfffbb313),
+                          onPrimary: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(8), // <-- Radius
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 30)),
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.02,
+                  ),
                 ],
               ),
             ],
