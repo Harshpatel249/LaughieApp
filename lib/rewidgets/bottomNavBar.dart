@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/userProfile.dart';
 import '../screens/signIn.dart';
+import '../screens/stats_page.dart';
 
 class BottomNavBar extends StatefulWidget {
   String id;
@@ -56,13 +57,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
               icon: Icon(
                 Icons.assessment,
                 size: bottomBarHeight * 0.69,
-                color: Colors.black,
-                // this.id == ASLDetection.id
-                //     ? Colors.white
-                //     : Color(0xFFC3C2C3),
+                color:
+                    this.id == StatsPage.id ? Color(0xfffbb313) : Colors.black,
               ),
-              // onPressed: () {
-              // },
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => StatsPage()),
+                    (route) => false);
+              },
             ),
             Padding(
               padding: const EdgeInsets.only(right: 10),
