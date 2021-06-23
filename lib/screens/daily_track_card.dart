@@ -16,21 +16,21 @@ class DailyTrackCard extends StatelessWidget {
     final SessionBuilder session1 = SessionBuilder(
       time: '9AM',
       sessionNumber: 1,
-      greeting: 'Good Morning',
+      greeting: 'Morning',
       completed: true,
     );
     sessionsDetails.add(session1);
     final SessionBuilder session2 = SessionBuilder(
       time: '1 PM',
       sessionNumber: 2,
-      greeting: 'Good Afternoon',
+      greeting: 'Afternoon',
       completed: true,
     );
     sessionsDetails.add(session2);
     final SessionBuilder session3 = SessionBuilder(
       time: '8 PM',
       sessionNumber: 3,
-      greeting: 'Good Evening',
+      greeting: 'Evening',
       completed: false,
     );
     sessionsDetails.add(session3);
@@ -39,28 +39,40 @@ class DailyTrackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Session Track',
-          style: TextStyle(
-            color: Color(0xff222223),
-          ),
-        ),
+    final mediaQuery = MediaQuery.of(context);
+    final appBar = AppBar(
+      title: Text(
+        'Daily Sessions',
+        style: TextStyle(color: Colors.black),
       ),
+      centerTitle: true,
+    );
+
+    final screenHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        mediaQuery.padding.top;
+    final padding = mediaQuery.size.width * 0.05;
+
+    return Scaffold(
+      appBar: appBar,
       body: Container(
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
+            SizedBox(
+              height: screenHeight * 0.02,
+            ),
             Container(
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.only(right: 16.0),
-              child: Text(
-                '$startMonth - $endMonth',
-                textAlign: TextAlign.end,
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w500,
+              height: screenHeight * 0.10,
+              padding: EdgeInsets.only(top: padding / 2, bottom: padding / 2),
+              child: FittedBox(
+                fit: BoxFit.fitHeight,
+                child: Text(
+                  '$startMonth - $endMonth',
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),
@@ -72,7 +84,7 @@ class DailyTrackCard extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 20.0,
+              height: screenHeight * 0.02,
             ),
             Card(
               color: Color(0xff222223),
@@ -82,35 +94,51 @@ class DailyTrackCard extends StatelessWidget {
               elevation: 15.0,
               shadowColor: Colors.black,
               child: Container(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.only(left: padding, right: padding),
+                height: screenHeight * 0.50,
                 child: Column(
                   children: [
+                    SizedBox(
+                      height: screenHeight * 0.02,
+                    ),
                     Row(
                       children: [
-                        Text(
-                          '3',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0,
+                        Container(
+                          height: screenHeight * 0.05,
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              '3',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.0,
+                              ),
+                            ),
                           ),
                         ),
                         Spacer(),
-                        Text(
-                          'Wednesday',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0,
+                        Container(
+                          height: screenHeight * 0.05,
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              'Wednesday',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.0,
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
                     Divider(
                       color: Colors.white,
+                      height: screenHeight * 0.01,
                     ),
                     Container(
-                      padding: EdgeInsets.all(8.0),
                       // color: Colors.red,
                       child: ListView(
                         scrollDirection: Axis.vertical,

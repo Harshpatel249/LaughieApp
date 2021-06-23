@@ -183,7 +183,18 @@ class _StatsPageState extends State<StatsPage> {
                     height: screenHeight * 0.08,
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DailyTrackCard(
+                              startMonth: this.startMonth,
+                              endMonth: this.endMonth,
+                              currentMonth: 'May',
+                            ),
+                          ),
+                        );
+                      },
                       child: FittedBox(
                         fit: BoxFit.fitHeight,
                         child: Text(
