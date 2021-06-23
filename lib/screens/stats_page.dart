@@ -44,7 +44,9 @@ class _StatsPageState extends State<StatsPage> {
     return SafeArea(
       child: Scaffold(
         appBar: appBar,
-        bottomNavigationBar: BottomNavBar(),
+        bottomNavigationBar: BottomNavBar(
+          id: StatsPage.id,
+        ),
         body: Container(
           padding: EdgeInsets.only(left: padding, right: padding),
           child: ListView(
