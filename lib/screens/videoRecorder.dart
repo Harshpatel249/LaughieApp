@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../rewidgets/video_widget.dart';
 import 'dart:io';
 import '../rewidgets/bottomNavBar.dart';
@@ -19,6 +20,7 @@ class _VideoRecorderState extends State<VideoRecorder> {
     //final MediaSource source = ModalRoute.of(context).settings.arguments;
     // ImagePicker is the plugin that we've integrated.
     // source is used to determine whether to select getImage or getVideo
+    print('Here');
     final getMedia = ImagePicker().getVideo;
     // Since this widget is for picking images from gallery
     final media = await getMedia(source: ImageSource.camera);
@@ -49,6 +51,26 @@ class _VideoRecorderState extends State<VideoRecorder> {
       setState(() {
         fileMedia = result;
       });
+    }
+  }
+
+  checkPermission(BuildContext context) async {
+    var cameraStatus = await Permission.camera.status;
+    var micStatus = await Permission.microphone.status;
+    if (!cameraStatus.isGranted) {
+      await Permission.camera.request();
+    }
+    if (!micStatus.isGranted) {
+      await Permission.microphone.request();
+    }
+    if (await Permission.camera.isGranted) {
+      if (await Permission.microphone.isGranted) {
+        capture(context);
+      } else {
+        print('mic permission required');
+      }
+    } else {
+      print('cam permission required');
     }
   }
 
@@ -85,10 +107,7 @@ class _VideoRecorderState extends State<VideoRecorder> {
               //   child: Text('Capture Image'),
               // ),
               ElevatedButton(
-                onPressed: () {
-                  print('onPressed: Video Button');
-                  capture(context);
-                },
+                onPressed: () => checkPermission(context),
                 child: Text('Capture Video'),
               ),
             ],
