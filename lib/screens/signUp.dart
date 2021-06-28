@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String _email, _userName, _password, _confirmPassword;
+  bool _isLoading = false;
 
   final _formKey = GlobalKey<FormState>();
   final emailCon = new TextEditingController();
@@ -34,10 +36,20 @@ class _SignUpState extends State<SignUp> {
       // Creating user
       //
       try {
+        setState(() {
+          _isLoading = true;
+        });
         userCredential = await _auth.createUserWithEmailAndPassword(
           email: _email,
           password: _password,
         );
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user.uid)
+            .set({
+          "email": _email,
+          "username": _userName,
+        });
       } on PlatformException catch (err) {
         var message = 'An error occured, please check your credentials!';
 
@@ -49,6 +61,9 @@ class _SignUpState extends State<SignUp> {
           backgroundColor: Theme.of(context).errorColor,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        setState(() {
+          _isLoading = false;
+        });
       } on FirebaseAuthException catch (err) {
         SnackBar snackBar = SnackBar(
           content: Text(err.message),
@@ -56,6 +71,9 @@ class _SignUpState extends State<SignUp> {
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         print(err);
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
 
@@ -319,48 +337,55 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       height: screenHeight * 0.02,
                     ),
-                    Container(
-                      height: screenHeight * 0.10,
-                      child: ElevatedButton(
-                        onPressed: _trySignIn,
-                        child: FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: Text(
-                            'Signup',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                            primary: Color(0xfffbb313),
-                            onPrimary: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(8), // <-- Radius
+                    if (_isLoading)
+                      CircularProgressIndicator(
+                        backgroundColor: Color(0xfffbb313),
+                        valueColor: AlwaysStoppedAnimation(Color(0xff222223)),
+                      ),
+                    if (!_isLoading)
+                      Container(
+                        height: screenHeight * 0.10,
+                        child: ElevatedButton(
+                          onPressed: _trySignIn,
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              'Signup',
+                              style: TextStyle(fontSize: 20),
                             ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 30)),
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text("Already have Account?"),
-                          TextButton(
-                              style: TextButton.styleFrom(
-                                primary: Color(0xfffbb313),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              primary: Color(0xfffbb313),
+                              onPrimary: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(8), // <-- Radius
                               ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SignIn()),
-                                );
-                              },
-                              child: Text("Login"))
-                        ],
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 30)),
+                        ),
                       ),
-                    )
+                    if (!_isLoading)
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Already have Account?"),
+                            TextButton(
+                                style: TextButton.styleFrom(
+                                  primary: Color(0xfffbb313),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SignIn()),
+                                  );
+                                },
+                                child: Text("Login"))
+                          ],
+                        ),
+                      )
                   ],
                 ),
               ],
