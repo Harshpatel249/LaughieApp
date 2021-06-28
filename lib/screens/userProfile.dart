@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../rewidgets/bottomNavBar.dart';
 import 'editProfile.dart';
 
@@ -22,6 +24,40 @@ class UserProfile extends StatelessWidget {
         style: TextStyle(color: Colors.black),
       ),
       centerTitle: true,
+      actions: [
+        DropdownButton(
+          icon: Icon(
+            Icons.more_vert,
+            color: Color(0xff222223),
+          ),
+          items: [
+            DropdownMenuItem(
+              child: Container(
+                child: Row(
+                  children: [
+                    Icon(Icons.exit_to_app),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      'Logout',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              value: 'logout',
+            ),
+          ],
+          onChanged: (itemIdentifier) {
+            if (itemIdentifier == 'logout') {
+              FirebaseAuth.instance.signOut();
+            }
+          },
+        ),
+      ],
     );
 
     final bottomBarHeight = MediaQuery.of(context).size.height * 0.08;

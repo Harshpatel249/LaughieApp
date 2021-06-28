@@ -1,11 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'screens/test.dart';
+import 'package:laughie_app/screens/test.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -38,6 +37,23 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: Test(),
+
+      // StreamBuilder(
+      //
+      //   stream: FirebaseAuth.instance.authStateChanges(),
+      //   builder: (context, userSnapshot) {
+      //     if (userSnapshot.hasData) {
+      //       return SignUpPersonalDetails();
+      //     }
+      //     return SignIn();
+      //   },
+      // ),
+      //Test()
     );
   }
 }
+// Navigator.push(
+//   context,
+//   MaterialPageRoute(
+//       builder: (context) => SignUpPersonalDetails()),
+// );

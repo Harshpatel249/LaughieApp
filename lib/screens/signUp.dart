@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:laughie_app/screens/signUpPersonalDetails.dart';
 
 import 'signIn.dart';
 
@@ -16,17 +17,17 @@ class _SignUpState extends State<SignUp> {
   bool _isLoading = false;
 
   final _formKey = GlobalKey<FormState>();
-  final emailCon = new TextEditingController();
-  final usernameCon = new TextEditingController();
+  // final emailCon = new TextEditingController();
+  // final usernameCon = new TextEditingController();
   final passwordCon = new TextEditingController();
-  final confirmPasswordCon = new TextEditingController();
+  // final confirmPasswordCon = new TextEditingController();
 
   bool visi1 = true;
   bool visi2 = true;
   IconData i1 = Icons.visibility;
   IconData i2 = Icons.visibility;
 
-  _trySignIn() async {
+  _trySignUp() async {
     UserCredential userCredential;
     FocusScope.of(context).unfocus();
     if (_formKey.currentState.validate()) {
@@ -50,6 +51,10 @@ class _SignUpState extends State<SignUp> {
           "email": _email,
           "username": _userName,
         });
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => SignUpPersonalDetails()),
+        // );
       } on PlatformException catch (err) {
         var message = 'An error occured, please check your credentials!';
 
@@ -76,11 +81,20 @@ class _SignUpState extends State<SignUp> {
         });
       }
     }
+  }
 
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => SignUpPersonalDetails()),
-    // );
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _auth.authStateChanges().listen((user) {
+      if (user != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SignUpPersonalDetails()),
+        );
+      }
+    });
   }
 
   @override
@@ -338,15 +352,23 @@ class _SignUpState extends State<SignUp> {
                       height: screenHeight * 0.02,
                     ),
                     if (_isLoading)
-                      CircularProgressIndicator(
-                        backgroundColor: Color(0xfffbb313),
-                        valueColor: AlwaysStoppedAnimation(Color(0xff222223)),
+                      Center(
+                        child: Container(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            backgroundColor: Color(0xfffbb313),
+                            valueColor: AlwaysStoppedAnimation(
+                              Color(0xff222223),
+                            ),
+                          ),
+                        ),
                       ),
                     if (!_isLoading)
                       Container(
                         height: screenHeight * 0.10,
                         child: ElevatedButton(
-                          onPressed: _trySignIn,
+                          onPressed: _trySignUp,
                           child: FittedBox(
                             fit: BoxFit.fitWidth,
                             child: Text(
