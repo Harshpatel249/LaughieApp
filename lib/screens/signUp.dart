@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'signUpPersonalDetails.dart';
+
 import 'signIn.dart';
 
 class SignUp extends StatefulWidget {
@@ -8,7 +8,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  String email, userName, password, confirmPassword;
+  String _email, _userName, _password, _confirmPassword;
 
   final _formKey = GlobalKey<FormState>();
   final emailCon = new TextEditingController();
@@ -20,6 +20,18 @@ class _SignUpState extends State<SignUp> {
   bool visi2 = true;
   IconData i1 = Icons.visibility;
   IconData i2 = Icons.visibility;
+
+  _trySignIn() {
+    FocusScope.of(context).unfocus();
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      print('$_email\n$_userName\n$_password\n$_confirmPassword');
+    }
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => SignUpPersonalDetails()),
+    // );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,8 +117,18 @@ class _SignUpState extends State<SignUp> {
                     ),
                     Container(
                       height: screenHeight * 0.11,
-                      child: TextField(
-                        controller: emailCon,
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value.isEmpty || !value.contains('@')) {
+                            return 'Please enter a valid email address';
+                          } else {
+                            return null;
+                          }
+                        },
+                        onSaved: (input) {
+                          _email = input;
+                        },
+                        // controller: emailCon,
                         style: TextStyle(color: Colors.black),
                         keyboardType: TextInputType.emailAddress,
                         decoration: new InputDecoration(
@@ -130,8 +152,20 @@ class _SignUpState extends State<SignUp> {
                     ),
                     Container(
                       height: screenHeight * 0.11,
-                      child: TextField(
-                        controller: usernameCon,
+                      child: TextFormField(
+                        // controller: usernameCon,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'username cannot be empty';
+                          } else if (value.length < 4) {
+                            return 'username must be at least 4 characters long.';
+                          } else {
+                            return null;
+                          }
+                        },
+                        onSaved: (input) {
+                          _userName = input;
+                        },
                         style: TextStyle(color: Colors.black),
                         keyboardType: TextInputType.name,
                         decoration: new InputDecoration(
@@ -162,10 +196,13 @@ class _SignUpState extends State<SignUp> {
                         validator: (String value) {
                           if (value.isEmpty) {
                             return 'Password cannot be empty';
-                          } else if (value.length < 6) {
-                            return 'Password too small';
+                          } else if (value.length < 7) {
+                            return 'Password must be at least 7 characters long.';
                           }
                           return null;
+                        },
+                        onSaved: (input) {
+                          _password = input;
                         },
                         decoration: new InputDecoration(
                           focusedBorder: OutlineInputBorder(
@@ -205,13 +242,16 @@ class _SignUpState extends State<SignUp> {
                       height: screenHeight * 0.11,
                       child: TextFormField(
                         obscureText: visi2,
-                        controller: confirmPasswordCon,
+                        // controller: confirmPasswordCon,
                         style: TextStyle(color: Colors.black),
                         validator: (String value) {
                           if (value != passwordCon.value.text) {
                             return 'Password do not match!';
                           }
                           return null;
+                        },
+                        onSaved: (input) {
+                          _confirmPassword = input;
                         },
                         decoration: new InputDecoration(
                           focusedBorder: OutlineInputBorder(
@@ -250,21 +290,7 @@ class _SignUpState extends State<SignUp> {
                     Container(
                       height: screenHeight * 0.10,
                       child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            if (_formKey.currentState.validate()) {
-                              userName = usernameCon.text;
-                              email = emailCon.text;
-                              password = passwordCon.text;
-                              confirmPassword = confirmPasswordCon.text;
-                            }
-                          });
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignUpPersonalDetails()),
-                          );
-                        },
+                        onPressed: _trySignIn,
                         child: FittedBox(
                           fit: BoxFit.fitWidth,
                           child: Text(
