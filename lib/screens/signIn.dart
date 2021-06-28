@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'signUp.dart';
+
 import 'resetPassGetOTP.dart';
+import 'signUp.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -168,6 +169,7 @@ class _SignInState extends State<SignIn> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  FocusScope.of(context).unfocus();
                   setState(() {
                     if (_formKey.currentState.validate()) {
                       email = emailCon.text;
