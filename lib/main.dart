@@ -1,7 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
 import 'screens/test.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -21,6 +25,7 @@ class MyApp extends StatelessWidget {
         ),
         bottomAppBarColor: Color(0xFFf6f6f6),
         scaffoldBackgroundColor: Color(0xFFf6f6f6),
+        errorColor: Color(0xffe03d2c),
         textTheme: TextTheme(
           bodyText1: TextStyle(
             color: Colors.black,

@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'signIn.dart';
 
@@ -8,6 +10,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   String _email, _userName, _password, _confirmPassword;
 
   final _formKey = GlobalKey<FormState>();
@@ -21,12 +24,41 @@ class _SignUpState extends State<SignUp> {
   IconData i1 = Icons.visibility;
   IconData i2 = Icons.visibility;
 
-  _trySignIn() {
+  _trySignIn() async {
+    UserCredential userCredential;
     FocusScope.of(context).unfocus();
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       print('$_email\n$_userName\n$_password\n$_confirmPassword');
+      //
+      // Creating user
+      //
+      try {
+        userCredential = await _auth.createUserWithEmailAndPassword(
+          email: _email,
+          password: _password,
+        );
+      } on PlatformException catch (err) {
+        var message = 'An error occured, please check your credentials!';
+
+        if (err.message != null) {
+          message = err.message;
+        }
+        SnackBar snackBar = SnackBar(
+          content: Text(message),
+          backgroundColor: Theme.of(context).errorColor,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } on FirebaseAuthException catch (err) {
+        SnackBar snackBar = SnackBar(
+          content: Text(err.message),
+          backgroundColor: Theme.of(context).errorColor,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        print(err);
+      }
     }
+
     // Navigator.push(
     //   context,
     //   MaterialPageRoute(builder: (context) => SignUpPersonalDetails()),
@@ -126,7 +158,7 @@ class _SignUpState extends State<SignUp> {
                           }
                         },
                         onSaved: (input) {
-                          _email = input;
+                          _email = input.trim();
                         },
                         // controller: emailCon,
                         style: TextStyle(color: Colors.black),
@@ -164,7 +196,7 @@ class _SignUpState extends State<SignUp> {
                           }
                         },
                         onSaved: (input) {
-                          _userName = input;
+                          _userName = input.trim();
                         },
                         style: TextStyle(color: Colors.black),
                         keyboardType: TextInputType.name,
@@ -202,7 +234,7 @@ class _SignUpState extends State<SignUp> {
                           return null;
                         },
                         onSaved: (input) {
-                          _password = input;
+                          _password = input.trim();
                         },
                         decoration: new InputDecoration(
                           focusedBorder: OutlineInputBorder(
@@ -251,7 +283,7 @@ class _SignUpState extends State<SignUp> {
                           return null;
                         },
                         onSaved: (input) {
-                          _confirmPassword = input;
+                          _confirmPassword = input.trim();
                         },
                         decoration: new InputDecoration(
                           focusedBorder: OutlineInputBorder(
