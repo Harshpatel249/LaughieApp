@@ -22,6 +22,9 @@ class MyApp extends StatelessWidget {
             color: Colors.black, //change your color here
           ),
         ),
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Colors.black,
+        ),
         bottomAppBarColor: Color(0xFFf6f6f6),
         scaffoldBackgroundColor: Color(0xFFf6f6f6),
         errorColor: Color(0xffe03d2c),

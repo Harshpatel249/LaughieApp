@@ -38,6 +38,7 @@ class _SignInState extends State<SignIn> {
         email: _email,
         password: _password,
       );
+
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(
@@ -172,7 +173,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   labelText: 'Email',
                   labelStyle: TextStyle(color: Colors.black45),
-                  hintText: 'Email',
+                  // hintText: 'Email',
                   hintStyle: TextStyle(color: Colors.black45),
                 ),
               ),
@@ -204,7 +205,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   labelText: 'Password',
                   labelStyle: TextStyle(color: Colors.black45),
-                  hintText: 'Password',
+                  // hintText: 'Password',
                   hintStyle: TextStyle(color: Colors.black45),
                   suffixIcon: InkWell(
                     onTap: () {
@@ -279,7 +280,7 @@ class _SignInState extends State<SignIn> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => SignUp()),
                           );

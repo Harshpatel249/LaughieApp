@@ -30,12 +30,16 @@ class _SignUpState extends State<SignUp> {
   _trySignUp() async {
     UserCredential userCredential;
     FocusScope.of(context).unfocus();
-    if (_formKey.currentState.validate()) {
+    bool isValid = _formKey.currentState.validate();
+    if (isValid) {
       _formKey.currentState.save();
       print('$_email\n$_userName\n$_password\n$_confirmPassword');
       //
       // Creating user
       //
+
+    }
+    if (isValid) {
       try {
         setState(() {
           _isLoading = true;
@@ -189,6 +193,7 @@ class _SignUpState extends State<SignUp> {
                             return null;
                           }
                         },
+
                         onSaved: (input) {
                           _email = input.trim();
                         },
@@ -206,7 +211,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                           labelText: 'Email',
                           labelStyle: TextStyle(color: Colors.black45),
-                          hintText: 'Email',
+                          // hintText: 'Email',
                           hintStyle: TextStyle(color: Colors.black45),
                         ),
                       ),
@@ -243,7 +248,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                           labelText: 'UserName',
                           labelStyle: TextStyle(color: Colors.black45),
-                          hintText: 'UserName',
+                          //hintText: 'UserName',
                           hintStyle: TextStyle(color: Colors.black45),
                         ),
                       ),
@@ -279,7 +284,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                           labelText: 'Password',
                           labelStyle: TextStyle(color: Colors.black45),
-                          hintText: 'Password',
+                          //  hintText: 'Password',
                           hintStyle: TextStyle(color: Colors.black45),
                           suffixIcon: InkWell(
                             onTap: () {
@@ -328,7 +333,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                           labelText: 'Confirm Password',
                           labelStyle: TextStyle(color: Colors.black45),
-                          hintText: 'Confirm Password',
+                          //  hintText: 'Confirm Password',
                           hintStyle: TextStyle(color: Colors.black45),
                           suffixIcon: InkWell(
                             onTap: () {
@@ -398,10 +403,11 @@ class _SignUpState extends State<SignUp> {
                                   primary: Color(0xfffbb313),
                                 ),
                                 onPressed: () {
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => SignIn()),
+                                      builder: (context) => SignIn(),
+                                    ),
                                   );
                                 },
                                 child: Text("Login"))
