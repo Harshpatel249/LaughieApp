@@ -3,6 +3,7 @@ import '../screens/userProfile.dart';
 import '../screens/signIn.dart';
 import '../screens/stats_page.dart';
 import '../screens/videoRecorder.dart';
+import '../screens/record_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
   String id;
@@ -45,14 +46,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 Icons.receipt_long,
                 //FontAwesomeIcons.americanSignLanguageInterpreting,
                 size: bottomBarHeight * 0.69,
-                color: this.id == VideoRecorder.id
+                color: this.id == RecordScreen.id
                     ? Color(0xfffbb313)
                     : Colors.black,
               ),
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => VideoRecorder()),
+                    MaterialPageRoute(builder: (context) => RecordScreen()),
                     (route) => false);
               },
             ),
