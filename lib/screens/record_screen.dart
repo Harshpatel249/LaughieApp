@@ -127,10 +127,13 @@ class _RecordScreenState extends State<RecordScreen> {
                     SizedBox(
                       height: constraints.maxHeight * 0.07,
                     ),
-                    FittedBox(
-                      child: Text(
-                        'Recorder is stopped',
-                        style: Theme.of(context).textTheme.headline6,
+                    Container(
+                      height: constraints.maxHeight * 0.1,
+                      child: FittedBox(
+                        child: Text(
+                          'Record Audio',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
                     ),
                   ],
@@ -174,7 +177,7 @@ class _RecordScreenState extends State<RecordScreen> {
                           color: Colors.black,
                         ),
                         child: Icon(
-                          Icons.play_arrow,
+                          Icons.videocam,
                           size: constraints.maxHeight * 0.475 * 0.5,
                           color: Color(0xfffbb313),
                         ),
@@ -184,10 +187,13 @@ class _RecordScreenState extends State<RecordScreen> {
                     SizedBox(
                       height: constraints.maxHeight * 0.07,
                     ),
-                    FittedBox(
-                      child: Text(
-                        'Player is stopped',
-                        style: Theme.of(context).textTheme.headline6,
+                    Container(
+                      height: constraints.maxHeight * 0.1,
+                      child: FittedBox(
+                        child: Text(
+                          'Record Video',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
                     ),
                   ],
