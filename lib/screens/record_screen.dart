@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'videoRecorder.dart';
 
 typedef _Fn = void Function();
 
@@ -182,7 +183,12 @@ class _RecordScreenState extends State<RecordScreen> {
                           color: Color(0xfffbb313),
                         ),
                       ),
-                      // onPressed: ,
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => VideoRecorder()));
+                      },
                     ),
                     SizedBox(
                       height: constraints.maxHeight * 0.07,
