@@ -33,6 +33,11 @@ dependencies:
   csc_picker: ^0.2.5
   intl: ^0.17.0
   table_calendar: ^3.0.0
+  path_provider: ^2.0.2
+  image_gallery_saver: '^1.6.9'
+  permission_handler: ^8.1.1
+  image_picker: ^0.8.0+3
+  video_player: ^2.1.6
 
 dev_dependencies:
   flutter_test:
