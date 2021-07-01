@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../rewidgets/video_widget.dart';
+import 'dart:io';
 import 'videoRecorder.dart';
 
 typedef _Fn = void Function();
@@ -14,10 +17,67 @@ class RecordScreen extends StatefulWidget {
 }
 
 class _RecordScreenState extends State<RecordScreen> {
-  bool _mPlayerIsInited = false;
-  bool _mRecorderIsInited = false;
-  bool _mplaybackReady = false;
-  final String _mPath = 'flutter_sound_example.aac';
+  File fileMedia;
+
+  Future<File> pickCameraMedia(BuildContext context) async {
+    // bool saved = await saveFile('recording.mp4');
+    // ModalRoute is used to retrieve the info that has been passed down using Navigator
+    //final MediaSource source = ModalRoute.of(context).settings.arguments;
+    // ImagePicker is the plugin that we've integrated.
+    // source is used to determine whether to select getImage or getVideo
+    print('Here');
+    final getMedia = ImagePicker().getVideo;
+    // Since this widget is for picking images from gallery
+    final media = await getMedia(source: ImageSource.camera);
+
+    final file = File(media.path);
+    return file;
+    // Navigator.of(context).pop(file);
+  }
+
+  Future capture(BuildContext context) async {
+    setState(() {
+      this.fileMedia = null;
+    });
+    // source is passed down to SourcePage() using a property called 'settings';
+    // The info wrapped inside RouteSettings will then be received on the other side
+    // final result = await Navigator.of(context).push(
+    //   MaterialPageRoute(
+    //     builder: (context) => SourcePage(),
+    //     settings: RouteSettings(
+    //       arguments: source,
+    //     ),
+    //   ),
+    // );
+    final result = await pickCameraMedia(context);
+    if (result == null) {
+      return;
+    } else {
+      setState(() {
+        fileMedia = result;
+      });
+    }
+  }
+
+  checkPermission(BuildContext context) async {
+    var cameraStatus = await Permission.camera.status;
+    var micStatus = await Permission.microphone.status;
+    if (!cameraStatus.isGranted) {
+      await Permission.camera.request();
+    }
+    if (!micStatus.isGranted) {
+      await Permission.microphone.request();
+    }
+    if (await Permission.camera.isGranted) {
+      if (await Permission.microphone.isGranted) {
+        capture(context);
+      } else {
+        print('mic permission required');
+      }
+    } else {
+      print('cam permission required');
+    }
+  }
 
   double progressValue = 0;
 
@@ -30,47 +90,6 @@ class _RecordScreenState extends State<RecordScreen> {
   void dispose() {
     super.dispose();
   }
-
-  // Widget getRecordElement(String displayTxt, IconData icon, void func()) {
-  //   return LayoutBuilder(
-  //     builder: (ctx, constraints) {
-  //       return Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           ElevatedButton(
-  //             style: ElevatedButton.styleFrom(shape: CircleBorder()),
-  //             child: Container(
-  //               // width: 170,
-  //               // height: 170,
-  //               width: constraints.maxHeight * 0.475,
-  //               height: constraints.maxHeight * 0.475,
-  //               alignment: Alignment.center,
-  //               decoration: BoxDecoration(
-  //                 shape: BoxShape.circle,
-  //                 color: Theme.of(context).buttonColor,
-  //               ),
-  //               child: Icon(
-  //                 icon,
-  //                 size: constraints.maxHeight * 0.475 * 0.5,
-  //                 color: Theme.of(context).primaryColor,
-  //               ),
-  //             ),
-  //             onPressed: func,
-  //           ),
-  //           SizedBox(
-  //             height: constraints.maxHeight * 0.07,
-  //           ),
-  //           FittedBox(
-  //             child: Text(
-  //               displayTxt,
-  //               style: Theme.of(context).textTheme.headline6,
-  //             ),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -141,19 +160,6 @@ class _RecordScreenState extends State<RecordScreen> {
                 );
               },
             ),
-            // child: getRecordElement(
-            //   // 'Record Audio',
-            //   _mRecorder!.isRecording
-            //       ? 'Recording in progress'
-            //       : 'Recorder is stopped',
-            //   _mRecorder!.isRecording ? Icons.stop : Icons.mic,
-            //   getRecorderFn,
-            //   // () {
-            //   //   print('Column mic');
-            //   //   getRecorderFn();
-            //   //   print('after Column mic');
-            //   // },
-            // ),
           ),
           Container(
             height: (mediaQuery.size.height -
@@ -184,10 +190,15 @@ class _RecordScreenState extends State<RecordScreen> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => VideoRecorder()));
+                        checkPermission(context);
+                        fileMedia == null
+                            ? null
+                            : Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => VideoRecorder(
+                                          fileMedia: this.fileMedia,
+                                        )));
                       },
                     ),
                     SizedBox(
@@ -206,20 +217,6 @@ class _RecordScreenState extends State<RecordScreen> {
                 );
               },
             ),
-            // child: getRecordElement(
-            //   // 'Record Video',
-            //   _mPlayer!.isPlaying
-            //       ? 'Playback in progress'
-            //       : 'Player is stopped',
-            //   _mPlayer!.isPlaying ? Icons.stop : Icons.play_arrow,
-            //   // Icons.videocam,
-            //   getPlaybackFn,
-            //   // () {
-            //   //   print('Column video');
-            //   //   getPlaybackFn();
-            //   //   print('after Column video');
-            //   // },
-            // ),
           ),
         ],
       ),

@@ -7,82 +7,22 @@ import '../rewidgets/bottomNavBar.dart';
 
 class VideoRecorder extends StatefulWidget {
   static String id = 'video_recorder';
+  File fileMedia;
+  VideoRecorder({this.fileMedia});
   @override
-  _VideoRecorderState createState() => _VideoRecorderState();
+  _VideoRecorderState createState() =>
+      _VideoRecorderState(fileMedia: this.fileMedia);
 }
 
 class _VideoRecorderState extends State<VideoRecorder> {
   File fileMedia;
-
-  Future<File> pickCameraMedia(BuildContext context) async {
-    // bool saved = await saveFile('recording.mp4');
-    // ModalRoute is used to retrieve the info that has been passed down using Navigator
-    //final MediaSource source = ModalRoute.of(context).settings.arguments;
-    // ImagePicker is the plugin that we've integrated.
-    // source is used to determine whether to select getImage or getVideo
-    print('Here');
-    final getMedia = ImagePicker().getVideo;
-    // Since this widget is for picking images from gallery
-    final media = await getMedia(source: ImageSource.camera);
-
-    final file = File(media.path);
-    return file;
-    // Navigator.of(context).pop(file);
-  }
-
-  Future capture(BuildContext context) async {
-    setState(() {
-      this.fileMedia = null;
-    });
-    // source is passed down to SourcePage() using a property called 'settings';
-    // The info wrapped inside RouteSettings will then be received on the other side
-    // final result = await Navigator.of(context).push(
-    //   MaterialPageRoute(
-    //     builder: (context) => SourcePage(),
-    //     settings: RouteSettings(
-    //       arguments: source,
-    //     ),
-    //   ),
-    // );
-    final result = await pickCameraMedia(context);
-    if (result == null) {
-      return;
-    } else {
-      setState(() {
-        fileMedia = result;
-      });
-    }
-  }
-
-  checkPermission(BuildContext context) async {
-    var cameraStatus = await Permission.camera.status;
-    var micStatus = await Permission.microphone.status;
-    if (!cameraStatus.isGranted) {
-      await Permission.camera.request();
-    }
-    if (!micStatus.isGranted) {
-      await Permission.microphone.request();
-    }
-    if (await Permission.camera.isGranted) {
-      if (await Permission.microphone.isGranted) {
-        capture(context);
-      } else {
-        print('mic permission required');
-      }
-    } else {
-      print('cam permission required');
-    }
-  }
-
+  _VideoRecorderState({this.fileMedia});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Screen'),
+        title: Text('Recorded Video'),
         centerTitle: true,
-      ),
-      bottomNavigationBar: BottomNavBar(
-        id: VideoRecorder.id,
       ),
       body: Container(
         child: Center(
@@ -99,17 +39,6 @@ class _VideoRecorderState extends State<VideoRecorder> {
                           size: 120,
                         )
                       : VideoWidget(fileMedia)),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     print('onPressed: Image Button');
-              //     capture(MediaSource.image);
-              //   },
-              //   child: Text('Capture Image'),
-              // ),
-              ElevatedButton(
-                onPressed: () => checkPermission(context),
-                child: Text('Capture Video'),
-              ),
             ],
           ),
         ),
