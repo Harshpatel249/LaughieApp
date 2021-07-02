@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "717275229976",
+    "project_id": "laughie-52bd5",
+    "storage_bucket": "laughie-52bd5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717275229976:android:da7781732c32c1ae7cb86d",
+        "android_client_info": {
+          "package_name": "com.example.laughie_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717275229976-q1rtkfvv07932viquv77v9amguahuj4p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhAUvPTq5ZJYlazZhFCzllklUZG2wtCPQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717275229976-q1rtkfvv07932viquv77v9amguahuj4p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

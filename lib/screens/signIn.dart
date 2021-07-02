@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'signUp.dart';
+import 'package:flutter/services.dart';
+
 import 'resetPassGetOTP.dart';
+import 'signUp.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -8,15 +11,65 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  String email, password;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String _email, _password;
+  bool _isLoading = false;
 
   final _formKey = GlobalKey<FormState>();
-  final emailCon = new TextEditingController();
-  final passwordCon = new TextEditingController();
+  // final emailCon = new TextEditingController();
+  // final passwordCon = new TextEditingController();
 
   bool visi1 = true;
   IconData i1 = Icons.visibility;
   IconData i2 = Icons.visibility;
+
+  _trySignIn() async {
+    UserCredential userCredential;
+    FocusScope.of(context).unfocus();
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      print('$_email\n$_password');
+    }
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      userCredential = await _auth.signInWithEmailAndPassword(
+        email: _email,
+        password: _password,
+      );
+
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => SignUpPersonalDetails()),
+      // );
+    } on PlatformException catch (err) {
+      var message = 'An error occured, please check your credentials!';
+
+      if (err.message != null) {
+        message = err.message;
+      }
+      SnackBar snackBar = SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).errorColor,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      setState(() {
+        _isLoading = false;
+      });
+    } on FirebaseAuthException catch (err) {
+      SnackBar snackBar = SnackBar(
+        content: Text(err.message),
+        backgroundColor: Theme.of(context).errorColor,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      print(err);
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +149,17 @@ class _SignInState extends State<SignIn> {
               SizedBox(
                 height: screenHeight * 0.04,
               ),
-              TextField(
-                controller: emailCon,
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty || !value.contains('@')) {
+                    return 'Please enter a valid email address';
+                  } else {
+                    return null;
+                  }
+                },
+                onSaved: (input) {
+                  _email = input.trim();
+                },
                 style: TextStyle(color: Colors.black),
                 keyboardType: TextInputType.emailAddress,
                 decoration: new InputDecoration(
@@ -111,7 +173,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   labelText: 'Email',
                   labelStyle: TextStyle(color: Colors.black45),
-                  hintText: 'Email',
+                  // hintText: 'Email',
                   hintStyle: TextStyle(color: Colors.black45),
                 ),
               ),
@@ -120,7 +182,17 @@ class _SignInState extends State<SignIn> {
               ),
               TextFormField(
                 obscureText: visi1,
-                controller: passwordCon,
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return 'Password cannot be empty';
+                  } else if (value.length < 7) {
+                    return 'Password must be at least 7 characters long.';
+                  }
+                  return null;
+                },
+                onSaved: (input) {
+                  _password = input.trim();
+                },
                 style: TextStyle(color: Colors.black),
                 decoration: new InputDecoration(
                   focusedBorder: OutlineInputBorder(
@@ -133,7 +205,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   labelText: 'Password',
                   labelStyle: TextStyle(color: Colors.black45),
-                  hintText: 'Password',
+                  // hintText: 'Password',
                   hintStyle: TextStyle(color: Colors.black45),
                   suffixIcon: InkWell(
                     onTap: () {
@@ -166,55 +238,58 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    if (_formKey.currentState.validate()) {
-                      email = emailCon.text;
-                      password = passwordCon.text;
-                    }
-                  });
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => SignUpPersonalDetails()),
-                  // );
-                },
-                child: Text(
-                  'Log In',
-                  style: TextStyle(fontSize: 18),
-                ),
-                style: ElevatedButton.styleFrom(
-                    primary: Color(0xfffbb313),
-                    onPrimary: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // <-- Radius
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 15, horizontal: 30)),
-              ),
-              Container(
-                child: Row(
-                  children: <Widget>[
-                    Text('Don\'t have an account?'),
-                    TextButton(
-                      child: Text(
-                        'Sign Up',
-                        style: TextStyle(
-                          color: Color(0xfffbb313),
-                        ),
+              if (_isLoading)
+                Center(
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    child: CircularProgressIndicator(
+                      backgroundColor: Color(0xfffbb313),
+                      valueColor: AlwaysStoppedAnimation(
+                        Color(0xff222223),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignUp()),
-                        );
-                      },
                     ),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  ),
                 ),
-              )
+              if (!_isLoading)
+                ElevatedButton(
+                  onPressed: _trySignIn,
+                  child: Text(
+                    'Log In',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      primary: Color(0xfffbb313),
+                      onPrimary: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8), // <-- Radius
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 30)),
+                ),
+              if (!_isLoading)
+                Container(
+                  child: Row(
+                    children: <Widget>[
+                      Text('Don\'t have an account?'),
+                      TextButton(
+                        child: Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            color: Color(0xfffbb313),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => SignUp()),
+                          );
+                        },
+                      ),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                )
             ],
           ),
         ),

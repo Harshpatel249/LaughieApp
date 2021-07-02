@@ -1,7 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'screens/test.dart';
+import 'package:laughie_app/screens/test.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -19,8 +22,12 @@ class MyApp extends StatelessWidget {
             color: Colors.black, //change your color here
           ),
         ),
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Colors.black,
+        ),
         bottomAppBarColor: Color(0xFFf6f6f6),
         scaffoldBackgroundColor: Color(0xFFf6f6f6),
+        errorColor: Color(0xffe03d2c),
         textTheme: TextTheme(
           bodyText1: TextStyle(
             color: Colors.black,
@@ -33,6 +40,23 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: Test(),
+
+      // StreamBuilder(
+      //
+      //   stream: FirebaseAuth.instance.authStateChanges(),
+      //   builder: (context, userSnapshot) {
+      //     if (userSnapshot.hasData) {
+      //       return SignUpPersonalDetails();
+      //     }
+      //     return SignIn();
+      //   },
+      // ),
+      //Test()
     );
   }
 }
+// Navigator.push(
+//   context,
+//   MaterialPageRoute(
+//       builder: (context) => SignUpPersonalDetails()),
+// );
