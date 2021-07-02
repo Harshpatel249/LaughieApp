@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../screens/userProfile.dart';
 import '../screens/signIn.dart';
 import '../screens/stats_page.dart';
+import '../screens/videoRecorder.dart';
+import '../screens/record_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
   String id;
@@ -44,14 +46,16 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 Icons.receipt_long,
                 //FontAwesomeIcons.americanSignLanguageInterpreting,
                 size: bottomBarHeight * 0.69,
-                color: Colors.black,
-                // this.id == DifficultyPage.id
-                //     ? Colors.white
-                //     : Color(0xFFC3C2C3),
+                color: this.id == RecordScreen.id
+                    ? Color(0xfffbb313)
+                    : Colors.black,
               ),
-              // onPressed: () {
-
-              // },
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => RecordScreen()),
+                    (route) => false);
+              },
             ),
             IconButton(
               icon: Icon(
