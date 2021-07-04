@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import '../rewidgets/video_widget.dart';
 import 'dart:io';
-import '../rewidgets/bottomNavBar.dart';
+
+import 'package:flutter/material.dart';
+
+import '../rewidgets/video_widget.dart';
 
 class VideoRecorder extends StatefulWidget {
   static String id = 'video_recorder';
@@ -30,15 +29,11 @@ class _VideoRecorderState extends State<VideoRecorder> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                  height: 550,
-                  width: double.infinity,
-                  padding: EdgeInsets.all(8),
-                  child: fileMedia == null
-                      ? Icon(
-                          Icons.photo,
-                          size: 120,
-                        )
-                      : VideoWidget(fileMedia)),
+                height: 550,
+                width: double.infinity,
+                padding: EdgeInsets.all(8),
+                child: VideoWidget(fileMedia),
+              ),
             ],
           ),
         ),

@@ -36,9 +36,11 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   Future capture(BuildContext context) async {
-    setState(() {
-      this.fileMedia = null;
-    });
+    if (fileMedia != null) {
+      setState(() {
+        this.fileMedia = null;
+      });
+    }
     // source is passed down to SourcePage() using a property called 'settings';
     // The info wrapped inside RouteSettings will then be received on the other side
     // final result = await Navigator.of(context).push(
@@ -191,16 +193,16 @@ class _RecordScreenState extends State<RecordScreen> {
                       ),
                       onPressed: () {
                         checkPermission(context);
-                        fileMedia == null
-                            ? null
-                            : Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => VideoRecorder(
-                                    fileMedia: this.fileMedia,
-                                  ),
-                                ),
-                              );
+                        if (fileMedia != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VideoRecorder(
+                                fileMedia: this.fileMedia,
+                              ),
+                            ),
+                          );
+                        }
                       },
                     ),
                     SizedBox(
