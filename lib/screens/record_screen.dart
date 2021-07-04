@@ -19,7 +19,7 @@ class RecordScreen extends StatefulWidget {
 }
 
 class _RecordScreenState extends State<RecordScreen> {
-  File fileMedia, savedFile;
+  File fileMedia;
   bool isRecorded = false;
 
   Future<File> pickCameraMedia(BuildContext context) async {
@@ -59,7 +59,7 @@ class _RecordScreenState extends State<RecordScreen> {
     print(
         "#########################${directory.path}\n &&&&&&&&&&&&&&&&&&&&&&&&&&&${fileMedia.path}");
     final _saveResult = await ImageGallerySaver.saveFile(fileMedia.path);
-    savedFile = fileMedia;
+    print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%$_saveResult');
     // if (!await directory.exists()) {
     //   print(
     //       '666666666666666666666666666666666666666 inside directory does snot ');
