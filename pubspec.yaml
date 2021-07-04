@@ -43,6 +43,8 @@ dependencies:
   image_picker: ^0.8.0+3
   video_player: ^2.1.6
   firebase_storage: ^9.0.0
+  flutter_sound: ^8.1.4
+  syncfusion_flutter_gauges: ^19.1.69
 dev_dependencies:
   flutter_test:
     sdk: flutter
