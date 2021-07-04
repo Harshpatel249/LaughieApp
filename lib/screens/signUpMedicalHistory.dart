@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import 'signUpPrescription.dart';
 
 class SignUpMedicalHistory extends StatefulWidget {
+  final UserCredential userCredential;
+  SignUpMedicalHistory({this.userCredential});
   @override
   _SignUpMedicalHistoryState createState() => _SignUpMedicalHistoryState();
 }
@@ -129,7 +133,10 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => SignUpPrescription()),
+                        builder: (context) => SignUpPrescription(
+                          userCredential: widget.userCredential,
+                        ),
+                      ),
                     );
                   },
                   child: Text(

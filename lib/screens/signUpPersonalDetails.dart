@@ -32,6 +32,7 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
   _submitDetails() {
     FocusScope.of(context).unfocus();
     bool isValid = _formKey.currentState.validate();
+    print("-----------------------------------$isValid");
     if (isValid) {
       _formKey.currentState.save();
       print(
@@ -48,14 +49,15 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
         "state": _stateValue,
         "city": _cityValue,
       });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SignUpMedicalHistory(
+            userCredential: widget.userCredential,
+          ),
+        ),
+      );
     }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SignUpMedicalHistory(),
-      ),
-    );
   }
 
   @override

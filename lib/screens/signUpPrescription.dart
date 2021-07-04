@@ -1,15 +1,36 @@
 import 'package:date_field/date_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laughie_app/screens/record_screen.dart';
+import 'package:laughie_app/screens/test.dart';
 
 class SignUpPrescription extends StatefulWidget {
+  final UserCredential userCredential;
+  SignUpPrescription({this.userCredential});
   @override
   _SignUpPrescriptionState createState() => _SignUpPrescriptionState();
 }
 
 class _SignUpPrescriptionState extends State<SignUpPrescription> {
-  String prescribedValue;
-  String sessionValue;
+  DateTime _startingDate, _endingDate;
+  String _sessionValue;
+  String _prescribedValue;
+
+  _uploadPrescriptionDetails() {
+    FocusScope.of(context).unfocus();
+    usersRef.doc(widget.userCredential.user.uid).update({
+      "starting_date": _startingDate,
+      "ending_date": _endingDate,
+      "sessions": _sessionValue,
+      "prescribed_by": _prescribedValue,
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RecordScreen(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +94,7 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                     validator: (e) =>
                         (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
                     onDateSelected: (DateTime value) {
+                      _startingDate = value;
                       print(value);
                     },
                   ),
@@ -98,6 +120,7 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                     validator: (e) =>
                         (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
                     onDateSelected: (DateTime value) {
+                      _endingDate = value;
                       print(value);
                     },
                   ),
@@ -119,7 +142,7 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                       border: Border.all(color: Colors.black38),
                       borderRadius: BorderRadius.circular(5)),
                   child: DropdownButton<String>(
-                    value: sessionValue,
+                    value: _sessionValue,
                     icon: const Icon(Icons.keyboard_arrow_down_rounded),
                     iconSize: 24,
                     isExpanded: true,
@@ -128,7 +151,7 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                     hint: Text('Number of sessions per day'),
                     onChanged: (newValue) {
                       setState(() {
-                        sessionValue = newValue;
+                        _sessionValue = newValue;
                       });
                     },
                     items: <String>['1', '2', '3']
@@ -163,7 +186,7 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                       border: Border.all(color: Colors.black38),
                       borderRadius: BorderRadius.circular(5)),
                   child: DropdownButton<String>(
-                    value: prescribedValue,
+                    value: _prescribedValue,
                     icon: const Icon(Icons.keyboard_arrow_down_rounded),
                     iconSize: 24,
                     isExpanded: true,
@@ -172,7 +195,7 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                     hint: Text('Prescribed by'),
                     onChanged: (newValue) {
                       setState(() {
-                        prescribedValue = newValue;
+                        _prescribedValue = newValue;
                       });
                     },
                     items: <String>['Self', 'Doctor', 'Other']
@@ -191,17 +214,12 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                   height: screenHeight * 0.08,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RecordScreen(),
-                        ),
-                      );
-                    },
+                    onPressed: _uploadPrescriptionDetails,
                     child: Text(
                       'Finish',
-                      style: TextStyle(fontSize: 18,),
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
                         primary: Color(0xfffbb313),
