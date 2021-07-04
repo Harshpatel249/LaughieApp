@@ -18,6 +18,7 @@ class RecordScreen extends StatefulWidget {
 
 class _RecordScreenState extends State<RecordScreen> {
   File fileMedia;
+  bool isRecorded = false;
 
   Future<File> pickCameraMedia(BuildContext context) async {
     // bool saved = await saveFile('recording.mp4');
@@ -57,6 +58,15 @@ class _RecordScreenState extends State<RecordScreen> {
     } else {
       setState(() {
         fileMedia = result;
+        isRecorded = true;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VideoRecorder(
+              fileMedia: this.fileMedia,
+            ),
+          ),
+        );
       });
     }
   }
@@ -192,8 +202,10 @@ class _RecordScreenState extends State<RecordScreen> {
                         ),
                       ),
                       onPressed: () {
-                        checkPermission(context);
-                        if (fileMedia != null) {
+                        if (fileMedia == null) {
+                          checkPermission(context);
+                        }
+                        if (isRecorded) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
