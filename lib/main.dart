@@ -22,6 +22,13 @@ class MyApp extends StatelessWidget {
             color: Colors.black, //change your color here
           ),
         ),
+        primaryColor: Color(0xfffbb313),
+        colorScheme: ColorScheme.fromSwatch(
+                // primarySwatch: Colors.orange,
+                )
+            .copyWith(
+          primary: Color(0xfffbb313),
+        ),
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: Colors.black,
         ),
