@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../rewidgets/video_widget.dart';
-import 'dart:io';
+
 import 'videoRecorder.dart';
 
 typedef _Fn = void Function();
@@ -196,9 +196,11 @@ class _RecordScreenState extends State<RecordScreen> {
                             : Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => VideoRecorder(
-                                          fileMedia: this.fileMedia,
-                                        )));
+                                  builder: (context) => VideoRecorder(
+                                    fileMedia: this.fileMedia,
+                                  ),
+                                ),
+                              );
                       },
                     ),
                     SizedBox(

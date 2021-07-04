@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:laughie_app/screens/signUpPersonalDetails.dart';
+import 'package:laughie_app/screens/test.dart';
 
 import 'signIn.dart';
 
@@ -13,9 +13,10 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  // final usersRef = FirebaseFirestore.instance.collection('users');
   String _email, _userName, _password, _confirmPassword;
   bool _isLoading = false;
-
+  UserCredential userCredential;
   final _formKey = GlobalKey<FormState>();
   // final emailCon = new TextEditingController();
   // final usernameCon = new TextEditingController();
@@ -28,7 +29,6 @@ class _SignUpState extends State<SignUp> {
   IconData i2 = Icons.visibility;
 
   _trySignUp() async {
-    UserCredential userCredential;
     FocusScope.of(context).unfocus();
     bool isValid = _formKey.currentState.validate();
     if (isValid) {
@@ -48,10 +48,7 @@ class _SignUpState extends State<SignUp> {
           email: _email,
           password: _password,
         );
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredential.user.uid)
-            .set({
+        usersRef.doc(userCredential.user.uid).set({
           "email": _email,
           "username": _userName,
         });
@@ -95,7 +92,10 @@ class _SignUpState extends State<SignUp> {
       if (user != null) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SignUpPersonalDetails()),
+          MaterialPageRoute(
+              builder: (context) => SignUpPersonalDetails(
+                    userCredential: this.userCredential,
+                  )),
         );
       }
     });
@@ -359,8 +359,8 @@ class _SignUpState extends State<SignUp> {
                     if (_isLoading)
                       Center(
                         child: Container(
-                          height: 50,
-                          width: 50,
+                          height: screenHeight * 0.07,
+                          width: screenHeight * 0.07,
                           child: CircularProgressIndicator(
                             backgroundColor: Color(0xfffbb313),
                             valueColor: AlwaysStoppedAnimation(

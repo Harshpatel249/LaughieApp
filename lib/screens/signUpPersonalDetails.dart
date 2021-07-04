@@ -1,9 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:date_field/date_field.dart';
 import 'package:csc_picker/csc_picker.dart';
+import 'package:date_field/date_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:laughie_app/screens/test.dart';
+
 import 'signUpMedicalHistory.dart';
 
 class SignUpPersonalDetails extends StatefulWidget {
+  final UserCredential userCredential;
+  SignUpPersonalDetails({this.userCredential});
   @override
   _SignUpPersonalDetailsState createState() => _SignUpPersonalDetailsState();
 }
@@ -13,13 +18,45 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
   final fullNameCon = new TextEditingController();
   final contactNumCon = new TextEditingController();
 
-  String countryValue = "";
-  String stateValue = "";
-  String cityValue = "";
+  String _fullName;
+  DateTime _birthday;
+  String _phoneNumber;
+  String _countryValue = "";
+  String _stateValue = "";
+  String _cityValue = "";
   String address = "";
 
-  String professionValue = 'Student';
-  String genderValue = 'Male';
+  String _professionValue = 'Student';
+  String _genderValue = 'Male';
+
+  _submitDetails() {
+    FocusScope.of(context).unfocus();
+    bool isValid = _formKey.currentState.validate();
+    if (isValid) {
+      _formKey.currentState.save();
+      print(
+          "name: $_fullName \n gender: $_genderValue \n DoB: $_birthday \n profession: $_professionValue \n contact Number: $_phoneNumber \n country: $_countryValue \n State: $_stateValue\n city: $_cityValue");
+    }
+    if (isValid) {
+      usersRef.doc(widget.userCredential.user.uid).update({
+        "name": _fullName,
+        "gender": _genderValue,
+        "date_of_birth": _birthday,
+        "profession": _professionValue,
+        "contact_number": _phoneNumber,
+        "country": _countryValue,
+        "state": _stateValue,
+        "city": _cityValue,
+      });
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SignUpMedicalHistory(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +100,18 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                     ),
                     Container(
                       height: screenHeight * 0.10,
-                      child: TextField(
-                        controller: fullNameCon,
+                      child: TextFormField(
+                        // controller: fullNameCon,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter your name.';
+                          } else {
+                            return null;
+                          }
+                        },
+                        onSaved: (input) {
+                          _fullName = input;
+                        },
                         style: TextStyle(color: Colors.black),
                         keyboardType: TextInputType.name,
                         decoration: new InputDecoration(
@@ -78,7 +125,7 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                           ),
                           labelText: 'FullName',
                           labelStyle: TextStyle(color: Colors.black45),
-                          hintText: 'FullName',
+                          // hintText: 'FullName',
                           hintStyle: TextStyle(color: Colors.black45),
                         ),
                       ),
@@ -94,7 +141,7 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                           border: Border.all(color: Colors.black45),
                           borderRadius: BorderRadius.circular(5)),
                       child: DropdownButton<String>(
-                        value: genderValue,
+                        value: _genderValue,
                         icon: const Icon(Icons.keyboard_arrow_down_rounded),
                         iconSize: 24,
                         isExpanded: true,
@@ -103,7 +150,7 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                         hint: Text('Gender'),
                         onChanged: (newValue) {
                           setState(() {
-                            genderValue = newValue;
+                            _genderValue = newValue;
                           });
                         },
                         items: <String>['Female', 'Male', 'Other']
@@ -139,6 +186,8 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                             : null,
                         onDateSelected: (DateTime value) {
                           print(value);
+                          print(value.runtimeType);
+                          _birthday = value;
                         },
                       ),
                     ),
@@ -153,7 +202,7 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                           border: Border.all(color: Colors.black45),
                           borderRadius: BorderRadius.circular(5)),
                       child: DropdownButton<String>(
-                        value: professionValue,
+                        value: _professionValue,
                         icon: const Icon(Icons.keyboard_arrow_down_rounded),
                         iconSize: 24,
                         isExpanded: true,
@@ -161,7 +210,7 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                         underline: SizedBox(),
                         onChanged: (newValue) {
                           setState(() {
-                            professionValue = newValue;
+                            _professionValue = newValue;
                           });
                         },
                         items: <String>[
@@ -182,10 +231,22 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                     ),
                     Container(
                       height: screenHeight * 0.10,
-                      child: TextField(
-                        controller: contactNumCon,
+                      child: TextFormField(
+                        // controller: contactNumCon,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Contact Number cannot be empty';
+                          } else if (value.length != 10) {
+                            return 'Contact Number does not contain 10 digits';
+                          } else {
+                            return null;
+                          }
+                        },
+                        onSaved: (input) {
+                          _phoneNumber = input;
+                        },
                         style: TextStyle(color: Colors.black),
-                        keyboardType: TextInputType.name,
+                        keyboardType: TextInputType.number,
                         decoration: new InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -197,7 +258,7 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                           ),
                           labelText: 'Contact Number',
                           labelStyle: TextStyle(color: Colors.black45),
-                          hintText: 'Contact Number',
+                          // hintText: 'Contact Number',
                           hintStyle: TextStyle(color: Colors.black45),
                         ),
                       ),
@@ -247,18 +308,18 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                         onCountryChanged: (value) {
                           setState(() {
                             ///store value in country variable
-                            countryValue = value;
+                            _countryValue = value;
                           });
                         },
                         onStateChanged: (value) {
                           setState(() {
                             ///store value in state variable
-                            stateValue = value;
+                            _stateValue = value;
                           });
                         },
                         onCityChanged: (value) {
                           setState(() {
-                            cityValue = value;
+                            _cityValue = value;
                           });
                         },
                       ),
@@ -269,13 +330,7 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                     Container(
                       height: screenHeight * 0.08,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignUpMedicalHistory()),
-                          );
-                        },
+                        onPressed: _submitDetails,
                         child: Text(
                           'Next',
                           style: TextStyle(fontSize: 18),

@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
+import 'package:flutter/material.dart';
+import 'package:laughie_app/screens/record_screen.dart';
 
 class SignUpPrescription extends StatefulWidget {
   @override
@@ -190,10 +191,17 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                   height: screenHeight * 0.08,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RecordScreen(),
+                        ),
+                      );
+                    },
                     child: Text(
                       'Finish',
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 18,),
                     ),
                     style: ElevatedButton.styleFrom(
                         primary: Color(0xfffbb313),
