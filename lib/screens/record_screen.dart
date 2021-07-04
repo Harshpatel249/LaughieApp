@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,8 +36,20 @@ class _RecordScreenState extends State<RecordScreen> {
     final media = await getMedia(source: ImageSource.camera);
 
     final file = File(media.path);
+    print("###################################################${media.path}");
     return file;
     // Navigator.of(context).pop(file);
+  }
+
+  Future uploadVideoToFirebase(BuildContext context, File fileMedia) async {
+    // String fileName = basename(_imageFile.path);
+    Reference firebaseStorageRef = FirebaseStorage.instance.ref().child(
+        'recorded_sessions/${FirebaseAuth.instance.currentUser.uid}/recorded_laughie.mp4');
+    UploadTask uploadTask = firebaseStorageRef.putFile(fileMedia);
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+    taskSnapshot.ref.getDownloadURL().then(
+          (value) => print("Done: $value"),
+        );
   }
 
   _saveFile(File fileMedia) async {
@@ -58,9 +72,33 @@ class _RecordScreenState extends State<RecordScreen> {
     directory = Directory(newPath);
     print(
         "#########################${directory.path}\n &&&&&&&&&&&&&&&&&&&&&&&&&&&${fileMedia.path}");
-    final _saveResult = await ImageGallerySaver.saveFile(fileMedia.path);
+    File savedFile = File(directory.path + "/$fileName");
+    print('-------------------before------------------${savedFile.path}');
+    // savedFile = fileMedia;
+    print('-------------------after------------------${savedFile.path}');
+    try {
+      await FirebaseStorage.instance
+          .ref()
+          .child(
+              'recorded_sessions/${FirebaseAuth.instance.currentUser.uid}/recorded_laughie.mp4')
+          .putFile(fileMedia);
+    } on FirebaseException catch (e) {
+      // e.g, e.code == 'canceled'
+      print("))))))))))))))))))))))))))))))))))))))))${e.message}");
+    }
+    try {
+      await FirebaseStorage.instance
+          .ref()
+          .child(
+              'recorded_sessions/${FirebaseAuth.instance.currentUser.uid}/recorded_laughie.mp4')
+          .writeToFile(savedFile);
+    } on FirebaseException catch (e) {
+      // e.g, e.code == 'canceled'
+      print('(((((((((((((((((((((((((((((((((${e.message}');
+    }
+    final _saveResult = await ImageGallerySaver.saveFile(savedFile.path);
 
-    print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult.toString()}');
+    print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult}');
     // if (!await directory.exists()) {
     //   print(
     //       '666666666666666666666666666666666666666 inside directory does snot ');
