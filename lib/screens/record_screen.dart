@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'videoRecorder.dart';
@@ -17,7 +19,7 @@ class RecordScreen extends StatefulWidget {
 }
 
 class _RecordScreenState extends State<RecordScreen> {
-  File fileMedia;
+  File fileMedia, savedFile;
   bool isRecorded = false;
 
   Future<File> pickCameraMedia(BuildContext context) async {
@@ -34,6 +36,41 @@ class _RecordScreenState extends State<RecordScreen> {
     final file = File(media.path);
     return file;
     // Navigator.of(context).pop(file);
+  }
+
+  _saveFile(File fileMedia) async {
+    String fileName = 'recorded_laughie.mp4';
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@save File called');
+    Directory directory;
+    directory = await getExternalStorageDirectory();
+    print(
+        "--------------------------------------------------------------${directory.path}");
+    String newPath = "";
+    List<String> folders = directory.path.split('/');
+    for (int x = 1; x < folders.length; x++) {
+      if (folders[x] != "Android") {
+        newPath += "/" + folders[x];
+      } else {
+        break;
+      }
+    }
+    newPath = newPath + "/Laughie";
+    directory = Directory(newPath);
+    print(
+        "#########################${directory.path}\n &&&&&&&&&&&&&&&&&&&&&&&&&&&${fileMedia.path}");
+    final _saveResult = await ImageGallerySaver.saveFile(fileMedia.path);
+    savedFile = fileMedia;
+    // if (!await directory.exists()) {
+    //   print(
+    //       '666666666666666666666666666666666666666 inside directory does snot ');
+    //   await directory.create();
+    // }
+    // if (await directory.exists()) {
+    //   print('666666666666666666666666666666666666666 inside directory ');
+    //   File savedFile = File(directory.path + "/$fileName");
+    //   print(
+    //       "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!${savedFile.path}\n &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&${fileMedia.path}");
+    // }
   }
 
   Future capture(BuildContext context) async {
@@ -53,6 +90,7 @@ class _RecordScreenState extends State<RecordScreen> {
     //   ),
     // );
     final result = await pickCameraMedia(context);
+    _saveFile(result);
     if (result == null) {
       return;
     } else {
@@ -74,15 +112,23 @@ class _RecordScreenState extends State<RecordScreen> {
   checkPermission(BuildContext context) async {
     var cameraStatus = await Permission.camera.status;
     var micStatus = await Permission.microphone.status;
+    var wrtStatus = await Permission.storage.status;
     if (!cameraStatus.isGranted) {
       await Permission.camera.request();
     }
     if (!micStatus.isGranted) {
       await Permission.microphone.request();
     }
+    if (!wrtStatus.isGranted) {
+      await Permission.storage.request();
+    }
     if (await Permission.camera.isGranted) {
       if (await Permission.microphone.isGranted) {
-        capture(context);
+        if (await Permission.storage.isGranted) {
+          capture(context);
+        } else {
+          print('storage permission required');
+        }
       } else {
         print('mic permission required');
       }
