@@ -61,8 +61,16 @@ class _SignInState extends State<SignIn> {
           _isLoading = false;
         });
       } on FirebaseAuthException catch (err) {
+        var message;
+        if (err.code == 'user-not-found') {
+          message = 'No user found for that email.';
+          // print('No user found for that email.');
+        } else if (err.code == 'wrong-password') {
+          message = 'Wrong password provided for that user.';
+          // print('Wrong password provided for that user.');
+        }
         SnackBar snackBar = SnackBar(
-          content: Text(err.message),
+          content: Text(message),
           backgroundColor: Theme.of(context).errorColor,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);

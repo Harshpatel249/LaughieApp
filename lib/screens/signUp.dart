@@ -71,8 +71,16 @@ class _SignUpState extends State<SignUp> {
           _isLoading = false;
         });
       } on FirebaseAuthException catch (err) {
+        var message;
+        if (err.code == 'weak-password') {
+          message = 'The password provided is too weak.';
+          // print('The password provided is too weak.');
+        } else if (err.code == 'email-already-in-use') {
+          message = 'The account already exists for that email.';
+          // print('The account already exists for that email.');
+        }
         SnackBar snackBar = SnackBar(
-          content: Text(err.message),
+          content: Text(message),
           backgroundColor: Theme.of(context).errorColor,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
