@@ -48,6 +48,7 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
         "country": _countryValue,
         "state": _stateValue,
         "city": _cityValue,
+        "signup_status": 1,
       });
       Navigator.push(
         context,

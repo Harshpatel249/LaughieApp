@@ -51,6 +51,7 @@ class _SignUpState extends State<SignUp> {
         usersRef.doc(userCredential.user.uid).set({
           "email": _email,
           "username": _userName,
+          "signup_status": 0,
         });
         // Navigator.push(
         //   context,

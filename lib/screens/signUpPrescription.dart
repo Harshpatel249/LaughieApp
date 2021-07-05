@@ -23,13 +23,14 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
       "ending_date": _endingDate,
       "sessions": _sessionValue,
       "prescribed_by": _prescribedValue,
+      "signup_status": 3,
     });
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RecordScreen(),
-      ),
-    );
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RecordScreen(),
+        ),
+        (route) => false);
   }
 
   @override
