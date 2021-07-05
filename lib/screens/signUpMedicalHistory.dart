@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:laughie_app/screens/test.dart';
 
 import 'signUpPrescription.dart';
 
@@ -16,6 +17,26 @@ enum COVID { Yes, No }
 class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
   Diseases _diseases = Diseases.do_not_have;
   COVID _covid = COVID.No;
+  bool hasMedHistory = false;
+
+  _nextButtonClicked() {
+    if (_covid == COVID.Yes || _diseases == Diseases.do_have) {
+      hasMedHistory = true;
+    }
+    print(hasMedHistory);
+    usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+      "has_medical_history": hasMedHistory,
+      "signup_status": 2,
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SignUpPrescription(
+          userCredential: widget.userCredential,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +139,7 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
                       color: Colors.black, fontFamily: 'Poppins', fontSize: 14),
                 ),
                 leading: Radio(
-                  value: COVID.Yes,
+                  value: COVID.No,
                   groupValue: _covid,
                   onChanged: (COVID value) {
                     setState(() {
@@ -134,7 +155,7 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
                       color: Colors.black, fontFamily: 'Poppins', fontSize: 14),
                 ),
                 leading: Radio(
-                  value: COVID.No,
+                  value: COVID.Yes,
                   groupValue: _covid,
                   onChanged: (COVID value) {
                     showDialog<String>(
@@ -168,16 +189,7 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
               Container(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SignUpPrescription(
-                          userCredential: widget.userCredential,
-                        ),
-                      ),
-                    );
-                  },
+                  onPressed: _nextButtonClicked,
                   child: Text(
                     'Next',
                     style: TextStyle(fontSize: 18),

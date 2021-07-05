@@ -39,7 +39,7 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
           "name: $_fullName \n gender: $_genderValue \n DoB: $_birthday \n profession: $_professionValue \n contact Number: $_phoneNumber \n country: $_countryValue \n State: $_stateValue\n city: $_cityValue");
     }
     if (isValid) {
-      usersRef.doc(widget.userCredential.user.uid).update({
+      usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
         "name": _fullName,
         "gender": _genderValue,
         "date_of_birth": _birthday,

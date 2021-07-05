@@ -18,7 +18,7 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
 
   _uploadPrescriptionDetails() {
     FocusScope.of(context).unfocus();
-    usersRef.doc(widget.userCredential.user.uid).update({
+    usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
       "starting_date": _startingDate,
       "ending_date": _endingDate,
       "sessions": _sessionValue,
