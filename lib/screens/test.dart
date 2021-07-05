@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:laughie_app/rewidgets/circularProgressBar.dart';
 import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/signIn.dart';
 import 'package:laughie_app/screens/signUpMedicalHistory.dart';
@@ -9,21 +10,29 @@ import 'package:laughie_app/screens/signUpPrescription.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
-class Test extends StatelessWidget {
+class Test extends StatefulWidget {
   static String id = 'test_screen';
 
+  @override
+  _TestState createState() => _TestState();
+}
+
+class _TestState extends State<Test> {
+  var status = 4;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, userSnapshot) {
-        var status;
         if (userSnapshot.hasData) {
           usersRef
               .doc(FirebaseAuth.instance.currentUser.uid)
               .get()
               .then((snapshot) {
-            status = (snapshot.data()['signup_status']);
+            setState(() {
+              status = (snapshot.data()['signup_status']);
+              print(status);
+            });
           });
           if (status == 0) {
             return SignUpPersonalDetails();
@@ -31,8 +40,10 @@ class Test extends StatelessWidget {
             return SignUpMedicalHistory();
           } else if (status == 2) {
             return SignUpPrescription();
-          } else {
+          } else if (status == 3) {
             return RecordScreen();
+          } else {
+            return CircularProgressBar();
           }
         }
         return SignIn();
