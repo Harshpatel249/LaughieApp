@@ -484,7 +484,7 @@ class _RecordScreenState extends State<RecordScreen> {
                         child: Text(
                           _mRecorder.isRecording
                               ? 'Recording in progress'
-                              : 'Recorder is stopped',
+                              : 'Record Audio',
                           style: TextStyle(color: Colors.black),
                         ),
                       ),
