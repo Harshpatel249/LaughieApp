@@ -1,7 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:laughie_app/screens/test.dart';
+
 import 'signUpPrescription.dart';
 
 class SignUpMedicalHistory extends StatefulWidget {
+  final UserCredential userCredential;
+  SignUpMedicalHistory({this.userCredential});
   @override
   _SignUpMedicalHistoryState createState() => _SignUpMedicalHistoryState();
 }
@@ -12,6 +17,26 @@ enum COVID { Yes, No }
 class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
   Diseases _diseases = Diseases.do_not_have;
   COVID _covid = COVID.No;
+  bool hasMedHistory = false;
+
+  _nextButtonClicked() {
+    if (_covid == COVID.Yes || _diseases == Diseases.do_have) {
+      hasMedHistory = true;
+    }
+    print(hasMedHistory);
+    usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+      "has_medical_history": hasMedHistory,
+      "signup_status": 2,
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SignUpPrescription(
+          userCredential: widget.userCredential,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +75,7 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
               ),
               ListTile(
                 title: Text(
-                  'I do not have any of these conditions',
+                  'No, I do not have any of these conditions',
                   style: TextStyle(
                       color: Colors.black, fontFamily: 'Poppins', fontSize: 14),
                 ),
@@ -66,7 +91,7 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
               ),
               ListTile(
                 title: const Text(
-                  'I do have a condition',
+                  'Yes, I do have a condition',
                   style: TextStyle(
                       color: Colors.black, fontFamily: 'Poppins', fontSize: 14),
                 ),
@@ -74,6 +99,25 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
                   value: Diseases.do_have,
                   groupValue: _diseases,
                   onChanged: (Diseases value) {
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text(
+                          'Warning!',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        content: const Text(
+                          'Do not perform without medical supervision. It could be harmful for you.',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'OK'),
+                            child: const Text('I understand'),
+                          ),
+                        ],
+                      ),
+                    );
                     setState(() {
                       _diseases = value;
                     });
@@ -83,30 +127,14 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
               SizedBox(
                 height: 20,
               ),
-              Text('Have you have COVID-19?                          ',
+              Text('Have you had COVID-19?                          ',
                   style: TextStyle(fontSize: 20), textAlign: TextAlign.left),
               SizedBox(
                 height: 20,
               ),
               ListTile(
                 title: const Text(
-                  'I do not have any of these conditions',
-                  style: TextStyle(
-                      color: Colors.black, fontFamily: 'Poppins', fontSize: 14),
-                ),
-                leading: Radio(
-                  value: COVID.Yes,
-                  groupValue: _covid,
-                  onChanged: (COVID value) {
-                    setState(() {
-                      _covid = value;
-                    });
-                  },
-                ),
-              ),
-              ListTile(
-                title: const Text(
-                  'I do have a condition',
+                  'No, I have not.',
                   style: TextStyle(
                       color: Colors.black, fontFamily: 'Poppins', fontSize: 14),
                 ),
@@ -120,18 +148,48 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
                   },
                 ),
               ),
+              ListTile(
+                title: const Text(
+                  'Yes, I have had COVID-19',
+                  style: TextStyle(
+                      color: Colors.black, fontFamily: 'Poppins', fontSize: 14),
+                ),
+                leading: Radio(
+                  value: COVID.Yes,
+                  groupValue: _covid,
+                  onChanged: (COVID value) {
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text(
+                          'Warning!',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        content: const Text(
+                          'Do not perform without medical supervision. It could be harmful for you.',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'OK'),
+                            child: const Text('I understand'),
+                          ),
+                        ],
+                      ),
+                    );
+                    setState(() {
+                      _covid = value;
+                    });
+                  },
+                ),
+              ),
               SizedBox(
                 height: 30,
               ),
-              Center(
+              Container(
+                width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SignUpPrescription()),
-                    );
-                  },
+                  onPressed: _nextButtonClicked,
                   child: Text(
                     'Next',
                     style: TextStyle(fontSize: 18),
@@ -145,6 +203,9 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
                       padding:
                           EdgeInsets.symmetric(vertical: 15, horizontal: 30)),
                 ),
+              ),
+              SizedBox(
+                height: 10,
               ),
             ],
           ),

@@ -26,48 +26,59 @@ class _SignInState extends State<SignIn> {
   _trySignIn() async {
     UserCredential userCredential;
     FocusScope.of(context).unfocus();
-    if (_formKey.currentState.validate()) {
+    bool isValid = _formKey.currentState.validate();
+    if (isValid) {
       _formKey.currentState.save();
       print('$_email\n$_password');
     }
-    try {
-      setState(() {
-        _isLoading = true;
-      });
-      userCredential = await _auth.signInWithEmailAndPassword(
-        email: _email,
-        password: _password,
-      );
+    if (isValid) {
+      try {
+        setState(() {
+          _isLoading = true;
+        });
+        userCredential = await _auth.signInWithEmailAndPassword(
+          email: _email,
+          password: _password,
+        );
 
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) => SignUpPersonalDetails()),
-      // );
-    } on PlatformException catch (err) {
-      var message = 'An error occured, please check your credentials!';
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: (context) => SignUpPersonalDetails()),
+        // );
+      } on PlatformException catch (err) {
+        var message = 'An error occured, please check your credentials!';
 
-      if (err.message != null) {
-        message = err.message;
+        if (err.message != null) {
+          message = err.message;
+        }
+        SnackBar snackBar = SnackBar(
+          content: Text(message),
+          backgroundColor: Theme.of(context).errorColor,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        setState(() {
+          _isLoading = false;
+        });
+      } on FirebaseAuthException catch (err) {
+        var message;
+        if (err.code == 'user-not-found') {
+          message = 'No user found for that email.';
+          // print('No user found for that email.');
+        } else if (err.code == 'wrong-password') {
+          message = 'Wrong password provided for that user.';
+          // print('Wrong password provided for that user.');
+        }
+        SnackBar snackBar = SnackBar(
+          content: Text(message),
+          backgroundColor: Theme.of(context).errorColor,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        print(err);
+        setState(() {
+          _isLoading = false;
+        });
       }
-      SnackBar snackBar = SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).errorColor,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      setState(() {
-        _isLoading = false;
-      });
-    } on FirebaseAuthException catch (err) {
-      SnackBar snackBar = SnackBar(
-        content: Text(err.message),
-        backgroundColor: Theme.of(context).errorColor,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      print(err);
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
@@ -241,8 +252,8 @@ class _SignInState extends State<SignIn> {
               if (_isLoading)
                 Center(
                   child: Container(
-                    height: 50,
-                    width: 50,
+                    height: screenHeight * 0.07,
+                    width: screenHeight * 0.07,
                     child: CircularProgressIndicator(
                       backgroundColor: Color(0xfffbb313),
                       valueColor: AlwaysStoppedAnimation(
