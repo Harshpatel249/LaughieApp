@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:laughie_app/screens/test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -24,8 +25,11 @@ class RecordScreen extends StatefulWidget {
 }
 
 class _RecordScreenState extends State<RecordScreen> {
+  File savedFile;
   File fileMedia;
   bool isRecorded = false;
+
+  bool recordLaughieStatus;
 
   FlutterSoundPlayer _mPlayer = FlutterSoundPlayer();
   FlutterSoundRecorder _mRecorder = FlutterSoundRecorder();
@@ -40,9 +44,21 @@ class _RecordScreenState extends State<RecordScreen> {
   Timer _timer = Timer(Duration.zero, () {});
   double progressValue = 0;
 
+  _getRecordLaghieStatus() async {
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
+    final userData = documentSnapshot.data();
+    // Map<String, dynamic> userData =
+    //     documentSnapshot.data() as Map<String, dynamic>;
+    setState(() {
+      recordLaughieStatus = userData['recorded_laughie_status'];
+    });
+  }
+
   //----------------------Functions for audio recorder
   @override
   void initState() {
+    _getRecordLaghieStatus();
     _mPlayer.openAudioSession().then((value) {
       setState(() {
         _mPlayerIsInited = true;
@@ -54,6 +70,7 @@ class _RecordScreenState extends State<RecordScreen> {
         _mRecorderIsInited = true;
       });
     });
+
     super.initState();
   }
 
@@ -212,25 +229,68 @@ class _RecordScreenState extends State<RecordScreen> {
     // Navigator.of(context).pop(file);
   }
 
-  Future uploadVideoToFirebase(BuildContext context, File fileMedia) async {
-    // String fileName = basename(_imageFile.path);
-    Reference firebaseStorageRef = FirebaseStorage.instance.ref().child(
-        'recorded_sessions/${FirebaseAuth.instance.currentUser.uid}/recorded_laughie.mp4');
-    UploadTask uploadTask = firebaseStorageRef.putFile(fileMedia);
-    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => print("Done: $value"),
-        );
-  }
+  // Future uploadVideoToFirebase(BuildContext context, File fileMedia) async {
+  //   // String fileName = basename(_imageFile.path);
+  //   Reference firebaseStorageRef = FirebaseStorage.instance.ref().child(
+  //       'recorded_sessions/${FirebaseAuth.instance.currentUser.uid}/recorded_laughie.mp4');
+  //   UploadTask uploadTask = firebaseStorageRef.putFile(fileMedia);
+  //   TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+  //   taskSnapshot.ref.getDownloadURL().then(
+  //         (value) => print("Done: $value"),
+  //       );
+  // }
 
-  _saveFile(File fileMedia) async {
+  // _saveFile(File fileMedia) async {
+  //
+  //   print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@save File called');
+  //
+  //   print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&${fileMedia.path}");
+  //   // GallerySaver.saveVideo(fileMedia.path).then((bool success) {
+  //   //   print(
+  //   //       '++++++++++++++++++++++++++++++++++ video saved +++++++++++++++++++++');
+  //   // });
+  //
+
+  //   // File savedFile = File('${directory.path}/recorded_session.mp4');
+
+  //   final Reference storageRef = FirebaseStorage.instance.ref().child(
+  //       'recorded_sessions/${FirebaseAuth.instance.currentUser.uid}/recorded_laughie.mp4');
+  //   UploadTask uploadTask = storageRef.putFile(fileMedia);
+  //   String downloadUrl;
+  //   try {
+  //     TaskSnapshot taskSnapshot = await uploadTask;
+  //     downloadUrl = await taskSnapshot.ref.getDownloadURL();
+  //     print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%$downloadUrl");
+  //
+  //     //
+  //
+  //
+  //     await storageRef.writeToFile(savedFile);
+  //     print("================================================${savedFile}");
+  //
+  //
+  //   } on FirebaseException catch (e) {
+  //     // e.g, e.code == 'canceled'
+  //     print("))))))))))))))))))))))))))))))))))))))))${e.message}");
+  //   }
+  // }
+  //
+  // _test() async {
+  //   // File savedFile = File(directory.path + "/$fileName");
+  //   // print('-------------------before------------------${savedFile.path}');
+  //   // // savedFile = fileMedia;
+  //   // print('-------------------after------------------${savedFile.path}');
+  // }
+
+  Future capture(BuildContext context) async {
+    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!! capture called !!!!!!!!!!!!!!!!!!!');
     String fileName = 'recorded_laughie.mp4';
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@save File called');
     Directory directory;
     directory = await getExternalStorageDirectory();
     print(
         "--------------------------------------------------------------${directory.path}");
     String newPath = "";
+    // final Dio dio = Dio();
     List<String> folders = directory.path.split('/');
     for (int x = 1; x < folders.length; x++) {
       if (folders[x] != "Android") {
@@ -241,49 +301,9 @@ class _RecordScreenState extends State<RecordScreen> {
     }
     newPath = newPath + "/Laughie";
     directory = Directory(newPath);
-    print(
-        "#########################${directory.path}\n &&&&&&&&&&&&&&&&&&&&&&&&&&&${fileMedia.path}");
-    File savedFile = File(directory.path + "/$fileName");
-    print('-------------------before------------------${savedFile.path}');
-    // savedFile = fileMedia;
-    print('-------------------after------------------${savedFile.path}');
-    try {
-      await FirebaseStorage.instance
-          .ref()
-          .child(
-              'recorded_sessions/${FirebaseAuth.instance.currentUser.uid}/recorded_laughie.mp4')
-          .putFile(fileMedia);
-    } on FirebaseException catch (e) {
-      // e.g, e.code == 'canceled'
-      print("))))))))))))))))))))))))))))))))))))))))${e.message}");
-    }
-    try {
-      await FirebaseStorage.instance
-          .ref()
-          .child(
-              'recorded_sessions/${FirebaseAuth.instance.currentUser.uid}/recorded_laughie.mp4')
-          .writeToFile(savedFile);
-    } on FirebaseException catch (e) {
-      // e.g, e.code == 'canceled'
-      print('(((((((((((((((((((((((((((((((((${e.message}');
-    }
-    final _saveResult = await ImageGallerySaver.saveFile(savedFile.path);
+    print("#########################${directory.path}");
+    // savedFile = File(directory.path + "/$fileName");
 
-    print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult}');
-    // if (!await directory.exists()) {
-    //   print(
-    //       '666666666666666666666666666666666666666 inside directory does snot ');
-    //   await directory.create();
-    // }
-    // if (await directory.exists()) {
-    //   print('666666666666666666666666666666666666666 inside directory ');
-    //   File savedFile = File(directory.path + "/$fileName");
-    //   print(
-    //       "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!${savedFile.path}\n &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&${fileMedia.path}");
-    // }
-  }
-
-  Future capture(BuildContext context) async {
     if (fileMedia != null) {
       setState(() {
         this.fileMedia = null;
@@ -299,14 +319,38 @@ class _RecordScreenState extends State<RecordScreen> {
     //     ),
     //   ),
     // );
-    final result = await pickCameraMedia(context);
-    _saveFile(result);
-    if (result == null) {
+    final recordedVideo = await pickCameraMedia(context);
+
+    if (recordedVideo == null) {
       return;
     } else {
+      if (!await directory.exists()) {
+        print(
+            '666666666666666666666666666666666666666 inside directory does snot ');
+        await directory.create(recursive: true);
+        print('habababab ))))))))))))))))))))))))))))))))))))))))');
+      }
+      if (await directory.exists()) {
+        print('666666666666666666666666666666666666666 inside directory ');
+        savedFile = File(directory.path + "/$fileName");
+
+        // await dio.download(downloadUrl, savedFile.path);
+      }
+
+      savedFile = await recordedVideo.copy(savedFile.path);
+
+      print(
+          "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!${savedFile.path}\n &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&${recordedVideo.path}");
+      print(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!! recorded video is not null !!!!!!!!!!!!!!!!!!!');
+      final _saveResult =
+          await ImageGallerySaver.saveFile(savedFile.absolute.path);
+
+      print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
       setState(() {
-        fileMedia = result;
+        fileMedia = recordedVideo;
         isRecorded = true;
+
         Navigator.push(
           context,
           MaterialPageRoute(

@@ -28,10 +28,10 @@ class _TestState extends State<Test> {
           usersRef
               .doc(FirebaseAuth.instance.currentUser.uid)
               .get()
-              .then((snapshot) {
+              .then((DocumentSnapshot<Map<String, dynamic>> snapshot) {
             setState(() {
               status = (snapshot.data()['signup_status']);
-              print(status);
+              // print(status);
             });
           });
           if (status == 0) {
