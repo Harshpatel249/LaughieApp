@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
+import 'package:laughie_app/screens/laughieFeedback.dart';
 import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/signIn.dart';
 import 'package:laughie_app/screens/signUpMedicalHistory.dart';
@@ -46,7 +47,7 @@ class _TestState extends State<Test> {
             return CircularProgressBar();
           }
         }
-        return SignIn();
+        return LaughieFeedback();
       },
     );
   }
