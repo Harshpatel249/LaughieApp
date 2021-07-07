@@ -8,6 +8,7 @@ import 'package:laughie_app/screens/signIn.dart';
 import 'package:laughie_app/screens/signUpMedicalHistory.dart';
 import 'package:laughie_app/screens/signUpPersonalDetails.dart';
 import 'package:laughie_app/screens/signUpPrescription.dart';
+import 'package:laughie_app/screens/stats_page.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -47,7 +48,7 @@ class _TestState extends State<Test> {
             return CircularProgressBar();
           }
         }
-        return SignIn();
+        return StatsPage();
       },
     );
   }
