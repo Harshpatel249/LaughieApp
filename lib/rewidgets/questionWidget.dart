@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class QuestionWidget extends StatefulWidget {
   String question;
@@ -43,7 +44,7 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                     });
                   },
                   icon: Icon(
-                    Icons.emoji_emotions_outlined,
+                    FontAwesomeIcons.frown,
                     size: 40,
                     color: selected == 1 ? Color(0xfffbb313) : Colors.black45,
                   ),
@@ -55,7 +56,7 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                     });
                   },
                   icon: Icon(
-                    Icons.emoji_emotions_outlined,
+                    FontAwesomeIcons.frownOpen,
                     size: 40,
                     color: selected == 2 ? Color(0xfffbb313) : Colors.black45,
                   ),
@@ -67,7 +68,7 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                     });
                   },
                   icon: Icon(
-                    Icons.emoji_emotions_outlined,
+                    FontAwesomeIcons.meh,
                     size: 40,
                     color: selected == 3 ? Color(0xfffbb313) : Colors.black45,
                   ),
@@ -79,7 +80,7 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                     });
                   },
                   icon: Icon(
-                    Icons.emoji_emotions_outlined,
+                    FontAwesomeIcons.grin,
                     size: 40,
                     color: selected == 4 ? Color(0xfffbb313) : Colors.black45,
                   ),
@@ -91,7 +92,7 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                     });
                   },
                   icon: Icon(
-                    Icons.emoji_emotions_outlined,
+                    FontAwesomeIcons.grinBeam,
                     size: 40,
                     color: selected == 5 ? Color(0xfffbb313) : Colors.black45,
                   ),

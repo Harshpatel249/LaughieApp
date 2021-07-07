@@ -45,6 +45,7 @@ dependencies:
   firebase_storage: ^9.0.0
   flutter_sound: ^8.1.4
   syncfusion_flutter_gauges: ^19.1.69
+  font_awesome_flutter: ^9.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
