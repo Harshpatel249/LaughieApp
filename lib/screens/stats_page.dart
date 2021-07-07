@@ -74,8 +74,9 @@ class _StatsPageState extends State<StatsPage> {
                   Container(
                     child: TableCalendar(
                       rowHeight: screenHeight * 0.08,
-                      firstDay: DateTime.utc(2021, 4, 1),
-                      lastDay: DateTime.utc(2021, 6, 31),
+                      firstDay: DateTime.now().subtract(Duration(days: 30)),
+                      // firstDay: DateTime.utc(2021, 5, 1),
+                      lastDay: DateTime.now().add(Duration(days: 30)),
                       focusedDay: DateTime.now(),
                       onDaySelected: (date, events) {
                         print(date.toUtc()); //On click services
