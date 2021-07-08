@@ -24,6 +24,9 @@ class _StatsPageState extends State<StatsPage> {
   double timeLeft = 28;
   Timestamp _startingTimestamp;
   Timestamp _endingTimestamp;
+  DateTime focused = null;
+  DateTime _selectedDay = null;
+  var noSessions;
   bool _isFetched = false;
   void _incrementCounter() {
     setState(() {
@@ -36,18 +39,19 @@ class _StatsPageState extends State<StatsPage> {
         await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
     _startingTimestamp = userSnapshot['starting_date'];
     _endingTimestamp = userSnapshot['ending_date'];
+    noSessions = userSnapshot['sessions'];
     startMonth =
         "${DateFormat.MMM().format(_startingTimestamp.toDate())}'${DateFormat('yy').format(_startingTimestamp.toDate())}";
     endMonth =
         "${DateFormat.MMM().format(_endingTimestamp.toDate())}'${DateFormat('yy').format(_endingTimestamp.toDate())}";
     print(
-        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${_startingTimestamp.toDate().toUtc()}");
+        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${DateTime.now().subtract(Duration(days: 30))}");
     print(
         "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${(_endingTimestamp.toDate().toUtc())}");
-    print(
-        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${(DateTime.utc(2010, 10, 16)).runtimeType}");
+    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ $noSessions");
     setState(() {
       _isFetched = true;
+      focused = _startingTimestamp.toDate().toUtc();
     });
   }
 
@@ -111,15 +115,34 @@ class _StatsPageState extends State<StatsPage> {
                         Container(
                           child: TableCalendar(
                             rowHeight: screenHeight * 0.08,
+
                             firstDay: _startingTimestamp.toDate().toUtc(),
                             // firstDay:
                             //     DateTime.now().subtract(Duration(days: 30)),
 
                             // firstDay: DateTime.utc(2021, 5, 1),
                             lastDay: _endingTimestamp.toDate().toUtc(),
-                            focusedDay: DateTime.now(),
-                            onDaySelected: (date, events) {
-                              print(date.toUtc()); //On click services
+                            focusedDay: focused,
+                            selectedDayPredicate: (day) {
+                              return isSameDay(_selectedDay, day);
+                            },
+                            onDaySelected: (selectedDay, focusedDay) {
+                              print(selectedDay.toUtc());
+                              setState(() {
+                                _selectedDay = selectedDay;
+                                focused =
+                                    focusedDay; // update `_focusedDay` here as well
+                              });
+                            },
+
+                            // onDaySelected: (date, events) {
+                            //   print(date.toUtc());
+                            //   setState(() {
+                            //     focused = date.toUtc();
+                            //   }); //On click services
+                            // },
+                            onPageChanged: (focusedDay) {
+                              focused = focusedDay;
                             },
                             headerStyle: HeaderStyle(
                               formatButtonVisible: false,
