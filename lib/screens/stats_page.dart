@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import 'session_builder.dart';
 import '../rewidgets/bottomNavBar.dart';
 import 'daily_track_card.dart';
 
@@ -81,6 +81,99 @@ class _StatsPageState extends State<StatsPage> {
         bottomBarHeight;
     final padding = mediaQuery.size.width * 0.05;
 
+    List<SessionBuilder> getSessionDetails() {
+      List<SessionBuilder> sessionsDetails = [];
+      final SessionBuilder session1 = SessionBuilder(
+        time: '9AM',
+        sessionNumber: 1,
+        greeting: 'Morning',
+        completed: true,
+      );
+      sessionsDetails.add(session1);
+      final SessionBuilder session2 = SessionBuilder(
+        time: '1 PM',
+        sessionNumber: 2,
+        greeting: 'Afternoon',
+        completed: true,
+      );
+      sessionsDetails.add(session2);
+      final SessionBuilder session3 = SessionBuilder(
+        time: '8 PM',
+        sessionNumber: 3,
+        greeting: 'Evening',
+        completed: false,
+      );
+      sessionsDetails.add(session3);
+      return sessionsDetails;
+    }
+
+    SimpleDialog dailyTrack = SimpleDialog(
+      backgroundColor: Colors.transparent,
+      children: [
+        Card(
+          color: Color(0xff222223),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 15.0,
+          shadowColor: Colors.black,
+          child: Container(
+            padding: EdgeInsets.only(left: padding, right: padding),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: screenHeight * 0.02,
+                ),
+                Row(
+                  children: [
+                    Container(
+                      height: screenHeight * 0.05,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          '3',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Spacer(),
+                    Container(
+                      height: screenHeight * 0.05,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          'Wednesday',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Divider(
+                  color: Colors.white,
+                  height: screenHeight * 0.01,
+                ),
+                Container(
+                  // color: Colors.red,
+                  child: Column(
+                    children: getSessionDetails(),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+
     return SafeArea(
       child: Scaffold(
         appBar: appBar,
@@ -133,6 +226,9 @@ class _StatsPageState extends State<StatsPage> {
                                 focused =
                                     focusedDay; // update `_focusedDay` here as well
                               });
+                              showDialog<void>(
+                                  context: context,
+                                  builder: (context) => dailyTrack);
                             },
 
                             // onDaySelected: (date, events) {
