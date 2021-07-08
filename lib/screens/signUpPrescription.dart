@@ -21,7 +21,7 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
     usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
       "starting_date": _startingDate,
       "ending_date": _endingDate,
-      "sessions": _sessionValue,
+      "sessions": int.parse(_sessionValue),
       "prescribed_by": _prescribedValue,
       "signup_status": 3,
     });

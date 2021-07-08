@@ -26,7 +26,7 @@ class _StatsPageState extends State<StatsPage> {
   Timestamp _endingTimestamp;
   DateTime focused = null;
   DateTime _selectedDay = null;
-  var noSessions;
+  int noSessions;
   bool _isFetched = false;
   void _incrementCounter() {
     setState(() {
@@ -62,6 +62,22 @@ class _StatsPageState extends State<StatsPage> {
     super.initState();
   }
 
+  List<SessionBuilder> getSessionDetails() {
+    List<SessionBuilder> sessionsDetails = [];
+
+    for (var i = 0; i < noSessions; i++) {
+      final SessionBuilder session1 = SessionBuilder(
+        time: '9AM',
+        sessionNumber: (i + 1),
+        greeting: 'Morning',
+        completed: true,
+      );
+      sessionsDetails.add(session1);
+    }
+
+    return sessionsDetails;
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -80,32 +96,6 @@ class _StatsPageState extends State<StatsPage> {
         mediaQuery.padding.top -
         bottomBarHeight;
     final padding = mediaQuery.size.width * 0.05;
-
-    List<SessionBuilder> getSessionDetails() {
-      List<SessionBuilder> sessionsDetails = [];
-      final SessionBuilder session1 = SessionBuilder(
-        time: '9AM',
-        sessionNumber: 1,
-        greeting: 'Morning',
-        completed: true,
-      );
-      sessionsDetails.add(session1);
-      final SessionBuilder session2 = SessionBuilder(
-        time: '1 PM',
-        sessionNumber: 2,
-        greeting: 'Afternoon',
-        completed: true,
-      );
-      sessionsDetails.add(session2);
-      final SessionBuilder session3 = SessionBuilder(
-        time: '8 PM',
-        sessionNumber: 3,
-        greeting: 'Evening',
-        completed: false,
-      );
-      sessionsDetails.add(session3);
-      return sessionsDetails;
-    }
 
     SimpleDialog dailyTrack = SimpleDialog(
       backgroundColor: Colors.transparent,
@@ -256,7 +246,7 @@ class _StatsPageState extends State<StatsPage> {
                           height: screenHeight * 0.02,
                         ),
                         Container(
-                          height: screenHeight * 0.1,
+                          height: screenHeight * 0.14,
                           child: Card(
                             elevation: 5.0,
                             shape: RoundedRectangleBorder(
@@ -300,7 +290,7 @@ class _StatsPageState extends State<StatsPage> {
                           height: screenHeight * 0.02,
                         ),
                         Container(
-                          height: screenHeight * 0.1,
+                          height: screenHeight * 0.14,
                           child: Card(
                             elevation: 5.0,
                             shape: RoundedRectangleBorder(
@@ -342,41 +332,6 @@ class _StatsPageState extends State<StatsPage> {
                         ),
                         SizedBox(
                           height: screenHeight * 0.02,
-                        ),
-                        Container(
-                          height: screenHeight * 0.08,
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DailyTrackCard(
-                                    startMonth: this.startMonth,
-                                    endMonth: this.endMonth,
-                                    currentMonth: 'May',
-                                  ),
-                                ),
-                              );
-                            },
-                            child: FittedBox(
-                              fit: BoxFit.fitHeight,
-                              child: Text(
-                                'Daily track',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 100),
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                                primary: Color(0xfffbb313),
-                                onPrimary: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(8), // <-- Radius
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 30)),
-                          ),
                         ),
                         SizedBox(
                           height: screenHeight * 0.02,
