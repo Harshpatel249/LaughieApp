@@ -16,7 +16,7 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> {
-  CalendarController _controller = CalendarController();
+  // CalendarController _controller = CalendarController();
   int _counter = 0;
   String startMonth = "May'21";
   String endMonth = "July'21";
@@ -43,7 +43,7 @@ class _StatsPageState extends State<StatsPage> {
     print(
         "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${_startingTimestamp.toDate().toUtc()}");
     print(
-        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${(_endingTimestamp.toDate().toUtc()).runtimeType}");
+        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${(_endingTimestamp.toDate().toUtc())}");
     print(
         "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${(DateTime.utc(2010, 10, 16)).runtimeType}");
     setState(() {
@@ -114,6 +114,7 @@ class _StatsPageState extends State<StatsPage> {
                             firstDay: _startingTimestamp.toDate().toUtc(),
                             // firstDay:
                             //     DateTime.now().subtract(Duration(days: 30)),
+
                             // firstDay: DateTime.utc(2021, 5, 1),
                             lastDay: _endingTimestamp.toDate().toUtc(),
                             focusedDay: DateTime.now(),

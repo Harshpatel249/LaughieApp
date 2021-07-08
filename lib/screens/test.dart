@@ -31,7 +31,7 @@ class _TestState extends State<Test> {
               .then((snapshot) {
             setState(() {
               status = (snapshot.data()['signup_status']);
-              print(status);
+              //print(status);
             });
           });
           if (status == 0) {
