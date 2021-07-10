@@ -36,7 +36,7 @@ class _RecordScreenState extends State<RecordScreen> {
   bool _mPlayerIsInited = false;
   bool _mRecorderIsInited = false;
   bool _mplaybackReady = false;
-  final String _mPath = 'flutter_sound_example.aac';
+  String _mPath = 'flutter_sound_example.aac';
 
   bool _hasTimeCompleted = false;
   bool _isRecordingSelected = false;
@@ -55,10 +55,20 @@ class _RecordScreenState extends State<RecordScreen> {
     });
   }
 
+  _getAudioSaveLocation() async {
+    Directory directory;
+    directory = await getExternalStorageDirectory();
+    print(
+        "--------------------------------------------------------------${directory.path}");
+    String audioFileLoc = directory.path + "/recorded_session.mp3";
+    this._mPath = audioFileLoc;
+  }
+
   //----------------------Functions for audio recorder
   @override
   void initState() {
-    _getRecordLaghieStatus();
+    // _getRecordLaghieStatus();
+    _getAudioSaveLocation();
     _mPlayer.openAudioSession().then((value) {
       setState(() {
         _mPlayerIsInited = true;
@@ -98,6 +108,7 @@ class _RecordScreenState extends State<RecordScreen> {
   // ----------------------  Here is the code for recording and playback -------
 
   void record() {
+    print('%%%%%%%%%%%%%%%%%%%%%%% inside record %%%%%%%%%%%%%%%%%%%');
     _mRecorder
         .startRecorder(
       toFile: _mPath,
@@ -106,6 +117,7 @@ class _RecordScreenState extends State<RecordScreen> {
         .then((value) {
       setState(() {});
     });
+    print(_mPath);
   }
 
   void stopRecorder() async {
@@ -119,6 +131,8 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   void play() {
+    print('%%%%%%%%%%%%%%%%%%%%%%% inside play %%%%%%%%%%%%%%%%%%%');
+
     assert(_mPlayerIsInited &&
         _mplaybackReady &&
         _mRecorder.isStopped &&
@@ -285,24 +299,25 @@ class _RecordScreenState extends State<RecordScreen> {
   Future capture(BuildContext context) async {
     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!! capture called !!!!!!!!!!!!!!!!!!!');
     String fileName = 'recorded_laughie.mp4';
-    Directory directory;
-    directory = await getExternalStorageDirectory();
-    print(
-        "--------------------------------------------------------------${directory.path}");
-    String newPath = "";
-    // final Dio dio = Dio();
-    List<String> folders = directory.path.split('/');
-    for (int x = 1; x < folders.length; x++) {
-      if (folders[x] != "Android") {
-        newPath += "/" + folders[x];
-      } else {
-        break;
-      }
-    }
-    newPath = newPath + "/Laughie";
-    directory = Directory(newPath);
-    print("#########################${directory.path}");
-    // savedFile = File(directory.path + "/$fileName");
+    // Directory directory;
+    // directory = await getExternalStorageDirectory();
+    // print(
+    //     "--------------------------------------------------------------${directory.path}");
+    // String audioFileLoc = directory.path + "/recorded_session.mp3";
+    // String newPath = "";
+    // // final Dio dio = Dio();
+    // List<String> folders = directory.path.split('/');
+    // for (int x = 1; x < folders.length; x++) {
+    //   if (folders[x] != "Android") {
+    //     newPath += "/" + folders[x];
+    //   } else {
+    //     break;
+    //   }
+    // }
+    // newPath = newPath + "/Laughie";
+    // directory = Directory(newPath);
+    // print("#########################${directory.path}");
+    // // savedFile = File(directory.path + "/$fileName");
 
     if (fileMedia != null) {
       setState(() {
@@ -324,27 +339,26 @@ class _RecordScreenState extends State<RecordScreen> {
     if (recordedVideo == null) {
       return;
     } else {
-      if (!await directory.exists()) {
-        print(
-            '666666666666666666666666666666666666666 inside directory does snot ');
-        await directory.create(recursive: true);
-        print('habababab ))))))))))))))))))))))))))))))))))))))))');
-      }
-      if (await directory.exists()) {
-        print('666666666666666666666666666666666666666 inside directory ');
-        savedFile = File(directory.path + "/$fileName");
-
-        // await dio.download(downloadUrl, savedFile.path);
-      }
-
-      savedFile = await recordedVideo.copy(savedFile.path);
-
-      print(
-          "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!${savedFile.path}\n &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&${recordedVideo.path}");
-      print(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!! recorded video is not null !!!!!!!!!!!!!!!!!!!');
-      final _saveResult =
-          await ImageGallerySaver.saveFile(savedFile.absolute.path);
+      // if (!await directory.exists()) {
+      //   print(
+      //       '666666666666666666666666666666666666666 inside directory does snot ');
+      //   await directory.create(recursive: true);
+      //   print('habababab ))))))))))))))))))))))))))))))))))))))))');
+      // }
+      // if (await directory.exists()) {
+      //   print('666666666666666666666666666666666666666 inside directory ');
+      //   savedFile = File(directory.path + "/$fileName");
+      //
+      //   // await dio.download(downloadUrl, savedFile.path);
+      // }
+      //
+      // savedFile = await recordedVideo.copy(savedFile.path);
+      //
+      // print(
+      //     "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!${savedFile.path}\n &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&${recordedVideo.path}");
+      // print(
+      //     '!!!!!!!!!!!!!!!!!!!!!!!!!!!!! recorded video is not null !!!!!!!!!!!!!!!!!!!');
+      final _saveResult = await ImageGallerySaver.saveFile(recordedVideo.path);
 
       print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
       setState(() {
