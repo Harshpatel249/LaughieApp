@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
+import 'package:laughie_app/screens/signIn.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
@@ -89,6 +90,10 @@ class _UserProfileState extends State<UserProfile> {
           onChanged: (itemIdentifier) {
             if (itemIdentifier == 'logout') {
               FirebaseAuth.instance.signOut();
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignIn()),
+                  (route) => false);
             }
           },
         ),
