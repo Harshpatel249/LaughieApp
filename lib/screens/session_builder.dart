@@ -31,8 +31,7 @@ class SessionBuilder extends StatelessWidget {
     final padding = mediaQuery.size.width * 0.05;
 
     return Padding(
-      padding: EdgeInsets.only(
-          top: screenHeight * 0.01, bottom: screenHeight * 0.01),
+      padding: EdgeInsets.only(top: screenHeight * 0.02),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
