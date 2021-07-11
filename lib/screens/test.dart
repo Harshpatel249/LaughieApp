@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
-import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/signIn.dart';
 import 'package:laughie_app/screens/signUpMedicalHistory.dart';
 import 'package:laughie_app/screens/signUpPersonalDetails.dart';
 import 'package:laughie_app/screens/signUpPrescription.dart';
+import 'package:laughie_app/screens/source_page.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -41,7 +41,7 @@ class _TestState extends State<Test> {
           } else if (status == 2) {
             return SignUpPrescription();
           } else if (status == 3) {
-            return RecordScreen();
+            return SourcePage();
           } else {
             return CircularProgressBar();
           }

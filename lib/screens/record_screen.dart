@@ -1,20 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:laughie_app/rewidgets/circularProgressBar.dart';
+import 'package:laughie_app/screens/source_page.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-
-import 'videoRecorder.dart';
 
 typedef _Fn = void Function();
 
@@ -31,8 +28,8 @@ class _RecordScreenState extends State<RecordScreen> {
   bool isRecorded = false;
 
   bool recordLaughieStatus;
-  String filePath;
-  String mediaType;
+  String _filePath;
+  String _mediaType;
   bool _isFetched = false;
 
   FlutterSoundPlayer _mPlayer = FlutterSoundPlayer();
@@ -48,28 +45,6 @@ class _RecordScreenState extends State<RecordScreen> {
   Timer _timer = Timer(Duration.zero, () {});
   double progressValue = 0;
 
-  _getRecordLaghieStatus() async {
-    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-        await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
-    final userData = documentSnapshot.data();
-    // Map<String, dynamic> userData =
-    //     documentSnapshot.data() as Map<String, dynamic>;
-    setState(() {
-      recordLaughieStatus = userData['has_recorded_laughie'];
-    });
-
-    print("#############################################$recordLaughieStatus}");
-    if (recordLaughieStatus) {
-      filePath = userData['filePath'];
-      mediaType = userData['media'];
-      print(
-          "#############################################$filePath \n ^^^^^^^^^^^^^^^^^^^^^^$mediaType}");
-    }
-    setState(() {
-      _isFetched = true;
-    });
-  }
-
   _getAudioSaveLocation() async {
     Directory directory;
     directory = await getExternalStorageDirectory();
@@ -82,7 +57,7 @@ class _RecordScreenState extends State<RecordScreen> {
   //----------------------Functions for audio recorder
   @override
   void initState() {
-    _getRecordLaghieStatus();
+    // _getRecordLaghieStatus();
     _getAudioSaveLocation();
     _mPlayer.openAudioSession().then((value) {
       setState(() {
@@ -266,12 +241,12 @@ class _RecordScreenState extends State<RecordScreen> {
   Future capture(BuildContext context) async {
     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!! capture called !!!!!!!!!!!!!!!!!!!');
     String fileName = 'recorded_laughie.mp4';
-
-    if (fileMedia != null) {
-      setState(() {
-        this.fileMedia = null;
-      });
-    }
+    //
+    // if (fileMedia != null) {
+    //   setState(() {
+    //     this.fileMedia = null;
+    //   });
+    // }
     // source is passed down to SourcePage() using a property called 'settings';
     // The info wrapped inside RouteSettings will then be received on the other side
     // final result = await Navigator.of(context).push(
@@ -295,18 +270,17 @@ class _RecordScreenState extends State<RecordScreen> {
         "media": "video",
         "filePath": _saveResult['filePath'],
       });
+
       setState(() {
         fileMedia = recordedVideo;
         isRecorded = true;
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VideoRecorder(
-              fileMedia: this.fileMedia,
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SourcePage(),
             ),
-          ),
-        );
+            (route) => false);
       });
     }
   }
@@ -357,19 +331,143 @@ class _RecordScreenState extends State<RecordScreen> {
       ],
     );
 
+    _onAudioButtonPressed() {
+      setState(() {
+        _isRecordingSelected = true;
+      });
+      print('@@@@_mRecorder!.isRecording:${_mRecorder.isRecording}');
+      print('@@@@_hasTimeCompleted:${_hasTimeCompleted}');
+      if (_mRecorder.isRecording == false && _hasTimeCompleted == false) {
+        print('@@@@inside if1');
+        startCounter();
+      } else if (_mRecorder.isRecording == true && _hasTimeCompleted == false) {
+        print('@@@@inside if2');
+        _timer.cancel();
+        setState(() {
+          progressValue = 0;
+        });
+        stopRecorder();
+      } else if (_mRecorder.isStopped == true &&
+          _hasTimeCompleted == true &&
+          _mPlayer.isStopped == true) {
+        print('@@@@inside if3');
+        play();
+      } else if (_mRecorder.isStopped == true &&
+          _hasTimeCompleted == true &&
+          _mPlayer.isStopped == false) {
+        print('@@@@inside if4');
+        stopPlayer();
+      }
+    }
+
     return Scaffold(
       appBar: appBar,
-      body: _isFetched
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  // color: Colors.red,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            // color: Colors.red,
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.5,
+            width: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.5,
+            child: LayoutBuilder(
+              builder: (ctx, constraints) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          // color: Colors.amber,
+                          width: constraints.maxHeight * 0.57,
+                          height: constraints.maxHeight * 0.57,
+                          child: SfRadialGauge(
+                            axes: <RadialAxis>[
+                              RadialAxis(
+                                minimum: 0,
+                                maximum: 100,
+                                showLabels: false,
+                                showTicks: false,
+                                startAngle: 270,
+                                endAngle: 270,
+                                radiusFactor: 1,
+                                axisLineStyle: AxisLineStyle(
+                                  thickness: 0.1,
+                                  color: const Color.fromARGB(30, 0, 169, 181),
+                                  thicknessUnit: GaugeSizeUnit.factor,
+                                ),
+                                pointers: <GaugePointer>[
+                                  RangePointer(
+                                      value: progressValue * 1.6667,
+                                      width: 0.1,
+                                      sizeUnit: GaugeSizeUnit.factor,
+                                      enableAnimation: true,
+                                      animationDuration: 100,
+                                      animationType: AnimationType.linear)
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: CircleBorder(),
+                            // primary: Colors.orange,
+                          ),
+                          child: Container(
+                            // width: 170,
+                            // height: 170,
+                            width: constraints.maxHeight * 0.475,
+                            height: constraints.maxHeight * 0.475,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xFF222223),
+                            ),
+                            child: Icon(
+                              getIcon(),
+                              size: constraints.maxHeight * 0.475 * 0.5,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          onPressed: _onAudioButtonPressed,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: constraints.maxHeight * 0.07,
+                    ),
+                    Container(
+                      height: constraints.maxHeight * 0.1,
+                      child: FittedBox(
+                        child: Text(
+                          _mRecorder.isRecording
+                              ? 'Recording in progress'
+                              : 'Record Audio',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          _isRecordingSelected
+              ? Center(
+                  child: Text(
+                    'Recorder Functionality Activated.',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                )
+              : Container(
                   height: (mediaQuery.size.height -
-                          appBar.preferredSize.height -
-                          mediaQuery.padding.top) *
-                      0.5,
-                  width: (mediaQuery.size.height -
                           appBar.preferredSize.height -
                           mediaQuery.padding.top) *
                       0.5,
@@ -378,97 +476,28 @@ class _RecordScreenState extends State<RecordScreen> {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Container(
-                                // color: Colors.amber,
-                                width: constraints.maxHeight * 0.57,
-                                height: constraints.maxHeight * 0.57,
-                                child: SfRadialGauge(
-                                  axes: <RadialAxis>[
-                                    RadialAxis(
-                                      minimum: 0,
-                                      maximum: 100,
-                                      showLabels: false,
-                                      showTicks: false,
-                                      startAngle: 270,
-                                      endAngle: 270,
-                                      radiusFactor: 1,
-                                      axisLineStyle: AxisLineStyle(
-                                        thickness: 0.1,
-                                        color: const Color.fromARGB(
-                                            30, 0, 169, 181),
-                                        thicknessUnit: GaugeSizeUnit.factor,
-                                      ),
-                                      pointers: <GaugePointer>[
-                                        RangePointer(
-                                            value: progressValue * 1.6667,
-                                            width: 0.1,
-                                            sizeUnit: GaugeSizeUnit.factor,
-                                            enableAnimation: true,
-                                            animationDuration: 100,
-                                            animationType: AnimationType.linear)
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                          ElevatedButton(
+                            style:
+                                ElevatedButton.styleFrom(shape: CircleBorder()),
+                            child: Container(
+                              // width: 170,
+                              // height: 170,
+                              width: constraints.maxHeight * 0.475,
+                              height: constraints.maxHeight * 0.475,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xFF222223),
                               ),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: CircleBorder(),
-                                  // primary: Colors.orange,
-                                ),
-                                child: Container(
-                                  // width: 170,
-                                  // height: 170,
-                                  width: constraints.maxHeight * 0.475,
-                                  height: constraints.maxHeight * 0.475,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color(0xFF222223),
-                                  ),
-                                  child: Icon(
-                                    getIcon(),
-                                    size: constraints.maxHeight * 0.475 * 0.5,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isRecordingSelected = true;
-                                  });
-                                  print(
-                                      '@@@@_mRecorder!.isRecording:${_mRecorder.isRecording}');
-                                  print(
-                                      '@@@@_hasTimeCompleted:${_hasTimeCompleted}');
-                                  if (_mRecorder.isRecording == false &&
-                                      _hasTimeCompleted == false) {
-                                    print('@@@@inside if1');
-                                    startCounter();
-                                  } else if (_mRecorder.isRecording == true &&
-                                      _hasTimeCompleted == false) {
-                                    print('@@@@inside if2');
-                                    _timer.cancel();
-                                    setState(() {
-                                      progressValue = 0;
-                                    });
-                                    stopRecorder();
-                                  } else if (_mRecorder.isStopped == true &&
-                                      _hasTimeCompleted == true &&
-                                      _mPlayer.isStopped == true) {
-                                    print('@@@@inside if3');
-                                    play();
-                                  } else if (_mRecorder.isStopped == true &&
-                                      _hasTimeCompleted == true &&
-                                      _mPlayer.isStopped == false) {
-                                    print('@@@@inside if4');
-                                    stopPlayer();
-                                  }
-                                },
+                              child: Icon(
+                                Icons.videocam,
+                                size: constraints.maxHeight * 0.475 * 0.5,
+                                color: Color(0xfffbb313),
                               ),
-                            ],
+                            ),
+                            onPressed: () {
+                              checkPermission(context);
+                            },
                           ),
                           SizedBox(
                             height: constraints.maxHeight * 0.07,
@@ -477,9 +506,7 @@ class _RecordScreenState extends State<RecordScreen> {
                             height: constraints.maxHeight * 0.1,
                             child: FittedBox(
                               child: Text(
-                                _mRecorder.isRecording
-                                    ? 'Recording in progress'
-                                    : 'Record Audio',
+                                'Record Video',
                                 style: TextStyle(color: Colors.black),
                               ),
                             ),
@@ -489,78 +516,8 @@ class _RecordScreenState extends State<RecordScreen> {
                     },
                   ),
                 ),
-                _isRecordingSelected
-                    ? Center(
-                        child: Text(
-                          'Recorder Functionality Activated.',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      )
-                    : Container(
-                        height: (mediaQuery.size.height -
-                                appBar.preferredSize.height -
-                                mediaQuery.padding.top) *
-                            0.5,
-                        child: LayoutBuilder(
-                          builder: (ctx, constraints) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      shape: CircleBorder()),
-                                  child: Container(
-                                    // width: 170,
-                                    // height: 170,
-                                    width: constraints.maxHeight * 0.475,
-                                    height: constraints.maxHeight * 0.475,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xFF222223),
-                                    ),
-                                    child: Icon(
-                                      Icons.videocam,
-                                      size: constraints.maxHeight * 0.475 * 0.5,
-                                      color: Color(0xfffbb313),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    if (fileMedia == null) {
-                                      checkPermission(context);
-                                    }
-                                    if (isRecorded) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => VideoRecorder(
-                                            fileMedia: this.fileMedia,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-                                SizedBox(
-                                  height: constraints.maxHeight * 0.07,
-                                ),
-                                Container(
-                                  height: constraints.maxHeight * 0.1,
-                                  child: FittedBox(
-                                    child: Text(
-                                      'Record Video',
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-              ],
-            )
-          : CircularProgressBar(),
+        ],
+      ),
     );
   }
 }
