@@ -52,6 +52,7 @@ class _SignUpState extends State<SignUp> {
           "email": _email,
           "username": _userName,
           "signup_status": 0,
+          "has_recorded_laughie": false,
         });
         // Navigator.push(
         //   context,

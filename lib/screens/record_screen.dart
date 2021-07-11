@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:laughie_app/screens/source_page.dart';
+import 'package:laughie_app/screens/test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-
-import 'videoRecorder.dart';
 
 typedef _Fn = void Function();
 
@@ -24,15 +23,21 @@ class RecordScreen extends StatefulWidget {
 }
 
 class _RecordScreenState extends State<RecordScreen> {
+  File savedFile;
   File fileMedia;
   bool isRecorded = false;
+
+  bool recordLaughieStatus;
+  String _filePath;
+  String _mediaType;
+  bool _isFetched = false;
 
   FlutterSoundPlayer _mPlayer = FlutterSoundPlayer();
   FlutterSoundRecorder _mRecorder = FlutterSoundRecorder();
   bool _mPlayerIsInited = false;
   bool _mRecorderIsInited = false;
   bool _mplaybackReady = false;
-  final String _mPath = 'flutter_sound_example.aac';
+  String _mPath = 'flutter_sound_example.aac';
 
   bool _hasTimeCompleted = false;
   bool _isRecordingSelected = false;
@@ -40,9 +45,20 @@ class _RecordScreenState extends State<RecordScreen> {
   Timer _timer = Timer(Duration.zero, () {});
   double progressValue = 0;
 
+  _getAudioSaveLocation() async {
+    Directory directory;
+    directory = await getExternalStorageDirectory();
+    print(
+        "--------------------------------------------------------------${directory.path}");
+    String audioFileLoc = directory.path + "/recorded_session.mp3";
+    this._mPath = audioFileLoc;
+  }
+
   //----------------------Functions for audio recorder
   @override
   void initState() {
+    // _getRecordLaghieStatus();
+    _getAudioSaveLocation();
     _mPlayer.openAudioSession().then((value) {
       setState(() {
         _mPlayerIsInited = true;
@@ -54,6 +70,7 @@ class _RecordScreenState extends State<RecordScreen> {
         _mRecorderIsInited = true;
       });
     });
+
     super.initState();
   }
 
@@ -81,6 +98,7 @@ class _RecordScreenState extends State<RecordScreen> {
   // ----------------------  Here is the code for recording and playback -------
 
   void record() {
+    print('%%%%%%%%%%%%%%%%%%%%%%% inside record %%%%%%%%%%%%%%%%%%%');
     _mRecorder
         .startRecorder(
       toFile: _mPath,
@@ -89,6 +107,7 @@ class _RecordScreenState extends State<RecordScreen> {
         .then((value) {
       setState(() {});
     });
+    print(_mPath);
   }
 
   void stopRecorder() async {
@@ -102,6 +121,8 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   void play() {
+    print('%%%%%%%%%%%%%%%%%%%%%%% inside play %%%%%%%%%%%%%%%%%%%');
+
     assert(_mPlayerIsInited &&
         _mplaybackReady &&
         _mRecorder.isStopped &&
@@ -115,6 +136,11 @@ class _RecordScreenState extends State<RecordScreen> {
             })
         .then((value) {
       setState(() {});
+    });
+    usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+      "has_recorded_laughie": true,
+      "media": "audio",
+      "filePath": _mPath,
     });
   }
 
@@ -212,83 +238,15 @@ class _RecordScreenState extends State<RecordScreen> {
     // Navigator.of(context).pop(file);
   }
 
-  Future uploadVideoToFirebase(BuildContext context, File fileMedia) async {
-    // String fileName = basename(_imageFile.path);
-    Reference firebaseStorageRef = FirebaseStorage.instance.ref().child(
-        'recorded_sessions/${FirebaseAuth.instance.currentUser.uid}/recorded_laughie.mp4');
-    UploadTask uploadTask = firebaseStorageRef.putFile(fileMedia);
-    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => print("Done: $value"),
-        );
-  }
-
-  _saveFile(File fileMedia) async {
-    String fileName = 'recorded_laughie.mp4';
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@save File called');
-    Directory directory;
-    directory = await getExternalStorageDirectory();
-    print(
-        "--------------------------------------------------------------${directory.path}");
-    String newPath = "";
-    List<String> folders = directory.path.split('/');
-    for (int x = 1; x < folders.length; x++) {
-      if (folders[x] != "Android") {
-        newPath += "/" + folders[x];
-      } else {
-        break;
-      }
-    }
-    newPath = newPath + "/Laughie";
-    directory = Directory(newPath);
-    print(
-        "#########################${directory.path}\n &&&&&&&&&&&&&&&&&&&&&&&&&&&${fileMedia.path}");
-    File savedFile = File(directory.path + "/$fileName");
-    print('-------------------before------------------${savedFile.path}');
-    // savedFile = fileMedia;
-    print('-------------------after------------------${savedFile.path}');
-    try {
-      await FirebaseStorage.instance
-          .ref()
-          .child(
-              'recorded_sessions/${FirebaseAuth.instance.currentUser.uid}/recorded_laughie.mp4')
-          .putFile(fileMedia);
-    } on FirebaseException catch (e) {
-      // e.g, e.code == 'canceled'
-      print("))))))))))))))))))))))))))))))))))))))))${e.message}");
-    }
-    try {
-      await FirebaseStorage.instance
-          .ref()
-          .child(
-              'recorded_sessions/${FirebaseAuth.instance.currentUser.uid}/recorded_laughie.mp4')
-          .writeToFile(savedFile);
-    } on FirebaseException catch (e) {
-      // e.g, e.code == 'canceled'
-      print('(((((((((((((((((((((((((((((((((${e.message}');
-    }
-    final _saveResult = await ImageGallerySaver.saveFile(savedFile.path);
-
-    print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult}');
-    // if (!await directory.exists()) {
-    //   print(
-    //       '666666666666666666666666666666666666666 inside directory does snot ');
-    //   await directory.create();
-    // }
-    // if (await directory.exists()) {
-    //   print('666666666666666666666666666666666666666 inside directory ');
-    //   File savedFile = File(directory.path + "/$fileName");
-    //   print(
-    //       "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!${savedFile.path}\n &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&${fileMedia.path}");
-    // }
-  }
-
   Future capture(BuildContext context) async {
-    if (fileMedia != null) {
-      setState(() {
-        this.fileMedia = null;
-      });
-    }
+    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!! capture called !!!!!!!!!!!!!!!!!!!');
+    String fileName = 'recorded_laughie.mp4';
+    //
+    // if (fileMedia != null) {
+    //   setState(() {
+    //     this.fileMedia = null;
+    //   });
+    // }
     // source is passed down to SourcePage() using a property called 'settings';
     // The info wrapped inside RouteSettings will then be received on the other side
     // final result = await Navigator.of(context).push(
@@ -299,22 +257,30 @@ class _RecordScreenState extends State<RecordScreen> {
     //     ),
     //   ),
     // );
-    final result = await pickCameraMedia(context);
-    _saveFile(result);
-    if (result == null) {
+    final recordedVideo = await pickCameraMedia(context);
+
+    if (recordedVideo == null) {
       return;
     } else {
+      final _saveResult = await ImageGallerySaver.saveFile(recordedVideo.path);
+
+      print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
+      usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+        "has_recorded_laughie": true,
+        "media": "video",
+        "filePath": _saveResult['filePath'],
+      });
+
       setState(() {
-        fileMedia = result;
+        fileMedia = recordedVideo;
         isRecorded = true;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VideoRecorder(
-              fileMedia: this.fileMedia,
+
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SourcePage(),
             ),
-          ),
-        );
+            (route) => false);
       });
     }
   }
@@ -364,6 +330,35 @@ class _RecordScreenState extends State<RecordScreen> {
         ),
       ],
     );
+
+    _onAudioButtonPressed() {
+      setState(() {
+        _isRecordingSelected = true;
+      });
+      print('@@@@_mRecorder!.isRecording:${_mRecorder.isRecording}');
+      print('@@@@_hasTimeCompleted:${_hasTimeCompleted}');
+      if (_mRecorder.isRecording == false && _hasTimeCompleted == false) {
+        print('@@@@inside if1');
+        startCounter();
+      } else if (_mRecorder.isRecording == true && _hasTimeCompleted == false) {
+        print('@@@@inside if2');
+        _timer.cancel();
+        setState(() {
+          progressValue = 0;
+        });
+        stopRecorder();
+      } else if (_mRecorder.isStopped == true &&
+          _hasTimeCompleted == true &&
+          _mPlayer.isStopped == true) {
+        print('@@@@inside if3');
+        play();
+      } else if (_mRecorder.isStopped == true &&
+          _hasTimeCompleted == true &&
+          _mPlayer.isStopped == false) {
+        print('@@@@inside if4');
+        stopPlayer();
+      }
+    }
 
     return Scaffold(
       appBar: appBar,
@@ -441,37 +436,7 @@ class _RecordScreenState extends State<RecordScreen> {
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _isRecordingSelected = true;
-                            });
-                            print(
-                                '@@@@_mRecorder!.isRecording:${_mRecorder.isRecording}');
-                            print('@@@@_hasTimeCompleted:${_hasTimeCompleted}');
-                            if (_mRecorder.isRecording == false &&
-                                _hasTimeCompleted == false) {
-                              print('@@@@inside if1');
-                              startCounter();
-                            } else if (_mRecorder.isRecording == true &&
-                                _hasTimeCompleted == false) {
-                              print('@@@@inside if2');
-                              _timer.cancel();
-                              setState(() {
-                                progressValue = 0;
-                              });
-                              stopRecorder();
-                            } else if (_mRecorder.isStopped == true &&
-                                _hasTimeCompleted == true &&
-                                _mPlayer.isStopped == true) {
-                              print('@@@@inside if3');
-                              play();
-                            } else if (_mRecorder.isStopped == true &&
-                                _hasTimeCompleted == true &&
-                                _mPlayer.isStopped == false) {
-                              print('@@@@inside if4');
-                              stopPlayer();
-                            }
-                          },
+                          onPressed: _onAudioButtonPressed,
                         ),
                       ],
                     ),
@@ -531,19 +496,7 @@ class _RecordScreenState extends State<RecordScreen> {
                               ),
                             ),
                             onPressed: () {
-                              if (fileMedia == null) {
-                                checkPermission(context);
-                              }
-                              if (isRecorded) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => VideoRecorder(
-                                      fileMedia: this.fileMedia,
-                                    ),
-                                  ),
-                                );
-                              }
+                              checkPermission(context);
                             },
                           ),
                           SizedBox(

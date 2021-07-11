@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../screens/userProfile.dart';
+
+import '../screens/record_screen.dart';
 import '../screens/signIn.dart';
 import '../screens/stats_page.dart';
-import '../screens/videoRecorder.dart';
-import '../screens/record_screen.dart';
+import '../screens/userProfile.dart';
 
 class BottomNavBar extends StatefulWidget {
   String id;

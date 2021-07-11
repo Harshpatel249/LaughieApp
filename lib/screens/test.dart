@@ -8,6 +8,7 @@ import 'package:laughie_app/screens/signIn.dart';
 import 'package:laughie_app/screens/signUpMedicalHistory.dart';
 import 'package:laughie_app/screens/signUpPersonalDetails.dart';
 import 'package:laughie_app/screens/signUpPrescription.dart';
+import 'package:laughie_app/screens/source_page.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
 
@@ -29,10 +30,10 @@ class _TestState extends State<Test> {
           usersRef
               .doc(FirebaseAuth.instance.currentUser.uid)
               .get()
-              .then((snapshot) {
+              .then((DocumentSnapshot<Map<String, dynamic>> snapshot) {
             setState(() {
               status = (snapshot.data()['signup_status']);
-              print(status);
+              // print(status);
             });
           });
           if (status == 0) {
@@ -42,7 +43,7 @@ class _TestState extends State<Test> {
           } else if (status == 2) {
             return SignUpPrescription();
           } else if (status == 3) {
-            return RecordScreen();
+            return SourcePage();
           } else {
             return CircularProgressBar();
           }
