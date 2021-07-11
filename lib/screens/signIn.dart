@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:laughie_app/screens/source_page.dart';
 
 import 'resetPassGetOTP.dart';
 import 'signUp.dart';
@@ -40,12 +41,21 @@ class _SignInState extends State<SignIn> {
           email: _email,
           password: _password,
         );
-
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //       builder: (context) => SignUpPersonalDetails()),
-        // );
+        if (_auth.currentUser.uid != null) {
+          print(
+              '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% user ${_auth.currentUser.uid} exists %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n ');
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SourcePage(),
+              ),
+              (route) => false);
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //       builder: (context) => SourcePage(),),
+          // );
+        }
       } on PlatformException catch (err) {
         var message = 'An error occured, please check your credentials!';
 
