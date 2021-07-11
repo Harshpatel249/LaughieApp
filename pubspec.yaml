@@ -36,7 +36,7 @@ dependencies:
   csc_picker: "^0.2.5"
   intl: "^0.17.0"
   firebase_auth: ^2.0.0
-  table_calendar: ^3.0.1
+  table_calendar: ^3.0.0
   path_provider: ^2.0.2
   image_gallery_saver: ^1.6.9
   permission_handler: ^8.1.2

@@ -183,13 +183,10 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                           labelText: 'Date of Birth',
                         ),
                         mode: DateTimeFieldPickerMode.date,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          return value.isAfter(
-                                  DateTime.now().subtract(Duration(days: 6570)))
-                              ? 'You should be atleast 18 years old!'
-                              : null;
-                        },
+                        autovalidateMode: AutovalidateMode.always,
+                        validator: (e) => (e?.day ?? 0) == 1
+                            ? 'Please not the first day'
+                            : null,
                         onDateSelected: (DateTime value) {
                           print(value);
                           print(value.runtimeType);
