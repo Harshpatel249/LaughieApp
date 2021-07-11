@@ -21,7 +21,7 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
     usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
       "starting_date": _startingDate,
       "ending_date": _endingDate,
-      "sessions": _sessionValue,
+      "sessions": int.parse(_sessionValue),
       "prescribed_by": _prescribedValue,
       "signup_status": 3,
     });
@@ -49,6 +49,8 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
     final screenHeight = mediaQuery.size.height -
         appBar.preferredSize.height -
         mediaQuery.padding.top;
+
+    DateTime valid = DateTime.now();
 
     return Scaffold(
       appBar: appBar,
@@ -91,12 +93,18 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                       labelText: 'Select the starting date',
                     ),
                     mode: DateTimeFieldPickerMode.date,
-                    autovalidateMode: AutovalidateMode.always,
-                    validator: (e) =>
-                        (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      return value.isBefore(DateTime.now())
+                          ? 'You cannot start in the past!'
+                          : null;
+                    },
                     onDateSelected: (DateTime value) {
                       _startingDate = value;
                       print(value);
+                      setState(() {
+                        valid = value;
+                      });
                     },
                   ),
                 ),
@@ -117,9 +125,12 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                       labelText: 'Select the last date',
                     ),
                     mode: DateTimeFieldPickerMode.date,
-                    autovalidateMode: AutovalidateMode.always,
-                    validator: (e) =>
-                        (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      return value.isBefore(_startingDate)
+                          ? 'You cannot end before you start!'
+                          : null;
+                    },
                     onDateSelected: (DateTime value) {
                       _endingDate = value;
                       print(value);
