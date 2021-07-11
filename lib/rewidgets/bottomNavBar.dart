@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:laughie_app/screens/session_screen.dart';
+import 'package:laughie_app/screens/source_page.dart';
 import '../screens/record_screen.dart';
-import '../screens/signIn.dart';
 import '../screens/stats_page.dart';
 import '../screens/userProfile.dart';
 
@@ -31,13 +31,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
               icon: Icon(
                 Icons.emoji_emotions_outlined,
                 size: bottomBarHeight * 0.69,
-                color: Color(0xfffbb313),
+                color: this.id == SessionScreen.id
+                    ? Color(0xfffbb313)
+                    : Colors.black,
                 //this.id == HomeScreen.id ? Colors.white : Color(0xFFC3C2C3),
               ),
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => SignIn()),
+                    MaterialPageRoute(builder: (context) => SourcePage()),
                     (route) => false);
               },
             ),

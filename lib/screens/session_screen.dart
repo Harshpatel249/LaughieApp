@@ -6,7 +6,7 @@ import 'package:laughie_app/rewidgets/bottomNavBar.dart';
 import '../rewidgets/video_widget.dart';
 
 class SessionScreen extends StatefulWidget {
-  static String id = 'video_recorder';
+  static String id = 'session_screen';
   final String mediaType;
   final String filePath;
 
@@ -43,7 +43,9 @@ class _SessionScreenState extends State<SessionScreen> {
 
     return Scaffold(
       appBar: appBar,
-      bottomNavigationBar: BottomNavBar(),
+      bottomNavigationBar: BottomNavBar(
+        id: SessionScreen.id,
+      ),
       body: (widget.mediaType == "video")
           ? Container(
               child: Center(
