@@ -48,7 +48,7 @@ class _TestState extends State<Test> {
             return CircularProgressBar();
           }
         }
-        return LaughieFeedback();
+        return SignIn();
       },
     );
   }
