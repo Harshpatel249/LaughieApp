@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:laughie_app/screens/prescriptionUpdate.dart';
 import '../rewidgets/bottomNavBar.dart';
 import '../rewidgets/circularProgressBar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -306,10 +307,11 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                           width: double.infinity,
                           child: TextButton(
                             onPressed: () {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) => EditProfile()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PrescriptionUpdate()));
                             },
                             child: Padding(
                               padding: const EdgeInsets.only(
