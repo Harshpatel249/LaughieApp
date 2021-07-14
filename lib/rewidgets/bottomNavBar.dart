@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:laughie_app/screens/laughieFeedback.dart';
+import 'package:laughie_app/screens/prescriptionScreen.dart';
 import 'package:laughie_app/screens/sessionFeedback.dart';
 import 'package:laughie_app/screens/session_screen.dart';
 import 'package:laughie_app/screens/source_page.dart';
@@ -50,14 +51,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 Icons.receipt_long,
                 //FontAwesomeIcons.americanSignLanguageInterpreting,
                 size: bottomBarHeight * 0.69,
-                color: this.id == RecordScreen.id
+                color: this.id == PrescriptionScreen.id
                     ? Color(0xfffbb313)
                     : Colors.black,
               ),
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => SessionFeedback()),
+                    MaterialPageRoute(
+                        builder: (context) => PrescriptionScreen()),
                     (route) => false);
               },
             ),
