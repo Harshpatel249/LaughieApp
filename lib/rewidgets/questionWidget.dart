@@ -29,7 +29,7 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                 EdgeInsets.only(left: padding, right: padding, bottom: padding),
             child: Text(
               this.question,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
           ),
           Padding(

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:laughie_app/screens/laughieFeedback.dart';
 import 'package:laughie_app/screens/source_page.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -278,7 +279,7 @@ class _RecordScreenState extends State<RecordScreen> {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => SourcePage(),
+              builder: (context) => LaughieFeedback(),
             ),
             (route) => false);
       });
