@@ -41,7 +41,7 @@ class VideoWidgetState extends State<VideoWidget> {
           if (!mounted) return;
 
           setState(() {});
-          _controller.play();
+          _controller.pause();
         });
       });
   }
@@ -92,9 +92,20 @@ class VideoWidgetState extends State<VideoWidget> {
       );
 
   Widget video() => GestureDetector(
+        // child: AspectRatio(
+        //   aspectRatio: _controller.value.aspectRatio,
+        //   child: VideoPlayer(_controller),
+        // ),
         child: VideoPlayer(_controller),
         onTap: () {
           if (!_controller.value.isInitialized) {
+            Center(
+              child: Icon(
+                Icons.play_circle_outline,
+                size: 100,
+                color: Colors.white,
+              ),
+            );
             return;
           }
           if (_controller.value.isPlaying) {

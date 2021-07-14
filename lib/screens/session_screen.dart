@@ -23,7 +23,7 @@ class _SessionScreenState extends State<SessionScreen> {
   @override
   Widget build(BuildContext context) {
     File fileMedia = File(widget.filePath);
-    print("%%%%%%%%%%%%%%%%%%%%%% session ${widget.filePath}");
+    // print("%%%%%%%%%%%%%%%%%%%%%% session ${widget.filePath}");
     final mediaQuery = MediaQuery.of(context);
     final appBar = AppBar(
       title: Text(
