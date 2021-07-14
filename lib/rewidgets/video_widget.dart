@@ -6,10 +6,9 @@ import 'package:video_player/video_player.dart';
 
 class VideoWidget extends StatefulWidget {
   final File file;
+  final screenHeight;
 
-  const VideoWidget({
-    this.file,
-  });
+  const VideoWidget({this.file, this.screenHeight});
 
   @override
   VideoWidgetState createState() => VideoWidgetState();
@@ -77,12 +76,12 @@ class VideoWidgetState extends State<VideoWidget> {
             ),
           ),
           SizedBox(
-            height: 20,
+            height: widget.screenHeight * 0.02,
           ),
           VideoProgressIndicator(
             _controller,
             allowScrubbing: true,
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.only(left: 5, right: 5),
             colors: VideoProgressColors(
               backgroundColor: Color(0xff4D5163),
               playedColor: Color(0xffFBB313),

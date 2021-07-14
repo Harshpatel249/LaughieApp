@@ -47,22 +47,38 @@ class _SessionScreenState extends State<SessionScreen> {
         id: SessionScreen.id,
       ),
       body: (widget.mediaType == "video")
-          ? Container(
-              child: Center(
-                child: Column(
+          ? ListView(
+              children: [
+                Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: padding / 2, right: padding / 2),
+                      child: Container(
+                        height: screenHeight * 0.05,
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text('Laugh along with your laughie!!'),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: screenHeight * 0.02,
+                    ),
                     Container(
                       height: screenHeight * 0.8,
                       width: double.infinity,
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.only(right: 5, left: 5),
                       child: VideoWidget(
                         file: fileMedia,
+                        screenHeight: screenHeight,
                       ),
                     ),
                   ],
                 ),
-              ),
+              ],
             )
           : Container(),
     );
