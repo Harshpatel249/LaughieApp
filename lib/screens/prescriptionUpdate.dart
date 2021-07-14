@@ -14,6 +14,9 @@ class _PrescriptionUpdateState extends State<PrescriptionUpdate> {
   DateTime _startingDate, _endingDate;
   String _sessionValue;
   String _prescribedValue;
+  bool _enabled = false;
+  bool _calval1 = false;
+  bool _calval2 = false;
 
   _uploadPrescriptionDetails() {
     FocusScope.of(context).unfocus();
@@ -91,6 +94,9 @@ class _PrescriptionUpdateState extends State<PrescriptionUpdate> {
                     mode: DateTimeFieldPickerMode.date,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
+                      value.isBefore(DateTime.now())
+                          ? _calval1 = false
+                          : _calval1 = true;
                       return value.isBefore(DateTime.now())
                           ? 'You cannot start in the past!'
                           : null;
@@ -100,6 +106,7 @@ class _PrescriptionUpdateState extends State<PrescriptionUpdate> {
                       print(value);
                       setState(() {
                         valid = value;
+                        _calval1 = true;
                       });
                     },
                   ),
@@ -123,12 +130,16 @@ class _PrescriptionUpdateState extends State<PrescriptionUpdate> {
                     mode: DateTimeFieldPickerMode.date,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
+                      value.isBefore(_startingDate)
+                          ? _calval2 = false
+                          : _calval2 = true;
                       return value.isBefore(_startingDate)
                           ? 'You cannot end before you start!'
                           : null;
                     },
                     onDateSelected: (DateTime value) {
                       _endingDate = value;
+                      _calval2 = true;
                       print(value);
                     },
                   ),
@@ -223,34 +234,64 @@ class _PrescriptionUpdateState extends State<PrescriptionUpdate> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: const Text(
-                            'Warning!',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          content: const Text(
-                            'Updating prescription would reset all your progress.',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context, 'OK');
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context, 'OK');
-                                _uploadPrescriptionDetails();
-                              },
-                              child: const Text('I understand'),
-                            ),
-                          ],
-                        ),
-                      );
+                      _enabled = (_startingDate == null ||
+                              _endingDate == null ||
+                              _sessionValue == null ||
+                              _prescribedValue == null ||
+                              _calval1 == false ||
+                              _calval2 == false
+                          ? false
+                          : true);
+                      _enabled
+                          ? showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: const Text(
+                                  'Warning!',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                content: const Text(
+                                  'Updating prescription would reset all your progress.',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, 'OK');
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, 'OK');
+                                      _uploadPrescriptionDetails();
+                                    },
+                                    child: const Text('I understand'),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: const Text(
+                                  'Warning!',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                content: const Text(
+                                  'Please enter all the fields correctly.',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, 'OK');
+                                    },
+                                    child: const Text('Okay'),
+                                  ),
+                                ],
+                              ),
+                            );
                     },
                     child: Text(
                       'Update',
