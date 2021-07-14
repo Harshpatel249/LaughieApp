@@ -46,7 +46,7 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                   icon: Icon(
                     FontAwesomeIcons.frown,
                     size: 40,
-                    color: selected == 1 ? Color(0xfffbb313) : Colors.black45,
+                    color: selected == 1 ? Colors.redAccent : Colors.black45,
                   ),
                 ),
                 IconButton(
@@ -58,7 +58,9 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                   icon: Icon(
                     FontAwesomeIcons.frownOpen,
                     size: 40,
-                    color: selected == 2 ? Color(0xfffbb313) : Colors.black45,
+                    color: selected == 2
+                        ? Colors.deepOrangeAccent
+                        : Colors.black45,
                   ),
                 ),
                 IconButton(
@@ -82,7 +84,7 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                   icon: Icon(
                     FontAwesomeIcons.grin,
                     size: 40,
-                    color: selected == 4 ? Color(0xfffbb313) : Colors.black45,
+                    color: selected == 4 ? Colors.greenAccent : Colors.black45,
                   ),
                 ),
                 IconButton(
@@ -94,7 +96,9 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                   icon: Icon(
                     FontAwesomeIcons.grinBeam,
                     size: 40,
-                    color: selected == 5 ? Color(0xfffbb313) : Colors.black45,
+                    color: selected == 5
+                        ? Colors.lightGreenAccent
+                        : Colors.black45,
                   ),
                 ),
               ],
