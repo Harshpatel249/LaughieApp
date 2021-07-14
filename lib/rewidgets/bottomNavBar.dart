@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:laughie_app/screens/laughieFeedback.dart';
 import 'package:laughie_app/screens/session_screen.dart';
 import 'package:laughie_app/screens/source_page.dart';
 import '../screens/record_screen.dart';
@@ -55,7 +56,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => RecordScreen()),
+                    MaterialPageRoute(builder: (context) => LaughieFeedback()),
                     (route) => false);
               },
             ),

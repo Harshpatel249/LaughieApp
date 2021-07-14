@@ -1,106 +1,37 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class QuestionWidget extends StatefulWidget {
-  String question;
-  var id;
-  QuestionWidget({this.question, this.id});
+class LaughieFeedback extends StatefulWidget {
   @override
-  _QuestionWidgetState createState() =>
-      _QuestionWidgetState(question: this.question, id: this.id);
+  _LaughieFeedbackState createState() => _LaughieFeedbackState();
 }
 
-class _QuestionWidgetState extends State<QuestionWidget> {
-  String question;
-  var id;
-  int selected = 0;
-  _QuestionWidgetState({this.id, this.question});
+class _LaughieFeedbackState extends State<LaughieFeedback> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    final appBar = AppBar(
+      title: Text(
+        'Feedback',
+        style: TextStyle(color: Colors.black),
+      ),
+      centerTitle: true,
+    );
+
+    final screenHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        mediaQuery.padding.top;
     final padding = mediaQuery.size.width * 0.05;
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding:
-                EdgeInsets.only(left: padding, right: padding, bottom: padding),
-            child: Text(
-              this.question,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+
+    return SafeArea(
+      child: Scaffold(
+        appBar: appBar,
+        body: ListView(
+          children: [
+            Column(
+              children: [],
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: padding, right: padding * 1.2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      selected = 1;
-                    });
-                  },
-                  icon: Icon(
-                    FontAwesomeIcons.frown,
-                    size: 40,
-                    color: selected == 1 ? Color(0xfffbb313) : Colors.black45,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      selected = 2;
-                    });
-                  },
-                  icon: Icon(
-                    FontAwesomeIcons.frownOpen,
-                    size: 40,
-                    color: selected == 2 ? Color(0xfffbb313) : Colors.black45,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      selected = 3;
-                    });
-                  },
-                  icon: Icon(
-                    FontAwesomeIcons.meh,
-                    size: 40,
-                    color: selected == 3 ? Color(0xfffbb313) : Colors.black45,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      selected = 4;
-                    });
-                  },
-                  icon: Icon(
-                    FontAwesomeIcons.grin,
-                    size: 40,
-                    color: selected == 4 ? Color(0xfffbb313) : Colors.black45,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      selected = 5;
-                    });
-                  },
-                  icon: Icon(
-                    FontAwesomeIcons.grinBeam,
-                    size: 40,
-                    color: selected == 5 ? Color(0xfffbb313) : Colors.black45,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
