@@ -24,8 +24,8 @@ class _StatsPageState extends State<StatsPage> {
   double timeLeft = 28;
   Timestamp _startingTimestamp;
   Timestamp _endingTimestamp;
-  DateTime focused = null;
-  DateTime _selectedDay = null;
+  DateTime focused = DateTime.now();
+  DateTime _selectedDay = DateTime.now();
   int noSessions;
   bool _isFetched = false;
   void _incrementCounter() {
