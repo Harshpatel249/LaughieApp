@@ -28,7 +28,7 @@ class _RecordScreenState extends State<RecordScreen> {
   File fileMedia;
   bool isRecorded = false;
 
-  final _audioDuration = 5.00;
+  final _audioDuration = 59.00;
 
   bool recordLaughieStatus;
   String _filePath;
