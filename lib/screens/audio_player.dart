@@ -214,9 +214,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
                 height: constraints.maxHeight * 0.1,
                 child: FittedBox(
                   child: Text(
-                    _mRecorder.isRecording
-                        ? 'Recording in progress'
-                        : 'Record Audio',
+                    _mRecorder.isRecording ? 'Stop' : 'Play',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),

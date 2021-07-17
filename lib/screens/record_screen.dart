@@ -138,6 +138,12 @@ class _RecordScreenState extends State<RecordScreen> {
               setState(() {});
             })
         .then((value) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LaughieFeedback(),
+          ),
+          (route) => false);
       setState(() {});
     });
     usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
