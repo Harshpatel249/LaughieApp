@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
+import 'package:laughie_app/screens/homePage.dart';
 import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/session_screen.dart';
 import 'package:laughie_app/screens/test.dart';
@@ -60,7 +61,7 @@ class _SourcePageState extends State<SourcePage> {
   Widget build(BuildContext context) {
     return _isFetched
         ? _recordLaughieStatus
-            ? SessionScreen(
+            ? HomePage(
                 filePath: _filePath,
                 mediaType: _mediaType,
               )

@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:laughie_app/rewidgets/bottomNavBar.dart';
+
 import 'package:laughie_app/screens/audio_player.dart';
+import 'package:laughie_app/screens/laughieFeedback.dart';
 
 import '../rewidgets/video_widget.dart';
 
@@ -34,19 +35,13 @@ class _SessionScreenState extends State<SessionScreen> {
       centerTitle: true,
     );
 
-    final bottomBarHeight = MediaQuery.of(context).size.height * 0.08;
     final appBarHeight = appBar.preferredSize.height;
-    final screenHeight = mediaQuery.size.height -
-        appBarHeight -
-        mediaQuery.padding.top -
-        bottomBarHeight;
+    final screenHeight =
+        mediaQuery.size.height - appBarHeight - mediaQuery.padding.top;
     final padding = mediaQuery.size.width * 0.05;
 
     return Scaffold(
       appBar: appBar,
-      bottomNavigationBar: BottomNavBar(
-        id: SessionScreen.id,
-      ),
       body: (widget.mediaType == "video")
           ? ListView(
               children: [
@@ -75,6 +70,37 @@ class _SessionScreenState extends State<SessionScreen> {
                       child: VideoWidget(
                         file: fileMedia,
                         screenHeight: screenHeight,
+                      ),
+                    ),
+                    SizedBox(
+                      height: screenHeight * 0.02,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: padding, right: padding),
+                      child: Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LaughieFeedback()),
+                                (route) => false);
+                          },
+                          child: Text(
+                            'End Session',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              primary: Color(0xfffbb313),
+                              onPrimary: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(8), // <-- Radius
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 30)),
+                        ),
                       ),
                     ),
                   ],

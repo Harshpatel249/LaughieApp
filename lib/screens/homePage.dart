@@ -1,9 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laughie_app/rewidgets/bottomNavBar.dart';
 import 'package:laughie_app/screens/session_screen.dart';
 
 class HomePage extends StatelessWidget {
-  String id = 'home_page';
+  static String id = 'home_page';
   final String mediaType;
   final String filePath;
   HomePage({this.filePath, this.mediaType});
@@ -30,11 +31,26 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: appBar,
-        bottomNavigationBar: BottomNavBar(),
+        bottomNavigationBar: BottomNavBar(
+          id: HomePage.id,
+        ),
         body: ListView(
           children: [
             Column(
               children: [
+                SizedBox(
+                  height: screenHeight * 0.03,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: padding, right: padding),
+                  child: Container(
+                    height: screenHeight * 0.1,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text('Welcome!!'),
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: screenHeight * 0.03,
                 ),
@@ -100,6 +116,7 @@ class HomePage extends StatelessWidget {
                 SizedBox(
                   height: screenHeight * 0.04,
                 ),
+                Text('Tap on the logo to start your session!'),
               ],
             )
           ],
