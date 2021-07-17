@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:laughie_app/rewidgets/bottomNavBar.dart';
+import 'package:laughie_app/screens/audio_player.dart';
 
 import '../rewidgets/video_widget.dart';
 
@@ -34,9 +35,9 @@ class _SessionScreenState extends State<SessionScreen> {
     );
 
     final bottomBarHeight = MediaQuery.of(context).size.height * 0.08;
-
+    final appBarHeight = appBar.preferredSize.height;
     final screenHeight = mediaQuery.size.height -
-        appBar.preferredSize.height -
+        appBarHeight -
         mediaQuery.padding.top -
         bottomBarHeight;
     final padding = mediaQuery.size.width * 0.05;
@@ -80,7 +81,7 @@ class _SessionScreenState extends State<SessionScreen> {
                 ),
               ],
             )
-          : Container(),
+          : AudioPlayer(appBarHeight, widget.filePath),
     );
   }
 }

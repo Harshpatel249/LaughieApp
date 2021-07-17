@@ -28,6 +28,8 @@ class _RecordScreenState extends State<RecordScreen> {
   File fileMedia;
   bool isRecorded = false;
 
+  final _audioDuration = 5.00;
+
   bool recordLaughieStatus;
   String _filePath;
   String _mediaType;
@@ -176,7 +178,7 @@ class _RecordScreenState extends State<RecordScreen> {
           print('${DateTime.now()}');
           print('$progressValue');
           progressValue++;
-          if (progressValue > 59.00) {
+          if (progressValue > _audioDuration) {
             print('#### inside if');
             setState(() {
               _hasTimeCompleted = true;
