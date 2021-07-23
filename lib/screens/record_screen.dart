@@ -5,10 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:laughie_app/screens/assess_video.dart';
 import 'package:laughie_app/screens/laughieFeedback.dart';
-import 'package:laughie_app/screens/source_page.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -271,23 +270,31 @@ class _RecordScreenState extends State<RecordScreen> {
     if (recordedVideo == null) {
       return;
     } else {
-      final _saveResult = await ImageGallerySaver.saveFile(recordedVideo.path);
-
-      print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
-      usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
-        "has_recorded_laughie": true,
-        "media": "video",
-        "filePath": _saveResult['filePath'],
-      });
+      // final _saveResult = await ImageGallerySaver.saveFile(recordedVideo.path);
+      //
+      // print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
+      // usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+      //   "has_recorded_laughie": true,
+      //   "media": "video",
+      //   "filePath": _saveResult['filePath'],
+      // });
 
       setState(() {
         fileMedia = recordedVideo;
         isRecorded = true;
 
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) => LaughieFeedback(),
+        //     ),
+        //     (route) => false);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => LaughieFeedback(),
+              builder: (context) => AssessVideo(
+                recordedVideo: recordedVideo,
+              ),
             ),
             (route) => false);
       });
@@ -325,7 +332,31 @@ class _RecordScreenState extends State<RecordScreen> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-
+    final AlertDialog warning = AlertDialog(
+      title: Text(
+        'Warning',
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: Text(
+        'Video of the recorded Laughie should not be longer than 1 minute.',
+        style: TextStyle(
+          color: Colors.grey,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text('OK'),
+          onPressed: () {
+            checkPermission(context);
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
     final appBar = AppBar(
       centerTitle: true,
       title: Text('Record'),
@@ -505,7 +536,11 @@ class _RecordScreenState extends State<RecordScreen> {
                               ),
                             ),
                             onPressed: () {
-                              checkPermission(context);
+                              showDialog<String>(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => warning,
+                              );
                             },
                           ),
                           SizedBox(
