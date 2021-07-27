@@ -607,7 +607,7 @@ class _RecordScreenState extends State<RecordScreen> {
                                 children: [
                                   Center(
                                     child: Text(
-                                      'Player Functionality Activated.',
+                                      'Click play icon for replay.',
                                       style: TextStyle(fontSize: 20),
                                     ),
                                   ),
@@ -678,7 +678,7 @@ class _RecordScreenState extends State<RecordScreen> {
                     )
                   : Center(
                       child: Text(
-                        'Recorder Functionality Activated.',
+                        'Laughie type: Audio',
                         style: TextStyle(fontSize: 20),
                       ),
                     )
