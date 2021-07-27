@@ -43,7 +43,7 @@ class _TestState extends State<Test> {
           } else if (status == 2) {
             return SignUpPrescription();
           } else if (status == 3) {
-            return RecordScreen();
+            return SourcePage();
           } else {
             return CircularProgressBar();
           }
