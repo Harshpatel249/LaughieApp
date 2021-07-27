@@ -143,11 +143,11 @@ class _RecordScreenState extends State<RecordScreen> {
         .then((value) {
       setState(() {});
     });
-    usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
-      "has_recorded_laughie": true,
-      "media": "audio",
-      "filePath": _mPath,
-    });
+    // usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+    //   "has_recorded_laughie": true,
+    //   "media": "audio",
+    //   "filePath": _mPath,
+    // });
   }
 
   void stopPlayer() {
@@ -574,6 +574,15 @@ class _RecordScreenState extends State<RecordScreen> {
                                     onPressed: () {
                                       setState(() {
                                         _isSaveClicked = true;
+                                      });
+
+                                      usersRef
+                                          .doc(FirebaseAuth
+                                              .instance.currentUser.uid)
+                                          .update({
+                                        "has_recorded_laughie": true,
+                                        "media": "audio",
+                                        "filePath": _mPath,
                                       });
 
                                       Navigator.pushAndRemoveUntil(
