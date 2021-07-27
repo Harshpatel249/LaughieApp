@@ -29,8 +29,8 @@ class _RecordScreenState extends State<RecordScreen> {
   File fileMedia;
   bool isRecorded = false;
 
-  final _audioPlayerDuration = 4.00;
-  final _audioRecordDuration = 4.00;
+  final _audioPlayerDuration = 59.00;
+  final _audioRecordDuration = 59.00;
 
   bool recordLaughieStatus;
   String _filePath;
@@ -547,7 +547,7 @@ class _RecordScreenState extends State<RecordScreen> {
           _isRecordingSelected
               ? _hasTimeCompleted
                   ? Container(
-                      color: Colors.blue,
+                      // color: Colors.blue,
                       height: (mediaQuery.size.height -
                               appBarHeight -
                               mediaQuery.padding.top) *
