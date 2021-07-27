@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'laughieFeedback.dart';
 
 typedef _Fn = void Function();
 
@@ -134,97 +135,127 @@ class _AudioPlayerState extends State<AudioPlayer> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    return Container(
-      // color: Colors.red,
-      height: (mediaQuery.size.height -
-              widget.appBarheight -
-              mediaQuery.padding.top) *
-          0.5,
-      width: (mediaQuery.size.height -
-              widget.appBarheight -
-              mediaQuery.padding.top) *
-          0.5,
-      child: LayoutBuilder(
-        builder: (ctx, constraints) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
-                alignment: Alignment.center,
+    final padding = mediaQuery.size.width * 0.05;
+    return Column(
+      children: [
+        Container(
+          // color: Colors.red,
+          height: (mediaQuery.size.height -
+                  widget.appBarheight -
+                  mediaQuery.padding.top) *
+              0.5,
+          width: (mediaQuery.size.height -
+                  widget.appBarheight -
+                  mediaQuery.padding.top) *
+              0.5,
+          child: LayoutBuilder(
+            builder: (ctx, constraints) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    // color: Colors.amber,
-                    width: constraints.maxHeight * 0.57,
-                    height: constraints.maxHeight * 0.57,
-                    child: SfRadialGauge(
-                      axes: <RadialAxis>[
-                        RadialAxis(
-                          minimum: 0,
-                          maximum: 100,
-                          showLabels: false,
-                          showTicks: false,
-                          startAngle: 270,
-                          endAngle: 270,
-                          radiusFactor: 1,
-                          axisLineStyle: AxisLineStyle(
-                            thickness: 0.1,
-                            color: const Color.fromARGB(30, 0, 169, 181),
-                            thicknessUnit: GaugeSizeUnit.factor,
-                          ),
-                          pointers: <GaugePointer>[
-                            RangePointer(
-                                value: progressValue * 1.6667,
-                                width: 0.1,
-                                sizeUnit: GaugeSizeUnit.factor,
-                                enableAnimation: true,
-                                animationDuration: 100,
-                                animationType: AnimationType.linear)
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        // color: Colors.amber,
+                        width: constraints.maxHeight * 0.57,
+                        height: constraints.maxHeight * 0.57,
+                        child: SfRadialGauge(
+                          axes: <RadialAxis>[
+                            RadialAxis(
+                              minimum: 0,
+                              maximum: 100,
+                              showLabels: false,
+                              showTicks: false,
+                              startAngle: 270,
+                              endAngle: 270,
+                              radiusFactor: 1,
+                              axisLineStyle: AxisLineStyle(
+                                thickness: 0.1,
+                                color: const Color.fromARGB(30, 0, 169, 181),
+                                thicknessUnit: GaugeSizeUnit.factor,
+                              ),
+                              pointers: <GaugePointer>[
+                                RangePointer(
+                                    value: progressValue * 1.6667,
+                                    width: 0.1,
+                                    sizeUnit: GaugeSizeUnit.factor,
+                                    enableAnimation: true,
+                                    animationDuration: 100,
+                                    animationType: AnimationType.linear)
+                              ],
+                            ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: CircleBorder(),
+                          // primary: Colors.orange,
+                        ),
+                        child: Container(
+                          // width: 170,
+                          // height: 170,
+                          width: constraints.maxHeight * 0.475,
+                          height: constraints.maxHeight * 0.475,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFF222223),
+                          ),
+                          child: Icon(
+                            getIcon(),
+                            size: constraints.maxHeight * 0.475 * 0.5,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        onPressed: _onAudioButtonPressed,
+                      ),
+                    ],
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(),
-                      // primary: Colors.orange,
-                    ),
-                    child: Container(
-                      // width: 170,
-                      // height: 170,
-                      width: constraints.maxHeight * 0.475,
-                      height: constraints.maxHeight * 0.475,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xFF222223),
-                      ),
-                      child: Icon(
-                        getIcon(),
-                        size: constraints.maxHeight * 0.475 * 0.5,
-                        color: Theme.of(context).primaryColor,
+                  SizedBox(
+                    height: constraints.maxHeight * 0.07,
+                  ),
+                  Container(
+                    height: constraints.maxHeight * 0.1,
+                    child: FittedBox(
+                      child: Text(
+                        _mRecorder.isRecording ? 'Stop' : 'Play',
+                        style: TextStyle(color: Colors.black),
                       ),
                     ),
-                    onPressed: _onAudioButtonPressed,
                   ),
                 ],
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: padding, right: padding),
+          child: Container(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LaughieFeedback()),
+                    (route) => false);
+              },
+              child: Text(
+                'End Session',
+                style: TextStyle(fontSize: 18),
               ),
-              SizedBox(
-                height: constraints.maxHeight * 0.07,
-              ),
-              Container(
-                height: constraints.maxHeight * 0.1,
-                child: FittedBox(
-                  child: Text(
-                    _mRecorder.isRecording ? 'Stop' : 'Play',
-                    style: TextStyle(color: Colors.black),
+              style: ElevatedButton.styleFrom(
+                  primary: Color(0xfffbb313),
+                  onPrimary: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8), // <-- Radius
                   ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30)),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
