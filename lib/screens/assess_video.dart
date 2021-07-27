@@ -23,6 +23,8 @@ class _AssessVideoState extends State<AssessVideo> {
   VideoPlayerController _controller;
   Future<void> _initializeVideoPlayerFuture;
 
+  int allowedVideoLength = 11;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -77,7 +79,7 @@ class _AssessVideoState extends State<AssessVideo> {
             //   child: VideoPlayer(_controller),
             // );
 
-            if (_controller.value.duration.inSeconds > 11) {
+            if (_controller.value.duration.inSeconds > allowedVideoLength) {
               print(
                   '###################################### video is too long @################');
 

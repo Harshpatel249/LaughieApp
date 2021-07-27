@@ -23,6 +23,8 @@ class _AudioPlayerState extends State<AudioPlayer> {
   bool _mPlayerIsInited = false;
   bool _mplaybackReady = false;
 
+  final _audioPlayerDuration = 4.00;
+
   Timer _timer = Timer(Duration.zero, () {});
 
   @override
@@ -95,7 +97,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
           print('${DateTime.now()}');
           print('$progressValue');
           progressValue++;
-          if (progressValue > 5.00) {
+          if (progressValue > _audioPlayerDuration) {
             print('#### inside if');
 
             _timer.cancel();
@@ -103,7 +105,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
           } else {
             print('#### inside else');
 
-            play();
+            // play();
           }
         });
       },
