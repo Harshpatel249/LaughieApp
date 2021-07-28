@@ -46,10 +46,17 @@ dependencies:
   flutter_sound: ^8.1.4
   syncfusion_flutter_gauges: ^19.1.69
   font_awesome_flutter: ^9.0.0
+  fluttertoast: ^8.0.7
+
+
+
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: "^0.9.0"
+  
 
 flutter_icons:
   android: "launcher_icon"

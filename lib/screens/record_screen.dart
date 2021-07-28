@@ -5,9 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:laughie_app/screens/source_page.dart';
+import 'package:laughie_app/rewidgets/show_toast.dart';
+import 'package:laughie_app/screens/assess_video.dart';
+import 'package:laughie_app/screens/laughieFeedback.dart';
+import 'package:laughie_app/screens/sessionFeedback.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -27,6 +29,9 @@ class _RecordScreenState extends State<RecordScreen> {
   File fileMedia;
   bool isRecorded = false;
 
+  final _audioPlayerDuration = 59.00;
+  final _audioRecordDuration = 59.00;
+
   bool recordLaughieStatus;
   String _filePath;
   String _mediaType;
@@ -37,10 +42,11 @@ class _RecordScreenState extends State<RecordScreen> {
   bool _mPlayerIsInited = false;
   bool _mRecorderIsInited = false;
   bool _mplaybackReady = false;
-  String _mPath = 'flutter_sound_example.aac';
+  String _mPath;
 
   bool _hasTimeCompleted = false;
   bool _isRecordingSelected = false;
+  bool _isSaveClicked = false;
 
   Timer _timer = Timer(Duration.zero, () {});
   double progressValue = 0;
@@ -137,11 +143,11 @@ class _RecordScreenState extends State<RecordScreen> {
         .then((value) {
       setState(() {});
     });
-    usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
-      "has_recorded_laughie": true,
-      "media": "audio",
-      "filePath": _mPath,
-    });
+    // usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+    //   "has_recorded_laughie": true,
+    //   "media": "audio",
+    //   "filePath": _mPath,
+    // });
   }
 
   void stopPlayer() {
@@ -152,12 +158,12 @@ class _RecordScreenState extends State<RecordScreen> {
 
 // ----------------------------- UI --------------------------------------------
 
-  _Fn startCounter() {
+  _Fn startRecordCounter() {
     progressValue = 0;
 
     print('########### inside startCounter');
     if (!_mRecorderIsInited || !_mPlayer.isStopped) {
-      print('inside !_mRecorderIsInited || !_mPlayer.isStopped');
+      print('inside !_mRecorderIsInited || !_mPlayer!.isStopped');
       return null;
     }
     if (_timer != null) {
@@ -165,6 +171,43 @@ class _RecordScreenState extends State<RecordScreen> {
       _timer.cancel();
 
       stopRecorder();
+    }
+    print('${DateTime.now()}');
+    record();
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (Timer _timer) {
+        print('inside anonymous function');
+        setState(() {
+          print('${DateTime.now()}');
+          print('$progressValue');
+          progressValue++;
+          if (progressValue > _audioRecordDuration) {
+            print('#### inside if');
+            setState(() {
+              _hasTimeCompleted = true;
+            });
+            _timer.cancel();
+            stopRecorder();
+          }
+        });
+      },
+    );
+  }
+
+  _Fn startPlayerCounter() {
+    progressValue = 0;
+
+    print('########### inside startCounter');
+    if (!_mPlayer.isStopped) {
+      print('inside !_mRecorderIsInited || !_mPlayer.isStopped');
+      return null;
+    }
+    if (_timer != null) {
+      print('inside _timer != null');
+      _timer.cancel();
+
+      stopPlayer();
     }
     print('${DateTime.now()}');
     _timer = Timer.periodic(
@@ -175,16 +218,15 @@ class _RecordScreenState extends State<RecordScreen> {
           print('${DateTime.now()}');
           print('$progressValue');
           progressValue++;
-          if (progressValue > 59.00) {
+          if (progressValue > _audioPlayerDuration) {
             print('#### inside if');
-            setState(() {
-              _hasTimeCompleted = true;
-            });
+
             _timer.cancel();
-            stopRecorder();
+            stopPlayer();
           } else {
             print('#### inside else');
-            record();
+
+            // play();
           }
         });
       },
@@ -211,16 +253,55 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   IconData getIcon() {
-    return _hasTimeCompleted
-        ? _mPlayer.isPlaying
-            ? Icons.stop
-            : Icons.play_arrow
-        : _mRecorder.isRecording
-            ? Icons.stop
-            : Icons.mic;
+    return _isSaveClicked
+        ? Icons.done
+        : _hasTimeCompleted
+            ? _mPlayer.isPlaying
+                ? Icons.stop
+                : Icons.play_arrow
+            : _mRecorder.isRecording
+                ? Icons.stop
+                : Icons.mic;
   }
 
-  //---------------Functions for video recorder-----------
+  _onAudioButtonPressed() {
+    if (!_isSaveClicked) {
+      setState(() {
+        _isRecordingSelected = true;
+      });
+      print('@@@@_mRecorder!.isRecording:${_mRecorder.isRecording}');
+      print('@@@@_hasTimeCompleted:${_hasTimeCompleted}');
+      if (_mRecorder.isRecording == false && _hasTimeCompleted == false) {
+        print('@@@@inside if1');
+        startRecordCounter();
+      } else if (_mRecorder.isRecording == true && _hasTimeCompleted == false) {
+        print('@@@@inside if2');
+        _timer.cancel();
+        setState(() {
+          progressValue = 0;
+        });
+        stopRecorder();
+      } else if (_mRecorder.isStopped == true &&
+          _hasTimeCompleted == true &&
+          _mPlayer.isStopped == true) {
+        print('@@@@inside if3');
+        startPlayerCounter();
+        play();
+      } else if (_mRecorder.isStopped == true &&
+          _hasTimeCompleted == true &&
+          _mPlayer.isStopped == false) {
+        print('@@@@inside if4');
+        _timer.cancel();
+        setState(() {
+          progressValue = 0;
+        });
+        stopPlayer();
+      }
+    }
+  }
+
+  //---------------Functions for video recorder-------------------------------
+
   Future<File> pickCameraMedia(BuildContext context) async {
     // bool saved = await saveFile('recording.mp4');
     // ModalRoute is used to retrieve the info that has been passed down using Navigator
@@ -262,23 +343,31 @@ class _RecordScreenState extends State<RecordScreen> {
     if (recordedVideo == null) {
       return;
     } else {
-      final _saveResult = await ImageGallerySaver.saveFile(recordedVideo.path);
-
-      print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
-      usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
-        "has_recorded_laughie": true,
-        "media": "video",
-        "filePath": _saveResult['filePath'],
-      });
+      // final _saveResult = await ImageGallerySaver.saveFile(recordedVideo.path);
+      //
+      // print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
+      // usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+      //   "has_recorded_laughie": true,
+      //   "media": "video",
+      //   "filePath": _saveResult['filePath'],
+      // });
 
       setState(() {
         fileMedia = recordedVideo;
         isRecorded = true;
 
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) => LaughieFeedback(),
+        //     ),
+        //     (route) => false);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => SourcePage(),
+              builder: (context) => AssessVideo(
+                recordedVideo: recordedVideo,
+              ),
             ),
             (route) => false);
       });
@@ -316,7 +405,31 @@ class _RecordScreenState extends State<RecordScreen> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-
+    final AlertDialog warningDialog = AlertDialog(
+      title: Text(
+        'Warning',
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: Text(
+        'Video of the recorded Laughie should not be longer than 1 minute otherwise you will be required to record the video again.',
+        style: TextStyle(
+          color: Colors.grey,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text('OK'),
+          onPressed: () {
+            checkPermission(context);
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
     final appBar = AppBar(
       centerTitle: true,
       title: Text('Record'),
@@ -330,35 +443,7 @@ class _RecordScreenState extends State<RecordScreen> {
         ),
       ],
     );
-
-    _onAudioButtonPressed() {
-      setState(() {
-        _isRecordingSelected = true;
-      });
-      print('@@@@_mRecorder!.isRecording:${_mRecorder.isRecording}');
-      print('@@@@_hasTimeCompleted:${_hasTimeCompleted}');
-      if (_mRecorder.isRecording == false && _hasTimeCompleted == false) {
-        print('@@@@inside if1');
-        startCounter();
-      } else if (_mRecorder.isRecording == true && _hasTimeCompleted == false) {
-        print('@@@@inside if2');
-        _timer.cancel();
-        setState(() {
-          progressValue = 0;
-        });
-        stopRecorder();
-      } else if (_mRecorder.isStopped == true &&
-          _hasTimeCompleted == true &&
-          _mPlayer.isStopped == true) {
-        print('@@@@inside if3');
-        play();
-      } else if (_mRecorder.isStopped == true &&
-          _hasTimeCompleted == true &&
-          _mPlayer.isStopped == false) {
-        print('@@@@inside if4');
-        stopPlayer();
-      }
-    }
+    final appBarHeight = appBar.preferredSize.height;
 
     return Scaffold(
       appBar: appBar,
@@ -460,12 +545,143 @@ class _RecordScreenState extends State<RecordScreen> {
             ),
           ),
           _isRecordingSelected
-              ? Center(
-                  child: Text(
-                    'Recorder Functionality Activated.',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                )
+              ? _hasTimeCompleted
+                  ? Container(
+                      // color: Colors.blue,
+                      height: (mediaQuery.size.height -
+                              appBarHeight -
+                              mediaQuery.padding.top) *
+                          0.5,
+                      width: (mediaQuery.size.height -
+                              appBarHeight -
+                              mediaQuery.padding.top) *
+                          0.5,
+                      child: LayoutBuilder(builder: (ctx, constraints) {
+                        return _isSaveClicked
+                            ? Container(
+                                // color: Colors.amber,
+                                height: constraints.maxHeight,
+                                width: constraints.maxWidth,
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  padding: EdgeInsets.only(bottom: 40),
+                                  height: constraints.maxHeight * 0.22,
+                                  width: constraints.maxWidth * 0.4,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary:
+                                            Theme.of(context).primaryColor),
+                                    onPressed: () {
+                                      setState(() {
+                                        _isSaveClicked = true;
+                                      });
+
+                                      usersRef
+                                          .doc(FirebaseAuth
+                                              .instance.currentUser.uid)
+                                          .update({
+                                        "has_recorded_laughie": true,
+                                        "media": "audio",
+                                        "filePath": _mPath,
+                                      });
+
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                LaughieFeedback(),
+                                          ),
+                                          (route) => false);
+                                    },
+                                    child: Text(
+                                      'Done',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Column(
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Click play icon for replay.',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: 40, left: 20),
+                                        height: constraints.maxHeight * 0.22,
+                                        width: constraints.maxWidth * 0.4,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Theme.of(context)
+                                                  .primaryColor),
+                                          onPressed: () {
+                                            setState(() {
+                                              _hasTimeCompleted = false;
+                                              progressValue = 0;
+                                              stopPlayer();
+                                              _timer.cancel();
+                                            });
+                                          },
+                                          child: Text(
+                                            'Retake',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: 40, right: 20),
+                                        height: constraints.maxHeight * 0.22,
+                                        width: constraints.maxWidth * 0.4,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Theme.of(context)
+                                                  .primaryColor),
+                                          onPressed: () {
+                                            ShowToast.showToast(
+                                                'Laughie has been saved');
+                                            setState(() {
+                                              _isSaveClicked = true;
+                                              stopPlayer();
+                                              _timer.cancel();
+                                              progressValue =
+                                                  _audioPlayerDuration;
+                                            });
+                                          },
+                                          child: Text(
+                                            'Save',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              );
+                      }),
+                    )
+                  : Center(
+                      child: Text(
+                        'Laughie type: Audio',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    )
               : Container(
                   height: (mediaQuery.size.height -
                           appBar.preferredSize.height -
@@ -496,7 +712,11 @@ class _RecordScreenState extends State<RecordScreen> {
                               ),
                             ),
                             onPressed: () {
-                              checkPermission(context);
+                              showDialog<String>(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => warningDialog,
+                              );
                             },
                           ),
                           SizedBox(

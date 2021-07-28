@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
+import 'package:laughie_app/screens/homePage.dart';
 import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/session_screen.dart';
 import 'package:laughie_app/screens/test.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SourcePage extends StatefulWidget {
   // const SourcePage({Key? key}) : super(key: key);
@@ -32,10 +34,16 @@ class _SourcePageState extends State<SourcePage> {
     print(
         "#############################################$_recordLaughieStatus}");
     if (_recordLaughieStatus) {
-      _filePath = userData['filePath'];
-      _mediaType = userData['media'];
-      print(
-          "#############################################$_filePath \n ^^^^^^^^^^^^^^^^^^^^^^$_mediaType}");
+      var storageStatus = await Permission.storage.status;
+      if (!storageStatus.isGranted) {
+        await Permission.storage.request();
+      }
+      if (await Permission.storage.isGranted) {
+        _filePath = userData['filePath'];
+        _mediaType = userData['media'];
+        print(
+            "#############################################$_filePath \n ^^^^^^^^^^^^^^^^^^^^^^$_mediaType}");
+      }
     }
     setState(() {
       _isFetched = true;
@@ -53,7 +61,7 @@ class _SourcePageState extends State<SourcePage> {
   Widget build(BuildContext context) {
     return _isFetched
         ? _recordLaughieStatus
-            ? SessionScreen(
+            ? HomePage(
                 filePath: _filePath,
                 mediaType: _mediaType,
               )

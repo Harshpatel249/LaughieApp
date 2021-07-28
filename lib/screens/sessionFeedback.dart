@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:laughie_app/screens/source_page.dart';
 import '../rewidgets/questionWidget.dart';
 
-class LaughieFeedback extends StatefulWidget {
+class SessionFeedback extends StatefulWidget {
   @override
-  _LaughieFeedbackState createState() => _LaughieFeedbackState();
+  _SessionFeedbackState createState() => _SessionFeedbackState();
 }
 
-class _LaughieFeedbackState extends State<LaughieFeedback> {
+class _SessionFeedbackState extends State<SessionFeedback> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -36,16 +35,25 @@ class _LaughieFeedbackState extends State<LaughieFeedback> {
                   height: screenHeight * 0.02,
                 ),
                 QuestionWidget(
-                  question: 'Did you enjoy recording the Laughie?',
-                  id: 1,
+                  question:
+                      'Did you laugh for more than 30 seconds of the session?',
+                  id: 3,
                 ),
                 SizedBox(
                   height: screenHeight * 0.05,
                 ),
                 QuestionWidget(
                   question:
-                      'Did you laugh for the full one minute of recording?',
-                  id: 2,
+                      'Did you laugh for the full one minute of the session?',
+                  id: 4,
+                ),
+                SizedBox(
+                  height: screenHeight * 0.05,
+                ),
+                QuestionWidget(
+                  question:
+                      'Did you feel more cheerful at the end of the session?',
+                  id: 5,
                 ),
                 SizedBox(
                   height: screenHeight * 0.05,
@@ -54,12 +62,12 @@ class _LaughieFeedbackState extends State<LaughieFeedback> {
                   padding: EdgeInsets.only(right: padding, left: padding),
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SourcePage(),
-                          ),
-                          (route) => false);
+                      // Navigator.pushAndRemoveUntil(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => SourcePage(),
+                      //     ),
+                      //         (route) => false);
                     },
                     child: Text(
                       'Submit',
