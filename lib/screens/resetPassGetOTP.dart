@@ -1,5 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'resetPassAuthOTP.dart';
+import 'package:laughie_app/screens/signIn.dart';
 
 class ResetPassGetOTP extends StatefulWidget {
   @override
@@ -7,10 +8,62 @@ class ResetPassGetOTP extends StatefulWidget {
 }
 
 class _ResetPassGetOTPState extends State<ResetPassGetOTP> {
-  String emailPhone;
+  String _emailPhone;
 
   final _formKey = GlobalKey<FormState>();
   final emailPhoneCon = new TextEditingController();
+
+  _sendRequest() {
+    setState(() {
+      if (_formKey.currentState.validate()) {
+        _emailPhone = emailPhoneCon.text;
+      }
+    });
+    try {
+      FirebaseAuth.instance
+          .sendPasswordResetEmail(email: _emailPhone)
+          .whenComplete(() {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(
+              'Alert',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Text(
+              'Password reset link has been sent to ${emailPhoneCon.text}. Please check your inbox.',
+              style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) => SignIn(),
+                      ),
+                      (route) => false);
+                },
+              ),
+            ],
+          ),
+        );
+      });
+    } catch (err) {
+      print("&&&&&&&&&&&&&&&&&&&&& $err");
+    }
+    // Navigator.of(context).pop();
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => ResetPassAuthOTP()),
+    // );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +96,7 @@ class _ResetPassGetOTPState extends State<ResetPassGetOTP> {
                     height: 10,
                   ),
                   Text(
-                    'Please enter your registered Email id or phone number',
+                    'Please enter your registered Email address',
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(
@@ -62,30 +115,17 @@ class _ResetPassGetOTPState extends State<ResetPassGetOTP> {
                         borderSide:
                             BorderSide(color: Color(0xFFC3C2C3), width: 2.0),
                       ),
-                      labelText: 'Email/Phone',
+                      labelText: 'Email',
                       labelStyle: TextStyle(color: Colors.black45),
-                      hintText: 'Email/Phone',
-                      hintStyle: TextStyle(color: Colors.black45),
                     ),
                   ),
                   SizedBox(
                     height: 30,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        if (_formKey.currentState.validate()) {
-                          emailPhone = emailPhoneCon.text;
-                        }
-                      });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ResetPassAuthOTP()),
-                      );
-                    },
+                    onPressed: _sendRequest,
                     child: Text(
-                      'Send OTP',
+                      'Send Request',
                       style: TextStyle(fontSize: 18),
                     ),
                     style: ElevatedButton.styleFrom(

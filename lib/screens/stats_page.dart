@@ -5,9 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'session_builder.dart';
+
 import '../rewidgets/bottomNavBar.dart';
-import 'daily_track_card.dart';
+import 'session_builder.dart';
 
 class StatsPage extends StatefulWidget {
   static String id = 'stats_page';

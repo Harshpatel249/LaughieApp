@@ -61,6 +61,7 @@ class _AssessVideoState extends State<AssessVideo> {
   @override
   Widget build(BuildContext context) {
     // AlertDialog warning = ;
+    print('##################### build called');
     return Scaffold(
       appBar: AppBar(
         title: Text(''),
