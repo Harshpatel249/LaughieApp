@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:laughie_app/rewidgets/show_toast.dart';
 import 'package:laughie_app/screens/assess_video.dart';
 import 'package:laughie_app/screens/laughieFeedback.dart';
+import 'package:laughie_app/screens/recordHelp.dart';
 import 'package:laughie_app/screens/sessionFeedback.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -439,7 +440,12 @@ class _RecordScreenState extends State<RecordScreen> {
             Icons.help,
             size: 30,
           ),
-          onPressed: () => null,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RecordHelp()),
+            );
+          },
         ),
       ],
     );
