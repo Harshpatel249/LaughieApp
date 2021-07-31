@@ -77,6 +77,13 @@ class RecordHelp extends StatelessWidget {
                   SizedBox(
                     height: screenHeight * 0.01,
                   ),
+                  Text(
+                    'Video tutorial: ',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  ),
                 ],
               ),
             )
