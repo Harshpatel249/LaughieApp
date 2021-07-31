@@ -47,6 +47,7 @@ dependencies:
   syncfusion_flutter_gauges: ^19.1.69
   font_awesome_flutter: ^9.0.0
   fluttertoast: ^8.0.7
+  uuid: 3.0.4
   async: ^2.4.2
 
 

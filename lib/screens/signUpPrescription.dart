@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/test.dart';
+import 'package:uuid/uuid.dart';
 
 class SignUpPrescription extends StatefulWidget {
   final UserCredential userCredential;
@@ -15,6 +16,7 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
   DateTime _startingDate, _endingDate;
   String _sessionValue;
   String _prescribedValue;
+  String dayId = Uuid().v4();
 
   _uploadPrescriptionDetails() {
     FocusScope.of(context).unfocus();
@@ -24,6 +26,9 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
       "sessions": int.parse(_sessionValue),
       "prescribed_by": _prescribedValue,
       "signup_status": 3,
+    });
+    sessionsRef.doc(dayId).set({
+      "no_of_sessions": int.parse(_sessionValue),
     });
     Navigator.pushAndRemoveUntil(
         context,

@@ -9,6 +9,10 @@ import 'package:laughie_app/screens/signUpPrescription.dart';
 import 'package:laughie_app/screens/source_page.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
+final sessionsRef = FirebaseFirestore.instance
+    .collection('users')
+    .doc(FirebaseAuth.instance.currentUser.uid)
+    .collection('sessions');
 
 class Test extends StatefulWidget {
   static String id = 'test_screen';
