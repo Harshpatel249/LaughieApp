@@ -44,6 +44,9 @@ class MyApp extends StatelessWidget {
             color: Colors.black,
             fontFamily: 'Poppins',
           ),
+          subtitle1: TextStyle(
+            color: Colors.black,
+          ),
         ),
       ),
       home: Test(),
