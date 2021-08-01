@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:laughie_app/models/session_track.dart';
+import 'package:laughie_app/rewidgets/bottomNavBar.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
+import 'package:laughie_app/screens/session_builder.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-import '../rewidgets/bottomNavBar.dart';
-import 'session_builder.dart';
 
 class StatsPage extends StatefulWidget {
   static String id = 'stats_page';
@@ -26,11 +26,32 @@ class _StatsPageState extends State<StatsPage> {
   Timestamp _endingTimestamp;
   DateTime focused = DateTime.now();
   DateTime _selectedDay = DateTime.now();
-  int noSessions;
+  int _noSessions;
   bool _isFetched = false;
   void _incrementCounter() {
     setState(() {
       _counter++;
+    });
+  }
+
+  _getSessionTrack() async {
+    print("***************************** inside getSessionTrack");
+    List<SessionTrack> sessionTrack = [];
+    QuerySnapshot querySnapshot = await sessionsRef.get();
+    print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^${querySnapshot.size}");
+    querySnapshot.docs.forEach((date) {
+      print(
+          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!${date['session_data']}');
+      sessionTrack.add(SessionTrack.fromDocument(date));
+    });
+
+    // print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${sessionTrack.length}");
+    sessionTrack.forEach((date) {
+      print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${date.sessionData}");
+    });
+    setState(() {
+      _isFetched = true;
+      focused = _startingTimestamp.toDate().toUtc();
     });
   }
 
@@ -39,7 +60,7 @@ class _StatsPageState extends State<StatsPage> {
         await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
     _startingTimestamp = userSnapshot['starting_date'];
     _endingTimestamp = userSnapshot['ending_date'];
-    noSessions = userSnapshot['sessions'];
+    _noSessions = userSnapshot['sessions'];
     startMonth =
         "${DateFormat.MMM().format(_startingTimestamp.toDate())}'${DateFormat('yy').format(_startingTimestamp.toDate())}";
     endMonth =
@@ -48,11 +69,8 @@ class _StatsPageState extends State<StatsPage> {
         "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${DateTime.now().subtract(Duration(days: 30))}");
     print(
         "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${(_endingTimestamp.toDate().toUtc())}");
-    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ $noSessions");
-    setState(() {
-      _isFetched = true;
-      focused = _startingTimestamp.toDate().toUtc();
-    });
+    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ $_noSessions");
+    _getSessionTrack();
   }
 
   @override
@@ -63,16 +81,24 @@ class _StatsPageState extends State<StatsPage> {
   }
 
   List<SessionBuilder> getSessionDetails() {
+    print(
+        "============================================== getSessionDetails called");
     List<SessionBuilder> sessionsDetails = [];
-
-    for (var i = 0; i < noSessions; i++) {
-      final SessionBuilder session1 = SessionBuilder(
-        time: '9AM',
-        sessionNumber: (i + 1),
-        greeting: 'Morning',
-        completed: true,
-      );
-      sessionsDetails.add(session1);
+    if (_noSessions == null) {
+      print(" no of sessions is null ");
+    } else {
+      print("number of session is not null");
+      print("+++++++++++++++++++++++++++++++++++++ $_noSessions");
+      for (var i = 0; i < _noSessions; i++) {
+        final SessionBuilder session1 = SessionBuilder(
+          time: '9AM',
+          sessionNumber: (i + 1),
+          greeting: 'Morning',
+          completed: true,
+        );
+        sessionsDetails.add(session1);
+      }
+      print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% $sessionsDetails}');
     }
 
     return sessionsDetails;
@@ -163,7 +189,6 @@ class _StatsPageState extends State<StatsPage> {
         ),
       ],
     );
-
     return SafeArea(
       child: Scaffold(
         appBar: appBar,
@@ -217,8 +242,9 @@ class _StatsPageState extends State<StatsPage> {
                                     focusedDay; // update `_focusedDay` here as well
                               });
                               showDialog<void>(
-                                  context: context,
-                                  builder: (context) => dailyTrack);
+                                context: context,
+                                builder: (context) => dailyTrack,
+                              );
                             },
 
                             // onDaySelected: (date, events) {

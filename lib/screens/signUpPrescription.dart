@@ -1,6 +1,7 @@
 import 'package:date_field/date_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:laughie_app/helper/format_date.dart';
 import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:uuid/uuid.dart';
@@ -18,8 +19,31 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
   String _prescribedValue;
   String dayId = Uuid().v4();
 
+  List<DateTime> _getDates(DateTime start, DateTime end) {
+    List<DateTime> dateList = [];
+    for (DateTime date = start;
+        date.isBefore(end);
+        date = date.add(const Duration(days: 1))) {
+      dateList.add(date);
+    }
+    dateList.add(end);
+    return dateList;
+  }
+
+  List _getInitialSessionData() {
+    List<Map> sessionData = [];
+    for (int i = int.parse(_sessionValue); i > 0; i--) {
+      sessionData.add({
+        "has_attended": false,
+      });
+    }
+    return sessionData;
+  }
+
   _uploadPrescriptionDetails() {
     FocusScope.of(context).unfocus();
+    List sessionData = _getInitialSessionData();
+
     usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
       "starting_date": _startingDate,
       "ending_date": _endingDate,
@@ -27,9 +51,16 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
       "prescribed_by": _prescribedValue,
       "signup_status": 3,
     });
-    sessionsRef.doc(dayId).set({
-      "no_of_sessions": int.parse(_sessionValue),
+
+    List<DateTime> dates = _getDates(_startingDate, _endingDate);
+    dates.forEach((date) {
+      String fDate = formatDate(date);
+      sessionsRef.doc(fDate).set({
+        "date": fDate,
+        "session_data": sessionData,
+      });
     });
+
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
