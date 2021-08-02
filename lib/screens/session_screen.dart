@@ -56,8 +56,11 @@ class _SessionScreenState extends State<SessionScreen> {
             //           box.localToGlobal(Offset.zero) & box.size);
             // }
             if (widget.filePath.isNotEmpty) {
-              print("########################### ${widget.filePath}");
-              await Share.shareFiles([widget.filePath], text: 'Laughie');
+              try {
+                await Share.shareFiles([widget.filePath], text: 'Laughie');
+              } catch (e) {
+                print(e);
+              }
             }
           },
         ),
