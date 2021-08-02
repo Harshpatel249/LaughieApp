@@ -1,12 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
 import 'package:laughie_app/screens/audio_player.dart';
 import 'package:laughie_app/screens/laughieFeedback.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../rewidgets/video_widget.dart';
-import 'package:share_plus/share_plus.dart';
 
 class SessionScreen extends StatefulWidget {
   static String id = 'session_screen';
@@ -57,6 +56,7 @@ class _SessionScreenState extends State<SessionScreen> {
             //           box.localToGlobal(Offset.zero) & box.size);
             // }
             if (widget.filePath.isNotEmpty) {
+              print("########################### ${widget.filePath}");
               await Share.shareFiles([widget.filePath], text: 'Laughie');
             }
           },

@@ -5,18 +5,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:laughie_app/rewidgets/show_toast.dart';
-import 'package:laughie_app/screens/assess_video.dart';
 import 'package:laughie_app/screens/laughieFeedback.dart';
 import 'package:laughie_app/screens/recordHelp.dart';
-import 'package:laughie_app/screens/sessionFeedback.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 typedef _Fn = void Function();
+enum MediaType { audio, video }
 
 class RecordScreen extends StatefulWidget {
   static String id = 'record_screen';
@@ -52,20 +52,26 @@ class _RecordScreenState extends State<RecordScreen> {
   Timer _timer = Timer(Duration.zero, () {});
   double progressValue = 0;
 
-  _getAudioSaveLocation() async {
+  _getAudioSaveLocation(MediaType media) async {
     Directory directory;
+
     directory = await getExternalStorageDirectory();
     print(
         "--------------------------------------------------------------${directory.path}");
-    String audioFileLoc = directory.path + "/recorded_session.mp3";
-    this._mPath = audioFileLoc;
+    if (media == MediaType.audio) {
+      String audioFileLoc = directory.path + "/recorded_session.mp3";
+      this._mPath = audioFileLoc;
+    } else {
+      String audioFileLoc = directory.path + "/recorded_session.mp4";
+      this._mPath = audioFileLoc;
+    }
   }
 
   //----------------------Functions for audio recorder
   @override
   void initState() {
     // _getRecordLaghieStatus();
-    _getAudioSaveLocation();
+    _getAudioSaveLocation(MediaType.audio);
     _mPlayer.openAudioSession().then((value) {
       setState(() {
         _mPlayerIsInited = true;
@@ -310,10 +316,13 @@ class _RecordScreenState extends State<RecordScreen> {
     // ImagePicker is the plugin that we've integrated.
     // source is used to determine whether to select getImage or getVideo
     print('Here');
-    final getMedia = ImagePicker().getVideo;
-    // Since this widget is for picking images from gallery
-    final media = await getMedia(source: ImageSource.camera);
-
+    // final getMedia = ImagePicker().getVideo;
+    // // Since this widget is for picking images from gallery
+    // final media = await getMedia(source: ImageSource.camera);
+    final media = await ImagePicker().getVideo(
+      source: ImageSource.camera,
+      maxDuration: Duration(seconds: 15),
+    );
     final file = File(media.path);
     print("###################################################${media.path}");
     return file;
@@ -344,33 +353,33 @@ class _RecordScreenState extends State<RecordScreen> {
     if (recordedVideo == null) {
       return;
     } else {
-      // final _saveResult = await ImageGallerySaver.saveFile(recordedVideo.path);
-      //
-      // print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
-      // usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
-      //   "has_recorded_laughie": true,
-      //   "media": "video",
-      //   "filePath": _saveResult['filePath'],
-      // });
+      final _saveResult = await ImageGallerySaver.saveFile(recordedVideo.path);
+
+      print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
+      usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+        "has_recorded_laughie": true,
+        "media": "video",
+        "filePath": _saveResult['filePath'],
+      });
 
       setState(() {
         fileMedia = recordedVideo;
         isRecorded = true;
 
-        // Navigator.pushAndRemoveUntil(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => LaughieFeedback(),
-        //     ),
-        //     (route) => false);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => AssessVideo(
-                recordedVideo: recordedVideo,
-              ),
+              builder: (context) => LaughieFeedback(),
             ),
             (route) => false);
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) => AssessVideo(
+        //         recordedVideo: recordedVideo,
+        //       ),
+        //     ),
+        //     (route) => false);
       });
     }
   }
