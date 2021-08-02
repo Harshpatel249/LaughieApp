@@ -15,6 +15,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
+import 'assess_video.dart';
+
 typedef _Fn = void Function();
 enum MediaType { audio, video }
 
@@ -355,31 +357,31 @@ class _RecordScreenState extends State<RecordScreen> {
     } else {
       final _saveResult = await ImageGallerySaver.saveFile(recordedVideo.path);
 
-      print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
-      usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
-        "has_recorded_laughie": true,
-        "media": "video",
-        "filePath": _saveResult['filePath'],
-      });
+      // print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
+      // usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+      //   "has_recorded_laughie": true,
+      //   "media": "video",
+      //   "filePath": _saveResult['filePath'],
+      // });
 
       setState(() {
         fileMedia = recordedVideo;
         isRecorded = true;
 
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LaughieFeedback(),
-            ),
-            (route) => false);
         // Navigator.pushAndRemoveUntil(
         //     context,
         //     MaterialPageRoute(
-        //       builder: (context) => AssessVideo(
-        //         recordedVideo: recordedVideo,
-        //       ),
+        //       builder: (context) => LaughieFeedback(),
         //     ),
         //     (route) => false);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AssessVideo(
+                recordedVideo: recordedVideo,
+              ),
+            ),
+            (route) => false);
       });
     }
   }

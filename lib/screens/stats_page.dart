@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:laughie_app/helper/format_date.dart';
 import 'package:laughie_app/models/session_track.dart';
 import 'package:laughie_app/rewidgets/bottomNavBar.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
@@ -37,7 +38,9 @@ class _StatsPageState extends State<StatsPage> {
   _getSessionTrack() async {
     print("***************************** inside getSessionTrack");
     List<SessionTrack> sessionTrack = [];
-    QuerySnapshot querySnapshot = await sessionsRef.get();
+    QuerySnapshot querySnapshot = await sessionsRef
+        .where("date", isLessThanOrEqualTo: "${formatDate(DateTime.now())}")
+        .get();
     print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^${querySnapshot.size}");
     querySnapshot.docs.forEach((date) {
       print(
@@ -46,6 +49,7 @@ class _StatsPageState extends State<StatsPage> {
     });
 
     // print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${sessionTrack.length}");
+
     sessionTrack.forEach((date) {
       print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${date.sessionData}");
     });
