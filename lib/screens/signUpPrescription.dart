@@ -131,7 +131,8 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                     mode: DateTimeFieldPickerMode.date,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
-                      return value.isBefore(DateTime.now())
+                      return value.isBefore(
+                              DateTime.now().subtract(Duration(days: 1)))
                           ? 'You cannot start in the past!'
                           : null;
                     },
