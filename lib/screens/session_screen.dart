@@ -6,6 +6,7 @@ import 'package:laughie_app/screens/audio_player.dart';
 import 'package:laughie_app/screens/laughieFeedback.dart';
 
 import '../rewidgets/video_widget.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SessionScreen extends StatefulWidget {
   static String id = 'session_screen';
@@ -27,12 +28,40 @@ class _SessionScreenState extends State<SessionScreen> {
     File fileMedia = File(widget.filePath);
     // print("%%%%%%%%%%%%%%%%%%%%%% session ${widget.filePath}");
     final mediaQuery = MediaQuery.of(context);
+
     final appBar = AppBar(
       title: Text(
         'Laughie Session',
         style: TextStyle(color: Colors.black),
       ),
       centerTitle: true,
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(
+            Icons.share,
+            size: 30,
+          ),
+          onPressed: () async {
+            // final box = context.findRenderObject() as RenderBox;
+
+            // if (widget.filePath.isNotEmpty) {
+            //   await Share.shareFiles([fileMedia.path],
+            //       text: 'Laughie',
+            //       subject: 'Laughie',
+            //       sharePositionOrigin:
+            //           box.localToGlobal(Offset.zero) & box.size);
+            // } else {
+            //   await Share.share('File not found',
+            //       subject: 'File not found',
+            //       sharePositionOrigin:
+            //           box.localToGlobal(Offset.zero) & box.size);
+            // }
+            if (widget.filePath.isNotEmpty) {
+              await Share.shareFiles([widget.filePath], text: 'Laughie');
+            }
+          },
+        ),
+      ],
     );
 
     final appBarHeight = appBar.preferredSize.height;

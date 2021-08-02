@@ -49,6 +49,7 @@ dependencies:
   fluttertoast: ^8.0.7
   uuid: 3.0.4
   async: ^2.4.2
+  share_plus: ^2.1.4
 
 
 
