@@ -3,11 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:laughie_app/helper/format_date.dart';
-import 'package:laughie_app/models/session_track.dart';
 import 'package:laughie_app/rewidgets/bottomNavBar.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
-import 'package:laughie_app/screens/session_builder.dart';
 import 'package:laughie_app/screens/test.dart';
+import 'package:laughie_app/services/firebase/stats_details.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class StatsPage extends StatefulWidget {
@@ -29,35 +28,7 @@ class _StatsPageState extends State<StatsPage> {
   DateTime _selectedDay = DateTime.now();
   int _noSessions;
   bool _isFetched = false;
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  _getSessionTrack() async {
-    print("***************************** inside getSessionTrack");
-    List<SessionTrack> sessionTrack = [];
-    QuerySnapshot querySnapshot = await sessionsRef
-        .where("date", isLessThanOrEqualTo: "${formatDate(DateTime.now())}")
-        .get();
-    print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^${querySnapshot.size}");
-    querySnapshot.docs.forEach((date) {
-      print(
-          '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!${date['session_data']}');
-      sessionTrack.add(SessionTrack.fromDocument(date));
-    });
-
-    // print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${sessionTrack.length}");
-
-    sessionTrack.forEach((date) {
-      print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${date.sessionData}");
-    });
-    setState(() {
-      _isFetched = true;
-      focused = _startingTimestamp.toDate().toUtc();
-    });
-  }
+  StatsDetails _statsDetailsObject = StatsDetails();
 
   _fetchDetails() async {
     DocumentSnapshot userSnapshot =
@@ -69,12 +40,16 @@ class _StatsPageState extends State<StatsPage> {
         "${DateFormat.MMM().format(_startingTimestamp.toDate())}'${DateFormat('yy').format(_startingTimestamp.toDate())}";
     endMonth =
         "${DateFormat.MMM().format(_endingTimestamp.toDate())}'${DateFormat('yy').format(_endingTimestamp.toDate())}";
-    print(
-        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${DateTime.now().subtract(Duration(days: 30))}");
-    print(
-        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ${(_endingTimestamp.toDate().toUtc())}");
-    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ $_noSessions");
-    _getSessionTrack();
+    _statsDetailsObject.getSessionTrack().then((sessionTrack) {
+      sessionTrack.forEach((date) {
+        print(
+            "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${date.containsDate(formatDate(DateTime.now()))}");
+      });
+      setState(() {
+        _isFetched = true;
+        focused = _startingTimestamp.toDate().toUtc();
+      });
+    });
   }
 
   @override
@@ -84,29 +59,7 @@ class _StatsPageState extends State<StatsPage> {
     super.initState();
   }
 
-  List<SessionBuilder> getSessionDetails() {
-    print(
-        "============================================== getSessionDetails called");
-    List<SessionBuilder> sessionsDetails = [];
-    if (_noSessions == null) {
-      print(" no of sessions is null ");
-    } else {
-      print("number of session is not null");
-      print("+++++++++++++++++++++++++++++++++++++ $_noSessions");
-      for (var i = 0; i < _noSessions; i++) {
-        final SessionBuilder session1 = SessionBuilder(
-          time: '9AM',
-          sessionNumber: (i + 1),
-          greeting: 'Morning',
-          completed: true,
-        );
-        sessionsDetails.add(session1);
-      }
-      print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% $sessionsDetails}');
-    }
-
-    return sessionsDetails;
-  }
+  // _handleOnSelectedDay
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +137,8 @@ class _StatsPageState extends State<StatsPage> {
                 Container(
                   // color: Colors.red,
                   child: Column(
-                    children: getSessionDetails(),
+                    // children: getSessionDetails(),
+                    children: [],
                   ),
                 )
               ],
@@ -238,18 +192,7 @@ class _StatsPageState extends State<StatsPage> {
                             selectedDayPredicate: (day) {
                               return isSameDay(_selectedDay, day);
                             },
-                            onDaySelected: (selectedDay, focusedDay) {
-                              print(selectedDay.toUtc());
-                              setState(() {
-                                _selectedDay = selectedDay;
-                                focused =
-                                    focusedDay; // update `_focusedDay` here as well
-                              });
-                              showDialog<void>(
-                                context: context,
-                                builder: (context) => dailyTrack,
-                              );
-                            },
+                            // onDaySelected: (sel,
 
                             // onDaySelected: (date, events) {
                             //   print(date.toUtc());

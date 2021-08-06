@@ -13,6 +13,7 @@ class LaughieFeedback extends StatefulWidget {
 
 class _LaughieFeedbackState extends State<LaughieFeedback> {
   _handleSubmit() async {
+    // TODO: Don't allow to submit until and unless something is selected.
     print("============================================== handleSubmit called");
     DateTime currentDateTime = DateTime.now();
     String fDate = formatDate(currentDateTime);

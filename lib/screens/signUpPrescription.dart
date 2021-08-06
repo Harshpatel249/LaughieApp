@@ -1,7 +1,6 @@
 import 'package:date_field/date_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:laughie_app/helper/format_date.dart';
 import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:uuid/uuid.dart';
@@ -52,14 +51,14 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
       "signup_status": 3,
     });
 
-    List<DateTime> dates = _getDates(_startingDate, _endingDate);
-    dates.forEach((date) {
-      String fDate = formatDate(date);
-      sessionsRef.doc(fDate).set({
-        "date": fDate,
-        "session_data": sessionData,
-      });
-    });
+    // List<DateTime> dates = _getDates(_startingDate, _endingDate);
+    // dates.forEach((date) {
+    //   String fDate = formatDate(date);
+    //   sessionsRef.doc(fDate).set({
+    //     "date": fDate,
+    //     "session_data": sessionData,
+    //   });
+    // });
 
     Navigator.pushAndRemoveUntil(
         context,

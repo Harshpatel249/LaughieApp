@@ -1,65 +1,31 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:laughie_app/models/session.dart';
 
 class SessionTrack {
   final String date;
-  final List<dynamic> sessionData;
+  final List<Session> sessionData;
   SessionTrack({
     @required this.date,
     @required this.sessionData,
   });
 
   factory SessionTrack.fromDocument(DocumentSnapshot doc) {
+    List<Session> sessionData = [];
+    List<dynamic> jsonSessionData = doc['session_data'];
+    jsonSessionData.forEach((jsonSession) {
+      sessionData.add(Session.fromMap(jsonSession));
+    });
     return SessionTrack(
       date: doc['date'],
-      sessionData: doc['session_data'],
+      sessionData: sessionData,
     );
   }
-
-  SessionTrack copyWith({
-    String date,
-    List<Map<dynamic, dynamic>> sessionData,
-  }) {
-    return SessionTrack(
-      date: date ?? this.date,
-      sessionData: sessionData ?? this.sessionData,
-    );
+  bool containsDate(String date) {
+    if (this.date == date) {
+      return true;
+    } else {
+      return false;
+    }
   }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'date': date,
-      'sessionData': sessionData,
-    };
-  }
-
-  factory SessionTrack.fromMap(Map<String, dynamic> map) {
-    return SessionTrack(
-      date: map['date'],
-      sessionData:
-          List<Map<dynamic, dynamic>>.from(map['sessionData']?.map((x) => x)),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory SessionTrack.fromJson(String source) =>
-      SessionTrack.fromMap(json.decode(source));
-
-  @override
-  String toString() => 'SessionTrack(date: $date, sessionData: $sessionData)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is SessionTrack &&
-        other.date == date &&
-        listEquals(other.sessionData, sessionData);
-  }
-
-  @override
-  int get hashCode => date.hashCode ^ sessionData.hashCode;
 }
