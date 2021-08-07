@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:laughie_app/helper/format_date.dart';
 import 'package:laughie_app/rewidgets/bottomNavBar.dart';
+import 'package:laughie_app/rewidgets/build_calendar.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:laughie_app/services/firebase/stats_details.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class StatsPage extends StatefulWidget {
   static String id = 'stats_page';
@@ -31,6 +31,7 @@ class _StatsPageState extends State<StatsPage> {
   StatsDetails _statsDetailsObject = StatsDetails();
 
   _fetchDetails() async {
+    //TODO: remove this method and implement its functionality in user model
     DocumentSnapshot userSnapshot =
         await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
     _startingTimestamp = userSnapshot['starting_date'];
@@ -73,80 +74,13 @@ class _StatsPageState extends State<StatsPage> {
     );
 
     final bottomBarHeight = MediaQuery.of(context).size.height * 0.08;
-
+    final _appBarHeight = appBar.preferredSize.height;
     final screenHeight = mediaQuery.size.height -
-        appBar.preferredSize.height -
+        _appBarHeight -
         mediaQuery.padding.top -
         bottomBarHeight;
     final padding = mediaQuery.size.width * 0.05;
 
-    SimpleDialog dailyTrack = SimpleDialog(
-      backgroundColor: Colors.transparent,
-      children: [
-        Card(
-          color: Color(0xff222223),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          elevation: 15.0,
-          shadowColor: Colors.black,
-          child: Container(
-            padding: EdgeInsets.only(left: padding, right: padding),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: screenHeight * 0.02,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      height: screenHeight * 0.05,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          '3',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Spacer(),
-                    Container(
-                      height: screenHeight * 0.05,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          'Wednesday',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(
-                  color: Colors.white,
-                  height: screenHeight * 0.01,
-                ),
-                Container(
-                  // color: Colors.red,
-                  child: Column(
-                    // children: getSessionDetails(),
-                    children: [],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
     return SafeArea(
       child: Scaffold(
         appBar: appBar,
@@ -179,40 +113,13 @@ class _StatsPageState extends State<StatsPage> {
                           ),
                         ),
                         Container(
-                          child: TableCalendar(
-                            rowHeight: screenHeight * 0.08,
-
-                            firstDay: _startingTimestamp.toDate().toUtc(),
-                            // firstDay:
-                            //     DateTime.now().subtract(Duration(days: 30)),
-
-                            // firstDay: DateTime.utc(2021, 5, 1),
-                            lastDay: _endingTimestamp.toDate().toUtc(),
-                            focusedDay: focused,
-                            selectedDayPredicate: (day) {
-                              return isSameDay(_selectedDay, day);
-                            },
-                            // onDaySelected: (sel,
-
-                            // onDaySelected: (date, events) {
-                            //   print(date.toUtc());
-                            //   setState(() {
-                            //     focused = date.toUtc();
-                            //   }); //On click services
-                            // },
-                            onPageChanged: (focusedDay) {
-                              focused = focusedDay;
-                            },
-                            headerStyle: HeaderStyle(
-                              formatButtonVisible: false,
-                              titleCentered: true,
-                              titleTextFormatter: (date, locale) =>
-                                  DateFormat.MMM(locale).format(date),
-                              titleTextStyle: TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
+                          height: screenHeight * 0.5,
+                          width: double.infinity,
+                          // color: Colors.red,
+                          child: BuildCalendar(
+                            appBarHeight: _appBarHeight,
+                            startingTimestamp: _startingTimestamp,
+                            endingTimestamp: _endingTimestamp,
                           ),
                         ),
                         SizedBox(

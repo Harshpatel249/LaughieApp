@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:laughie_app/screens/session_builder.dart';
 
 class DailyTrack extends StatelessWidget {
-  final int noSessions;
+  // final int noSessions;
+  final double appBarHeight;
 
   DailyTrack({
-    this.noSessions,
+    // this.noSessions,
+
+    this.appBarHeight,
   });
-  List<SessionBuilder> getSessionDetails(
-      DateTime selectedDay, int totalSessions) {
+  List<SessionBuilder> getSessionDetails(int totalSessions) {
     print(
         "============================================== getSessionDetails called");
     List<SessionBuilder> sessionsDetails = [];
@@ -35,22 +37,13 @@ class DailyTrack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final appBar = AppBar(
-      title: Text(
-        'Statistics',
-        style: TextStyle(color: Colors.black),
-      ),
-      centerTitle: true,
-    );
-
     final bottomBarHeight = MediaQuery.of(context).size.height * 0.08;
 
     final screenHeight = mediaQuery.size.height -
-        appBar.preferredSize.height -
+        appBarHeight -
         mediaQuery.padding.top -
         bottomBarHeight;
     final padding = mediaQuery.size.width * 0.05;
-
     return SimpleDialog(
       backgroundColor: Colors.transparent,
       children: [
@@ -108,8 +101,9 @@ class DailyTrack extends StatelessWidget {
                 Container(
                   // color: Colors.red,
                   child: Column(
-                    // children: getSessionDetails(),
-                    children: [],
+                    children: getSessionDetails(3),
+                    //TODO: make this dynamic
+                    // children: [],
                   ),
                 )
               ],
@@ -121,4 +115,6 @@ class DailyTrack extends StatelessWidget {
   }
 }
 
-SimpleDialog dailyTrack(BuildContext context) => SimpleDialog();
+Widget dailyTrack(BuildContext context) {
+  return SimpleDialog();
+}
