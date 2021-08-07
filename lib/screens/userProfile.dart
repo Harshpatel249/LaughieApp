@@ -8,6 +8,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../rewidgets/bottomNavBar.dart';
 import 'editProfile.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class UserProfile extends StatefulWidget {
   static String id = 'user_profile';
@@ -26,6 +31,7 @@ class _UserProfileState extends State<UserProfile> {
   String userDob = '24/09/2000';
   Timestamp _doB;
   bool _isFetched = false;
+  File dp;
 
   _fetchDetails() async {
     DocumentSnapshot userSnapshot =
@@ -49,6 +55,23 @@ class _UserProfileState extends State<UserProfile> {
     // TODO: implement initState
     _fetchDetails();
     super.initState();
+  }
+
+  Future<File> pickCameraMedia(BuildContext context) async {
+    final media = await ImagePicker().getImage(source: ImageSource.gallery);
+    final file = File(media.path);
+    return file;
+  }
+
+  Future _profilephoto(BuildContext context) async {
+    final profilephoto = await pickCameraMedia(context);
+    if (profilephoto == null) {
+      return;
+    } else {
+      setState(() {
+        dp = profilephoto;
+      });
+    }
   }
 
   @override
@@ -194,24 +217,45 @@ class _UserProfileState extends State<UserProfile> {
                                 SizedBox(
                                   height: constraints.maxHeight * 0.03,
                                 ),
-                                Center(
-                                  child: Container(
-                                    height: constraints.maxHeight * 0.20,
-                                    child: CircleAvatar(
-                                      radius:
-                                          (constraints.maxHeight * 0.20) / 2,
-                                      backgroundImage: AssetImage(
-                                        'assets/images/profile.png',
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: constraints.maxHeight * 0.20,
+                                      child: CircleAvatar(
+                                        radius:
+                                            (constraints.maxHeight * 0.20) / 2,
+                                        backgroundImage: dp == null
+                                            ? AssetImage(
+                                                'assets/images/profile.png',
+                                              )
+                                            : FileImage(dp),
+                                      ),
+                                      decoration: new BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: new Border.all(
+                                          color: Colors.black,
+                                          width: 1.0,
+                                        ),
                                       ),
                                     ),
-                                    decoration: new BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: new Border.all(
-                                        color: Colors.black,
-                                        width: 1.0,
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          top: constraints.maxHeight * 0.14),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          _profilephoto(context);
+                                        },
+                                        child: Container(
+                                          height: constraints.maxHeight * 0.05,
+                                          child: Icon(
+                                            Icons.edit,
+                                            size: constraints.maxHeight * 0.05,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
                                 SizedBox(
                                   height: constraints.maxHeight * 0.03,
