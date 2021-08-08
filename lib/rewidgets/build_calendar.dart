@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:laughie_app/helper/format_date.dart';
+import 'package:laughie_app/models/session.dart';
 import 'package:laughie_app/screens/session_builder.dart';
 import 'package:laughie_app/services/firebase/stats_details.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -26,6 +28,8 @@ class _BuildCalendarState extends State<BuildCalendar> {
   DateTime focused = DateTime.now();
   DateTime _selectedDay = DateTime.now();
   StatsDetails obj = StatsDetails();
+  Map<String, List<Session>> numSessionAttended = {};
+  // bool _isLoaded = false;
   List<SessionBuilder> getSessionDetails(int totalSessions) {
     print(
         "============================================== getSessionDetails called");
@@ -50,17 +54,32 @@ class _BuildCalendarState extends State<BuildCalendar> {
     return sessionsDetails;
   }
 
+  _getNumSessionAttended() async {
+    print("here in getnumSessionattn \n ");
+    numSessionAttended = await obj.getSessions(
+        widget.startingTimestamp.toDate(), DateTime.now());
+    numSessionAttended.forEach((key, value) {
+      print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ key: $key \t value: $value");
+    });
+    print(
+        "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ${numSessionAttended[formatDate(DateTime.now())]}");
+    // setState(() {
+    //   _isLoaded = true;
+    // });
+    // print(
+    //     "############ here in getnumSessionattn \n ${numSessionAttended.runtimeType}");
+  }
+
   @override
   void initState() {
-    var numSessionAttended = obj
-        .getSessions(widget.startingTimestamp.toDate(), DateTime.now())
-        .then((value) {
-      value.forEach((key, value) {
-        print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ key: $key \t value: $value');
-      });
-    });
-
+    _getNumSessionAttended();
     super.initState();
+  }
+
+  _getEventsForDay(DateTime day) {
+    // Implementation example
+
+    return numSessionAttended[formatDate(DateTime.now())];
   }
 
   @override
@@ -72,6 +91,8 @@ class _BuildCalendarState extends State<BuildCalendar> {
         firstDay: widget.startingTimestamp.toDate().toLocal(),
         lastDay: widget.endingTimestamp.toDate().toLocal(),
         focusedDay: focused,
+        eventLoader: _getEventsForDay,
+
         selectedDayPredicate: (day) {
           return isSameDay(_selectedDay, day);
         },
