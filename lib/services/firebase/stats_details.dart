@@ -41,20 +41,6 @@ class StatsDetails {
     Map<String, List<Session>> numSessionsAttended = {};
     List<SessionTrack> sessionTrack = await getSessionTrack();
 
-    for (DateTime date = start;
-        date.isBefore(focusDay) || date == focusDay;
-        date = date.add(const Duration(days: 1))) {
-      numSessionsAttended[formatDate(date)] = [];
-    }
-    // print("here in getSessions");
-
-    sessionTrack.forEach((element) {
-      // print("here in forEach");
-
-      // print(
-      //     "###################################### element.sessionData: ${element.sessionData}");
-      numSessionsAttended[element.date] = element.sessionData;
-    });
     return numSessionsAttended;
   }
 

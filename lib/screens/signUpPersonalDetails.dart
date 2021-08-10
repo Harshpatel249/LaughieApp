@@ -49,7 +49,7 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
         "state": _stateValue,
         "city": _cityValue,
         "signup_status": 1,
-        "profile_picture": "",
+        "profile_picture": "noUrl",
       });
       Navigator.push(
         context,

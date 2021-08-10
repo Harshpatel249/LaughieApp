@@ -39,7 +39,6 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _fetchDetails();
     super.initState();
   }

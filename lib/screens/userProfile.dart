@@ -59,7 +59,6 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _fetchDetails();
     super.initState();
   }
@@ -300,7 +299,7 @@ class _UserProfileState extends State<UserProfile> {
                                             radius:
                                                 (constraints.maxHeight * 0.20) /
                                                     2,
-                                            backgroundImage: photoUrl == ""
+                                            backgroundImage: photoUrl == null
                                                 ? AssetImage(
                                                     'assets/images/profile.png',
                                                   )

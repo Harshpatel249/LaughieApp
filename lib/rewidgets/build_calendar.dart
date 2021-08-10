@@ -4,10 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:laughie_app/constants/style.dart';
 import 'package:laughie_app/helper/format_date.dart';
 import 'package:laughie_app/models/session.dart';
-import 'package:laughie_app/services/firebase/stats_details.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'circularProgressBar.dart';
 import 'daily_track.dart';
 
 class BuildCalendar extends StatefulWidget {
@@ -15,11 +13,14 @@ class BuildCalendar extends StatefulWidget {
   final Timestamp endingTimestamp;
   final double appBarHeight;
   final int userGivenSessions;
+  final Map<String, List<Session>> numSessionAttended;
+
   BuildCalendar({
     this.startingTimestamp,
     this.endingTimestamp,
     this.appBarHeight,
     this.userGivenSessions,
+    this.numSessionAttended,
   });
 
   @override
@@ -29,49 +30,28 @@ class BuildCalendar extends StatefulWidget {
 class _BuildCalendarState extends State<BuildCalendar> {
   DateTime focused = DateTime.now();
   DateTime _selectedDay = DateTime.now();
-  StatsDetails obj = StatsDetails();
-  Map<String, List<Session>> numSessionAttended;
-  bool _isLoaded = true;
-
-  _getNumSessionAttended() async {
-    // print("here in getnumSessionattn \n ");
-    await obj
-        .getSessions(widget.startingTimestamp.toDate(), DateTime.now())
-        .then((value) {
-      numSessionAttended.addAll(value);
-      setState(() {
-        _isLoaded = true;
-      });
-    });
-    numSessionAttended.forEach((key, value) {
-      // print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ key: $key \t value: $value");
-    });
-    DateTime time = numSessionAttended["06082021"][0].time;
-
-    print(
-        "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ${DateFormat.H().format(time)}");
-  }
+  // StatsDetails obj = StatsDetails();
+  // Map<String, List<Session>> numSessionAttended;
+  // bool _isLoaded = true;
 
   @override
   void initState() {
-    numSessionAttended = {};
-    _getNumSessionAttended();
     super.initState();
   }
 
   List<Session> _getEventsForDay(DateTime day) {
-    return numSessionAttended[formatDate(day)];
+    return widget.numSessionAttended[formatDate(day)];
   }
 
   _handleOnDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    print(selectedDay.toUtc());
     setState(() {
       _selectedDay = selectedDay;
       focused = focusedDay; // update `_focusedDay` here as well
     });
     print(
-        "################################### ${numSessionAttended[formatDate(selectedDay)].toString()}");
-    if (selectedDay.isAfter(DateTime.now())) {
+        "################################### ${widget.numSessionAttended[formatDate(selectedDay)].toString()}");
+
+    if (parseDate(selectedDay).isAfter(parseDate(DateTime.now()))) {
       return;
     }
     showDialog<void>(
@@ -79,7 +59,7 @@ class _BuildCalendarState extends State<BuildCalendar> {
         builder: (_) {
           return DailyTrack(
             appBarHeight: widget.appBarHeight,
-            sessionsOfDay: numSessionAttended[formatDate(selectedDay)],
+            sessionsOfDay: widget.numSessionAttended[formatDate(selectedDay)],
             selectedDay: selectedDay,
             userGivenSessions: widget.userGivenSessions,
           );
@@ -171,55 +151,53 @@ class _BuildCalendarState extends State<BuildCalendar> {
     // print(
     //     "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% inside build of buildCalendar()");
     return LayoutBuilder(builder: (context, constraints) {
-      return _isLoaded
-          ? Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TableCalendar(
-                  calendarBuilders: CalendarBuilders(
-                    // outsideBuilder: _outsideBuilder,
-                    markerBuilder: _buildMarkers,
-                    todayBuilder: _todayBuilder,
-                    selectedBuilder: _selectedBuilder,
-                  ),
-                  rowHeight: constraints.maxHeight * 0.146,
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TableCalendar(
+            calendarBuilders: CalendarBuilders(
+              // outsideBuilder: _outsideBuilder,
+              markerBuilder: _buildMarkers,
+              todayBuilder: _todayBuilder,
+              selectedBuilder: _selectedBuilder,
+            ),
+            rowHeight: constraints.maxHeight * 0.146,
 
-                  firstDay: widget.startingTimestamp.toDate().toLocal(),
-                  lastDay: widget.endingTimestamp.toDate().toLocal(),
-                  focusedDay: focused,
-                  eventLoader: _getEventsForDay,
+            firstDay: widget.startingTimestamp.toDate().toLocal(),
+            lastDay: widget.endingTimestamp.toDate().toLocal(),
+            focusedDay: focused,
+            eventLoader: _getEventsForDay,
 
-                  selectedDayPredicate: (day) {
-                    return isSameDay(_selectedDay, day);
-                  },
-                  onDaySelected: _handleOnDaySelected,
-                  // onDaySelected: (date, events) {
-                  //   print(date.toUtc());
-                  //   setState(() {
-                  //     focused = date.toUtc();
-                  //   }); //On click services
-                  // },
-                  onPageChanged: (focusedDay) {
-                    focused = focusedDay;
-                  },
-                  headerStyle: HeaderStyle(
-                    formatButtonVisible: false,
-                    titleCentered: true,
-                    titleTextFormatter: (date, locale) =>
-                        DateFormat.MMM(locale).format(date),
-                    titleTextStyle: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                // ..._getEventsForDay(_selectedDay).map((Session session) {
-                //   print("################### session: $session");
-                //   return Container();
-                // }),
-              ],
-            )
-          : CircularProgressBar();
+            selectedDayPredicate: (day) {
+              return isSameDay(_selectedDay, day);
+            },
+            onDaySelected: _handleOnDaySelected,
+            // onDaySelected: (date, events) {
+            //   print(date.toUtc());
+            //   setState(() {
+            //     focused = date.toUtc();
+            //   }); //On click services
+            // },
+            onPageChanged: (focusedDay) {
+              focused = focusedDay;
+            },
+            headerStyle: HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+              titleTextFormatter: (date, locale) =>
+                  DateFormat.MMMM(locale).format(date),
+              titleTextStyle: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+          // ..._getEventsForDay(_selectedDay).map((Session session) {
+          //   print("################### session: $session");
+          //   return Container();
+          // }),
+        ],
+      );
     });
   }
 }

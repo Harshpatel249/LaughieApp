@@ -14,7 +14,8 @@ class SessionFeedback extends StatefulWidget {
 class _SessionFeedbackState extends State<SessionFeedback> {
   _handleSubmit() async {
     // TODO: Don't allow to submit until and unless something is selected.
-    print("============================================== handleSubmit called");
+    print(
+        "============================================== handleSubmit called from session feedback");
     DateTime currentDateTime = DateTime.now();
     String fDate = formatDate(currentDateTime);
     List<Map> sessionData = [];
@@ -28,15 +29,23 @@ class _SessionFeedbackState extends State<SessionFeedback> {
     if (documentSnapshot.exists) {
       print("%%%%%%%%%%%%%%%%% sessions collection already exists");
 
-      sessionsRef.doc(fDate).update({
-        "session_data": FieldValue.arrayUnion(sessionData),
-      });
+      try {
+        sessionsRef.doc(fDate).update({
+          "session_data": FieldValue.arrayUnion(sessionData),
+        });
+      } on FirebaseException catch (err) {
+        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& exception: ${err.message}");
+      }
     } else {
       print("%%%%%%%%%%%%%%%%% sessions does not exist");
-      sessionsRef.doc(fDate).set({
-        "date": fDate,
-        "session_data": sessionData,
-      });
+      try {
+        sessionsRef.doc(fDate).set({
+          "date": fDate,
+          "session_data": sessionData,
+        });
+      } on FirebaseException catch (err) {
+        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& exception: ${err.message}");
+      }
     }
     Navigator.pushAndRemoveUntil(
         context,

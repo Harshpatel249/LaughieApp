@@ -6,8 +6,8 @@ formatDate(DateTime dateTime) {
   return formattedDate;
 }
 
-parseDate(DateTime dateTime) {
+DateTime parseDate(DateTime dateTime) {
   String str = '';
   str = "${DateFormat("yyyyMMdd").format(dateTime)}";
-  return str;
+  return DateTime.parse(str);
 }

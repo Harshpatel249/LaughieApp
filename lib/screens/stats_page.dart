@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:laughie_app/constants/style.dart';
 import 'package:laughie_app/helper/format_date.dart';
+import 'package:laughie_app/models/session.dart';
 import 'package:laughie_app/rewidgets/bottomNavBar.dart';
 import 'package:laughie_app/rewidgets/build_calendar.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
@@ -20,7 +22,7 @@ class _StatsPageState extends State<StatsPage> {
   int _counter = 0;
   String startMonth = "May'21";
   String endMonth = "July'21";
-  double timeSpent = 15;
+  int totalSessions = 0;
   Duration timeLeft;
   Timestamp _startingTimestamp;
   Timestamp _endingTimestamp;
@@ -29,8 +31,10 @@ class _StatsPageState extends State<StatsPage> {
   int _numSessions;
   bool _isFetched = false;
   StatsDetails _statsDetailsObject = StatsDetails();
+  Map<String, List<Session>> numSessionsAttended;
 
   _fetchDetails() async {
+    numSessionsAttended = {};
     //TODO: remove this method and implement its functionality in user model
     DocumentSnapshot userSnapshot =
         await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
@@ -41,20 +45,25 @@ class _StatsPageState extends State<StatsPage> {
         "${DateFormat.MMM().format(_startingTimestamp.toDate())}'${DateFormat('yy').format(_startingTimestamp.toDate())}";
     endMonth =
         "${DateFormat.MMM().format(_endingTimestamp.toDate())}'${DateFormat('yy').format(_endingTimestamp.toDate())}";
-    _statsDetailsObject.getSessionTrack().then((sessionTrack) {
-      // sessionTrack.forEach((date) {
+    _statsDetailsObject.getSessionTrack().then((sessionTrack) async {
+      for (DateTime date = _startingTimestamp.toDate();
+          date.isBefore(DateTime.now()) || date == DateTime.now();
+          date = date.add(const Duration(days: 1))) {
+        numSessionsAttended[formatDate(date)] = [];
+      }
 
-      // });
-      timeLeft = DateTime.parse(parseDate(_endingTimestamp.toDate()))
-          .difference(DateTime.parse(parseDate(DateTime.now())));
-      print(
-          "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${(timeLeft.inHours / 24).ceil()} \n ${_endingTimestamp.toDate()}");
+      sessionTrack.forEach((track) {
+        numSessionsAttended[track.date] = track.sessionData;
+        totalSessions += track.sessionData.length;
+      });
 
       setState(() {
         _isFetched = true;
         // focused = _startingTimestamp.toDate().toUtc();
       });
     });
+    timeLeft = parseDate(_endingTimestamp.toDate())
+        .difference(parseDate(DateTime.now()));
   }
 
   @override
@@ -64,6 +73,48 @@ class _StatsPageState extends State<StatsPage> {
   }
 
   // _handleOnSelectedDay
+  Widget _buildStatsCard(
+      double screenHeight, String description, String value, double padding) {
+    return Container(
+      height: screenHeight * 0.12,
+      child: Card(
+        elevation: 5.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: padding,
+            ),
+            FittedBox(
+              fit: BoxFit.contain,
+              child: Text(
+                description,
+              ),
+            ),
+            Spacer(
+              flex: 1,
+            ),
+            FittedBox(
+              fit: BoxFit.fitHeight,
+              child: Text(
+                value,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFfbb313),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: padding,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,10 +151,21 @@ class _StatsPageState extends State<StatsPage> {
                         SizedBox(
                           height: screenHeight * 0.02,
                         ),
-                        Container(
-                          height: screenHeight * 0.10,
-                          padding: EdgeInsets.only(
-                              top: padding / 2, bottom: padding / 2),
+                        FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: Text(
+                            'Duration',
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: kPrimaryTextColor.withOpacity(.7),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(bottom: padding / 2),
                           child: FittedBox(
                             fit: BoxFit.fitHeight,
                             child: Text(
@@ -111,6 +173,7 @@ class _StatsPageState extends State<StatsPage> {
                               textAlign: TextAlign.end,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
+                                fontSize: 24,
                               ),
                             ),
                           ),
@@ -124,106 +187,28 @@ class _StatsPageState extends State<StatsPage> {
                             startingTimestamp: _startingTimestamp,
                             endingTimestamp: _endingTimestamp,
                             userGivenSessions: _numSessions,
+                            numSessionAttended: numSessionsAttended,
                           ),
                         ),
                         SizedBox(
-                          height: screenHeight * 0.02,
+                          height: screenHeight * 0.06,
                         ),
-                        Container(
-                          height: screenHeight * 0.14,
-                          child: Card(
-                            elevation: 5.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: padding,
-                                ),
-                                FittedBox(
-                                  //TODO: calculate this
-
-                                  fit: BoxFit.contain,
-                                  child: Text(
-                                    'Time spent on Laughie',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                                Spacer(
-                                  flex: 1,
-                                ),
-                                FittedBox(
-                                  //TODO: calculate this
-
-                                  fit: BoxFit.fitHeight,
-                                  child: Text(
-                                    '$timeSpent mins',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFFfbb313),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: padding,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        _buildStatsCard(
+                            screenHeight,
+                            "Sessions attended so far",
+                            totalSessions.toString(),
+                            padding),
                         SizedBox(
-                          height: screenHeight * 0.02,
+                          height: screenHeight * 0.04,
                         ),
-                        Container(
-                          height: screenHeight * 0.14,
-                          child: Card(
-                            elevation: 5.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: padding,
-                                ),
-                                FittedBox(
-                                  fit: BoxFit.fill,
-                                  child: Text(
-                                    'Days left',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                                Spacer(
-                                  flex: 1,
-                                ),
-                                FittedBox(
-                                  fit: BoxFit.fill,
-                                  child: Text(
-                                    '${timeLeft.inDays} days',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFFfbb313),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: padding,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.02,
-                        ),
-                        SizedBox(
-                          height: screenHeight * 0.02,
-                        ),
+                        _buildStatsCard(screenHeight, "Days left",
+                            "${timeLeft.inDays} days", padding),
+                        // SizedBox(
+                        //   height: screenHeight * 0.02,
+                        // ),
+                        // SizedBox(
+                        //   height: screenHeight * 0.02,
+                        // ),
                       ],
                     ),
                   ],

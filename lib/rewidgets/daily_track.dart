@@ -32,7 +32,7 @@ class DailyTrack extends StatelessWidget {
       i++;
     });
     if (sessionsOfDay.length < userGivenSessions) {
-      //TODO: implement this condition
+      //TODO: implement noOfSessionAttended > maxSessions
       for (var i = sessionsOfDay.length; i < userGivenSessions; i++) {
         sessionsDetails.add(SessionBuilder(
           sessionNumber: i + 1,
@@ -123,8 +123,6 @@ class DailyTrack extends StatelessWidget {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: getSessionDetails(sessionsOfDay.length),
-//TODO: make this dynamic
-// children: [],
                         ),
                       ),
                     ],

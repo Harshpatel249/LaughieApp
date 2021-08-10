@@ -18,8 +18,6 @@ class _GetSessionTrackState extends State<GetSessionTrack> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     super.initState();
   }
 
