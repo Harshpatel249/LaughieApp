@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:laughie_app/helper/format_date.dart';
 import 'package:laughie_app/screens/source_page.dart';
 import 'package:laughie_app/screens/test.dart';
 
@@ -15,25 +14,13 @@ class _LaughieFeedbackState extends State<LaughieFeedback> {
   _handleSubmit() async {
     // TODO: Don't allow to submit until and unless something is selected.
     print("============================================== handleSubmit called");
-    DateTime currentDateTime = DateTime.now();
-    String fDate = formatDate(currentDateTime);
-    List<Map> sessionData = [];
-    sessionData.add({
-      "time": currentDateTime,
-      "q1": 4,
+    Map<dynamic, int> response = {
+      "q1": 1,
       "q2": 5,
+    };
+    usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+      "laughie_feedback": response,
     });
-    DocumentSnapshot documentSnapshot = await sessionsRef.doc(fDate).get();
-    if (documentSnapshot.exists) {
-      sessionsRef.doc(fDate).update({
-        "session_data": FieldValue.arrayUnion(sessionData),
-      });
-    } else {
-      sessionsRef.doc(fDate).set({
-        "date": fDate,
-        "session_data": sessionData,
-      });
-    }
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(

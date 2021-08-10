@@ -1,35 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:laughie_app/models/session.dart';
 import 'package:laughie_app/screens/session_builder.dart';
 
 class DailyTrack extends StatelessWidget {
   // final int noSessions;
   final double appBarHeight;
-
+  final List<Session> sessionsOfDay;
+  final DateTime selectedDay;
+  final int userGivenSessions;
   DailyTrack({
     // this.noSessions,
 
     this.appBarHeight,
+    this.sessionsOfDay,
+    this.selectedDay,
+    this.userGivenSessions,
   });
   List<SessionBuilder> getSessionDetails(int totalSessions) {
-    print(
-        "============================================== getSessionDetails called");
-    List<SessionBuilder> sessionsDetails = [];
-    if (totalSessions == null) {
-      print(" no of sessions is null ");
-    } else {
-      print("number of session is not null");
-      print("+++++++++++++++++++++++++++++++++++++ $totalSessions");
-      for (var i = 0; i < totalSessions; i++) {
-        final SessionBuilder session1 = SessionBuilder(
-          time: '9AM',
-          sessionNumber: (i + 1),
-          greeting: 'Morning',
-          completed: true,
-        );
-        sessionsDetails.add(session1);
-      }
-      print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% $sessionsDetails}');
+    if (sessionsOfDay.length < userGivenSessions) {
+      //TODO: implement this condition
+
     }
+    List<SessionBuilder> sessionsDetails = [];
+    int i = 1;
+    sessionsOfDay.forEach((session) {
+      sessionsDetails.add(
+        SessionBuilder(
+          completed: true,
+          dateTime: session.time,
+          sessionNumber: i,
+        ),
+      );
+      i++;
+    });
+    for (var i = 0; i < totalSessions; i++) {
+      // final SessionBuilder session1 = SessionBuilder(
+      //   // dateTime: '9AM',
+      //   sessionNumber: (i + 1),
+      //   greeting: 'Morning',
+      //   completed: true,
+      // );
+      // sessionsDetails.add(session1);
+    }
+    // print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% $sessionsDetails}');
 
     return sessionsDetails;
   }
@@ -68,7 +82,7 @@ class DailyTrack extends StatelessWidget {
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: Text(
-                          '3',
+                          selectedDay.day.toString(),
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w500,
@@ -83,7 +97,7 @@ class DailyTrack extends StatelessWidget {
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: Text(
-                          'Wednesday',
+                          '${DateFormat.EEEE().format(selectedDay)}',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w500,
@@ -98,14 +112,22 @@ class DailyTrack extends StatelessWidget {
                   color: Colors.white,
                   height: screenHeight * 0.01,
                 ),
-                Container(
-                  // color: Colors.red,
-                  child: Column(
-                    children: getSessionDetails(3),
-                    //TODO: make this dynamic
-                    // children: [],
+                if (sessionsOfDay == null)
+                  Text(
+                    "No Sessions were attended on this day",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  )
+                else
+                  Container(
+                    // color: Colors.red,
+                    child: Column(
+                      children: getSessionDetails(sessionsOfDay.length),
+                      //TODO: make this dynamic
+                      // children: [],
+                    ),
                   ),
-                )
               ],
             ),
           ),

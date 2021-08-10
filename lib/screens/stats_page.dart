@@ -26,7 +26,7 @@ class _StatsPageState extends State<StatsPage> {
   Timestamp _endingTimestamp;
   DateTime focused = DateTime.now();
   DateTime _selectedDay = DateTime.now();
-  int _noSessions;
+  int _numSessions;
   bool _isFetched = false;
   StatsDetails _statsDetailsObject = StatsDetails();
 
@@ -36,7 +36,7 @@ class _StatsPageState extends State<StatsPage> {
         await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
     _startingTimestamp = userSnapshot['starting_date'];
     _endingTimestamp = userSnapshot['ending_date'];
-    _noSessions = userSnapshot['sessions'];
+    _numSessions = userSnapshot['sessions'];
     startMonth =
         "${DateFormat.MMM().format(_startingTimestamp.toDate())}'${DateFormat('yy').format(_startingTimestamp.toDate())}";
     endMonth =
@@ -55,7 +55,6 @@ class _StatsPageState extends State<StatsPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _fetchDetails();
     super.initState();
   }
@@ -120,6 +119,7 @@ class _StatsPageState extends State<StatsPage> {
                             appBarHeight: _appBarHeight,
                             startingTimestamp: _startingTimestamp,
                             endingTimestamp: _endingTimestamp,
+                            userGivenSessions: _numSessions,
                           ),
                         ),
                         SizedBox(
@@ -139,6 +139,8 @@ class _StatsPageState extends State<StatsPage> {
                                   width: padding,
                                 ),
                                 FittedBox(
+                                  //TODO: calculate this
+
                                   fit: BoxFit.contain,
                                   child: Text(
                                     'Time spent on Laughie',
@@ -150,6 +152,8 @@ class _StatsPageState extends State<StatsPage> {
                                   flex: 1,
                                 ),
                                 FittedBox(
+                                  //TODO: calculate this
+
                                   fit: BoxFit.fitHeight,
                                   child: Text(
                                     '$timeSpent mins',

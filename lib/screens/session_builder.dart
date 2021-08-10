@@ -1,21 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class SessionBuilder extends StatelessWidget {
-  final String greeting;
   final int sessionNumber;
-  final String time;
+  final DateTime dateTime;
   final bool completed;
 
   SessionBuilder({
-    this.greeting,
     this.sessionNumber,
-    this.time,
+    this.dateTime,
     this.completed,
   });
 
   @override
   Widget build(BuildContext context) {
+    String greeting = "";
+    var hour = dateTime.hour;
+    if (hour < 12) {
+      greeting = 'Morning';
+    } else if (hour <= 17 && hour >= 12) {
+      greeting = 'Afternoon';
+    } else {
+      greeting = 'Evening';
+    }
+    String time = DateFormat.j().format(dateTime);
+
     final mediaQuery = MediaQuery.of(context);
     final appBar = AppBar(
       title: Text(
@@ -31,6 +41,8 @@ class SessionBuilder extends StatelessWidget {
     final padding = mediaQuery.size.width * 0.05;
 
     return Padding(
+      //TODO: UI changes
+
       padding: EdgeInsets.only(
           top: screenHeight * 0.01, bottom: screenHeight * 0.01),
       child: Container(
@@ -84,7 +96,7 @@ class SessionBuilder extends StatelessWidget {
                   child: FittedBox(
                     fit: BoxFit.contain,
                     child: Text(
-                      '$time',
+                      time,
                       style: TextStyle(color: Colors.black45, fontSize: 12),
                     ),
                   ),

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RecordHelp extends StatelessWidget {
+  //TODO: how to record
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);

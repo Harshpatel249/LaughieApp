@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:laughie_app/screens/audio_player.dart';
-import 'package:laughie_app/screens/laughieFeedback.dart';
+import 'package:laughie_app/screens/sessionFeedback.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../rewidgets/video_widget.dart';
@@ -36,6 +36,8 @@ class _SessionScreenState extends State<SessionScreen> {
       centerTitle: true,
       actions: <Widget>[
         IconButton(
+          //TODO: Implement share video
+
           icon: Icon(
             Icons.share,
             size: 30,
@@ -116,7 +118,7 @@ class _SessionScreenState extends State<SessionScreen> {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LaughieFeedback()),
+                                    builder: (context) => SessionFeedback()),
                                 (route) => false);
                           },
                           child: Text(

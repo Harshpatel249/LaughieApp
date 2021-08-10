@@ -12,7 +12,7 @@ class StatsDetails {
 
   Future<List<SessionTrack>> getSessionTrack() async {
     List<SessionTrack> sessionTrack = [];
-    print("***************************** inside getSessionTrack");
+    // print("***************************** inside getSessionTrack");
     DocumentSnapshot userSnapshot =
         await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
     Timestamp startingTimestamp = userSnapshot['starting_date'];
@@ -46,12 +46,10 @@ class StatsDetails {
         date = date.add(const Duration(days: 1))) {
       numSessionsAttended[formatDate(date)] = [];
     }
-    print("here in getSessions");
-    if (sessionTrack.isEmpty) {
-      print("here gaand marai gai");
-    }
+    // print("here in getSessions");
+
     sessionTrack.forEach((element) {
-      print("here in forEach");
+      // print("here in forEach");
 
       // print(
       //     "###################################### element.sessionData: ${element.sessionData}");
