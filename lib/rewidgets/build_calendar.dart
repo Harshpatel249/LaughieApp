@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:laughie_app/constants/style.dart';
 import 'package:laughie_app/helper/format_date.dart';
 import 'package:laughie_app/models/session.dart';
 import 'package:laughie_app/services/firebase/stats_details.dart';
@@ -70,6 +71,9 @@ class _BuildCalendarState extends State<BuildCalendar> {
     });
     print(
         "################################### ${numSessionAttended[formatDate(selectedDay)].toString()}");
+    if (selectedDay.isAfter(DateTime.now())) {
+      return;
+    }
     showDialog<void>(
         context: context,
         builder: (_) {
@@ -82,6 +86,86 @@ class _BuildCalendarState extends State<BuildCalendar> {
         });
   }
 
+  Widget _todayBuilder(
+      BuildContext context, DateTime today, DateTime selectedDay) {
+    // print("!!!!!!!!!!!!!!!!!!!!!!!!!! day1: $selectedDay \n day2: $day2");
+    return Center(
+      child: Container(
+        height: 25,
+        width: 25,
+        decoration: BoxDecoration(
+          // borderRadius: BorderRadius.circular(5),
+          shape: BoxShape.circle,
+
+          color: kPrimaryColor,
+        ),
+        child: Center(
+          child: Text(
+            today.day.toString(),
+            style: TextStyle(
+              color: kPrimaryTextColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _selectedBuilder(
+      BuildContext contest, DateTime selectedDay, DateTime day2) {
+    // print("!!!!!!!!!!!!!!!!!!!!!!!!!! day1: $day1 \n day2: $day2");
+    return Center(
+      child: Container(
+        height: 25,
+        width: 25,
+        decoration: BoxDecoration(
+          // borderRadius: BorderRadius.circular(5),
+          shape: BoxShape.circle,
+
+          color: kPrimaryTextColor,
+        ),
+        child: Center(
+          child: Text(
+            selectedDay.day.toString(),
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMarkers(
+      BuildContext context, DateTime day, List<Session> sessions) {
+    // print("@@@@@@@@@@@@@@@@@@@@ ${sessions.toString()}");
+    if (sessions.isNotEmpty) {
+      return Row(
+        // mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: sessions.map((session) {
+          return Padding(
+            padding: const EdgeInsets.all(1.0),
+            child: Container(
+              height: 7,
+              width: 7,
+              decoration: BoxDecoration(
+                // borderRadius: BorderRadius.circular(5),
+                shape: BoxShape.circle,
+                color: kDoneColor,
+              ),
+            ),
+          );
+        }).toList(),
+        //     (
+        //
+        // child: Text(sessions.length.toString()),
+        // )
+      );
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     // print(
@@ -92,6 +176,12 @@ class _BuildCalendarState extends State<BuildCalendar> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TableCalendar(
+                  calendarBuilders: CalendarBuilders(
+                    // outsideBuilder: _outsideBuilder,
+                    markerBuilder: _buildMarkers,
+                    todayBuilder: _todayBuilder,
+                    selectedBuilder: _selectedBuilder,
+                  ),
                   rowHeight: constraints.maxHeight * 0.146,
 
                   firstDay: widget.startingTimestamp.toDate().toLocal(),

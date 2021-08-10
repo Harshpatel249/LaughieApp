@@ -21,7 +21,7 @@ class _StatsPageState extends State<StatsPage> {
   String startMonth = "May'21";
   String endMonth = "July'21";
   double timeSpent = 15;
-  double timeLeft = 28;
+  Duration timeLeft;
   Timestamp _startingTimestamp;
   Timestamp _endingTimestamp;
   DateTime focused = DateTime.now();
@@ -42,13 +42,17 @@ class _StatsPageState extends State<StatsPage> {
     endMonth =
         "${DateFormat.MMM().format(_endingTimestamp.toDate())}'${DateFormat('yy').format(_endingTimestamp.toDate())}";
     _statsDetailsObject.getSessionTrack().then((sessionTrack) {
-      sessionTrack.forEach((date) {
-        print(
-            "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${date.containsDate(formatDate(DateTime.now()))}");
-      });
+      // sessionTrack.forEach((date) {
+
+      // });
+      timeLeft = DateTime.parse(parseDate(_endingTimestamp.toDate()))
+          .difference(DateTime.parse(parseDate(DateTime.now())));
+      print(
+          "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${(timeLeft.inHours / 24).ceil()} \n ${_endingTimestamp.toDate()}");
+
       setState(() {
         _isFetched = true;
-        focused = _startingTimestamp.toDate().toUtc();
+        // focused = _startingTimestamp.toDate().toUtc();
       });
     });
   }
@@ -200,7 +204,7 @@ class _StatsPageState extends State<StatsPage> {
                                 FittedBox(
                                   fit: BoxFit.fill,
                                   child: Text(
-                                    '$timeLeft days',
+                                    '${timeLeft.inDays} days',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Color(0xFFfbb313),

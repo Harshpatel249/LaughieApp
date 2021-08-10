@@ -26,10 +26,13 @@ class _SessionFeedbackState extends State<SessionFeedback> {
     });
     DocumentSnapshot documentSnapshot = await sessionsRef.doc(fDate).get();
     if (documentSnapshot.exists) {
+      print("%%%%%%%%%%%%%%%%% sessions collection already exists");
+
       sessionsRef.doc(fDate).update({
         "session_data": FieldValue.arrayUnion(sessionData),
       });
     } else {
+      print("%%%%%%%%%%%%%%%%% sessions does not exist");
       sessionsRef.doc(fDate).set({
         "date": fDate,
         "session_data": sessionData,

@@ -5,3 +5,9 @@ formatDate(DateTime dateTime) {
   formattedDate = "${DateFormat("ddMMyyyy").format(dateTime)}";
   return formattedDate;
 }
+
+parseDate(DateTime dateTime) {
+  String str = '';
+  str = "${DateFormat("yyyyMMdd").format(dateTime)}";
+  return str;
+}

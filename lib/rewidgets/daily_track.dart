@@ -18,11 +18,8 @@ class DailyTrack extends StatelessWidget {
     this.userGivenSessions,
   });
   List<SessionBuilder> getSessionDetails(int totalSessions) {
-    if (sessionsOfDay.length < userGivenSessions) {
-      //TODO: implement this condition
-
-    }
     List<SessionBuilder> sessionsDetails = [];
+
     int i = 1;
     sessionsOfDay.forEach((session) {
       sessionsDetails.add(
@@ -34,15 +31,17 @@ class DailyTrack extends StatelessWidget {
       );
       i++;
     });
-    for (var i = 0; i < totalSessions; i++) {
-      // final SessionBuilder session1 = SessionBuilder(
-      //   // dateTime: '9AM',
-      //   sessionNumber: (i + 1),
-      //   greeting: 'Morning',
-      //   completed: true,
-      // );
-      // sessionsDetails.add(session1);
+    if (sessionsOfDay.length < userGivenSessions) {
+      //TODO: implement this condition
+      for (var i = sessionsOfDay.length; i < userGivenSessions; i++) {
+        sessionsDetails.add(SessionBuilder(
+          sessionNumber: i + 1,
+          dateTime: null,
+          completed: false,
+        ));
+      }
     }
+
     // print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% $sessionsDetails}');
 
     return sessionsDetails;
@@ -52,7 +51,7 @@ class DailyTrack extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final bottomBarHeight = MediaQuery.of(context).size.height * 0.08;
-
+    final screenWidth = mediaQuery.size.width;
     final screenHeight = mediaQuery.size.height -
         appBarHeight -
         mediaQuery.padding.top -
@@ -61,74 +60,77 @@ class DailyTrack extends StatelessWidget {
     return SimpleDialog(
       backgroundColor: Colors.transparent,
       children: [
-        Card(
-          color: Color(0xff222223),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          elevation: 15.0,
-          shadowColor: Colors.black,
-          child: Container(
-            padding: EdgeInsets.only(left: padding, right: padding),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: screenHeight * 0.02,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      height: screenHeight * 0.05,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          selectedDay.day.toString(),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0,
+        Container(
+          height: screenHeight * 0.55,
+          width: screenWidth * .75,
+          // color: Colors.blue,
+          child: Card(
+            color: Color(0xff222223),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            elevation: 15.0,
+            shadowColor: Colors.black,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Container(
+                  padding: EdgeInsets.symmetric(
+                      vertical: constraints.maxWidth * 0.05,
+                      horizontal: constraints.maxWidth * 0.1),
+                  // color: Colors.blue,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: constraints.maxHeight * 0.04,
+                      ),
+                      Row(
+                        children: [
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              "${DateFormat('d MMM').format(selectedDay)}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18.0,
+                                fontFamily: 'Poppins',
+                              ),
+                            ),
                           ),
+                          Spacer(),
+                          FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text(
+                              '${DateFormat.EEEE().format(selectedDay)}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18.0,
+                                fontFamily: 'Poppins',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Divider(
+                        color: Colors.white,
+                        height: screenHeight * 0.01,
+                      ),
+                      Container(
+                        height: constraints.maxHeight * .75,
+                        // color: Colors.blue,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: getSessionDetails(sessionsOfDay.length),
+//TODO: make this dynamic
+// children: [],
                         ),
                       ),
-                    ),
-                    Spacer(),
-                    Container(
-                      height: screenHeight * 0.05,
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          '${DateFormat.EEEE().format(selectedDay)}',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(
-                  color: Colors.white,
-                  height: screenHeight * 0.01,
-                ),
-                if (sessionsOfDay == null)
-                  Text(
-                    "No Sessions were attended on this day",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  )
-                else
-                  Container(
-                    // color: Colors.red,
-                    child: Column(
-                      children: getSessionDetails(sessionsOfDay.length),
-                      //TODO: make this dynamic
-                      // children: [],
-                    ),
+                    ],
                   ),
-              ],
+                );
+              },
             ),
           ),
         ),
