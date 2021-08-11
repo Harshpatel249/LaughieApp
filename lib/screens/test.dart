@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
-import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/signIn.dart';
 import 'package:laughie_app/screens/signUpMedicalHistory.dart';
 import 'package:laughie_app/screens/signUpPersonalDetails.dart';
@@ -10,6 +10,11 @@ import 'package:laughie_app/screens/signUpPrescription.dart';
 import 'package:laughie_app/screens/source_page.dart';
 
 final usersRef = FirebaseFirestore.instance.collection('users');
+final sessionsRef = FirebaseFirestore.instance
+    .collection('users')
+    .doc(FirebaseAuth.instance.currentUser.uid)
+    .collection('sessions');
+final storageRef = FirebaseStorage.instance.ref('profile_pictures');
 
 class Test extends StatefulWidget {
   static String id = 'test_screen';

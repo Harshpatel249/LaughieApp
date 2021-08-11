@@ -96,7 +96,6 @@ class _SignUpState extends State<SignUp> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _auth.authStateChanges().listen((user) {
       if (user != null) {

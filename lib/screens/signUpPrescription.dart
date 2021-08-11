@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/test.dart';
+import 'package:uuid/uuid.dart';
 
 class SignUpPrescription extends StatefulWidget {
   final UserCredential userCredential;
@@ -15,9 +16,33 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
   DateTime _startingDate, _endingDate;
   String _sessionValue;
   String _prescribedValue;
+  String dayId = Uuid().v4();
+
+  List<DateTime> _getDates(DateTime start, DateTime end) {
+    List<DateTime> dateList = [];
+    for (DateTime date = start;
+        date.isBefore(end);
+        date = date.add(const Duration(days: 1))) {
+      dateList.add(date);
+    }
+    dateList.add(end);
+    return dateList;
+  }
+
+  List _getInitialSessionData() {
+    List<Map> sessionData = [];
+    for (int i = int.parse(_sessionValue); i > 0; i--) {
+      sessionData.add({
+        "has_attended": false,
+      });
+    }
+    return sessionData;
+  }
 
   _uploadPrescriptionDetails() {
     FocusScope.of(context).unfocus();
+    List sessionData = _getInitialSessionData();
+
     usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
       "starting_date": _startingDate,
       "ending_date": _endingDate,
@@ -25,6 +50,16 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
       "prescribed_by": _prescribedValue,
       "signup_status": 3,
     });
+
+    // List<DateTime> dates = _getDates(_startingDate, _endingDate);
+    // dates.forEach((date) {
+    //   String fDate = formatDate(date);
+    //   sessionsRef.doc(fDate).set({
+    //     "date": fDate,
+    //     "session_data": sessionData,
+    //   });
+    // });
+
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
@@ -95,7 +130,8 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
                     mode: DateTimeFieldPickerMode.date,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
-                      return value.isBefore(DateTime.now())
+                      return value.isBefore(
+                              DateTime.now().subtract(Duration(days: 1)))
                           ? 'You cannot start in the past!'
                           : null;
                     },

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:laughie_app/rewidgets/circularProgressBar.dart';
 import 'package:laughie_app/screens/homePage.dart';
 import 'package:laughie_app/screens/record_screen.dart';
-import 'package:laughie_app/screens/session_screen.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -52,7 +51,6 @@ class _SourcePageState extends State<SourcePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _getRecordLaghieStatus();
     super.initState();
   }

@@ -27,7 +27,6 @@ class _AssessVideoState extends State<AssessVideo> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller = VideoPlayerController.file(widget.recordedVideo);
     _initializeVideoPlayerFuture = _controller.initialize();
@@ -35,7 +34,6 @@ class _AssessVideoState extends State<AssessVideo> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _controller.dispose();
     super.dispose();
   }
@@ -61,6 +59,7 @@ class _AssessVideoState extends State<AssessVideo> {
   @override
   Widget build(BuildContext context) {
     // AlertDialog warning = ;
+    print('##################### build called');
     return Scaffold(
       appBar: AppBar(
         title: Text(''),

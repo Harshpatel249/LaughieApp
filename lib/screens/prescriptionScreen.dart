@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:laughie_app/screens/prescriptionUpdate.dart';
-import '../rewidgets/bottomNavBar.dart';
-import '../rewidgets/circularProgressBar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:laughie_app/screens/prescriptionUpdate.dart';
 import 'package:laughie_app/screens/test.dart';
+
+import '../rewidgets/bottomNavBar.dart';
+import '../rewidgets/circularProgressBar.dart';
 
 class PrescriptionScreen extends StatefulWidget {
   static String id = 'prescription_screen';
@@ -38,7 +39,6 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _fetchDetails();
     super.initState();
   }

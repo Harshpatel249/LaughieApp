@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:laughie_app/helper/format_date.dart';
+import 'package:laughie_app/screens/source_page.dart';
+import 'package:laughie_app/screens/test.dart';
+
 import '../rewidgets/questionWidget.dart';
 
 class SessionFeedback extends StatefulWidget {
@@ -7,6 +12,49 @@ class SessionFeedback extends StatefulWidget {
 }
 
 class _SessionFeedbackState extends State<SessionFeedback> {
+  _handleSubmit() async {
+    // TODO: Don't allow to submit until and unless something is selected.
+    print(
+        "============================================== handleSubmit called from session feedback");
+    DateTime currentDateTime = DateTime.now();
+    String fDate = formatDate(currentDateTime);
+    List<Map> sessionData = [];
+    sessionData.add({
+      "time": currentDateTime,
+      "q3": 4,
+      "q4": 5,
+      "q5": 2,
+    });
+    DocumentSnapshot documentSnapshot = await sessionsRef.doc(fDate).get();
+    if (documentSnapshot.exists) {
+      print("%%%%%%%%%%%%%%%%% sessions collection already exists");
+
+      try {
+        sessionsRef.doc(fDate).update({
+          "session_data": FieldValue.arrayUnion(sessionData),
+        });
+      } on FirebaseException catch (err) {
+        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& exception: ${err.message}");
+      }
+    } else {
+      print("%%%%%%%%%%%%%%%%% sessions does not exist");
+      try {
+        sessionsRef.doc(fDate).set({
+          "date": fDate,
+          "session_data": sessionData,
+        });
+      } on FirebaseException catch (err) {
+        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& exception: ${err.message}");
+      }
+    }
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SourcePage(),
+        ),
+        (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -61,14 +109,7 @@ class _SessionFeedbackState extends State<SessionFeedback> {
                 Padding(
                   padding: EdgeInsets.only(right: padding, left: padding),
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Navigator.pushAndRemoveUntil(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) => SourcePage(),
-                      //     ),
-                      //         (route) => false);
-                    },
+                    onPressed: _handleSubmit,
                     child: Text(
                       'Submit',
                       style: TextStyle(fontSize: 18),

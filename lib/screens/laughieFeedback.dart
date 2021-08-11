@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laughie_app/screens/source_page.dart';
+import 'package:laughie_app/screens/test.dart';
+
 import '../rewidgets/questionWidget.dart';
 
 class LaughieFeedback extends StatefulWidget {
@@ -8,6 +11,24 @@ class LaughieFeedback extends StatefulWidget {
 }
 
 class _LaughieFeedbackState extends State<LaughieFeedback> {
+  _handleSubmit() async {
+    // TODO: Don't allow to submit until and unless something is selected.
+    print("============================================== handleSubmit called");
+    Map<dynamic, int> response = {
+      "q1": 1,
+      "q2": 5,
+    };
+    usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
+      "laughie_feedback": response,
+    });
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SourcePage(),
+        ),
+        (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -53,14 +74,7 @@ class _LaughieFeedbackState extends State<LaughieFeedback> {
                 Padding(
                   padding: EdgeInsets.only(right: padding, left: padding),
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SourcePage(),
-                          ),
-                          (route) => false);
-                    },
+                    onPressed: _handleSubmit,
                     child: Text(
                       'Submit',
                       style: TextStyle(fontSize: 18),
