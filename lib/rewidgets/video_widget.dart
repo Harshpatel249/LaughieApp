@@ -7,8 +7,9 @@ import 'package:video_player/video_player.dart';
 class VideoWidget extends StatefulWidget {
   final File file;
   final screenHeight;
+  final url;
 
-  const VideoWidget({this.file, this.screenHeight});
+  const VideoWidget({this.file, this.screenHeight, this.url});
 
   @override
   VideoWidgetState createState() => VideoWidgetState();
@@ -26,7 +27,9 @@ class VideoWidgetState extends State<VideoWidget> {
 
     videoStatusAnimation = Container();
 
-    _controller = VideoPlayerController.file(widget.file)
+    _controller = (widget.file == null && widget.url != null)
+        ? VideoPlayerController.network(widget.url)
+        : VideoPlayerController.file(widget.file)
       ..addListener(() {
         final bool isPlaying = _controller.value.isPlaying;
         if (isPlaying != _isPlaying) {

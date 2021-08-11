@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:laughie_app/rewidgets/video_widget.dart';
 
 class RecordHelp extends StatelessWidget {
   //TODO: how to record
@@ -85,6 +86,14 @@ class RecordHelp extends StatelessWidget {
                   ),
                   SizedBox(
                     height: screenHeight * 0.01,
+                  ),
+                  Container(
+                    height: screenHeight * 0.8,
+                    child: VideoWidget(
+                      screenHeight: screenHeight,
+                      url:
+                          "https://firebasestorage.googleapis.com/v0/b/laughie-52bd5.appspot.com/o/record_laughie.mp4?alt=media&token=adb27283-b86f-471b-af54-17a91124491a",
+                    ),
                   ),
                 ],
               ),
