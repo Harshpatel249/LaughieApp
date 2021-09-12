@@ -18,30 +18,10 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
   String _prescribedValue;
   String dayId = Uuid().v4();
 
-  List<DateTime> _getDates(DateTime start, DateTime end) {
-    List<DateTime> dateList = [];
-    for (DateTime date = start;
-        date.isBefore(end);
-        date = date.add(const Duration(days: 1))) {
-      dateList.add(date);
-    }
-    dateList.add(end);
-    return dateList;
-  }
 
-  List _getInitialSessionData() {
-    List<Map> sessionData = [];
-    for (int i = int.parse(_sessionValue); i > 0; i--) {
-      sessionData.add({
-        "has_attended": false,
-      });
-    }
-    return sessionData;
-  }
-
+//uploads details to firestore
   _uploadPrescriptionDetails() {
     FocusScope.of(context).unfocus();
-    List sessionData = _getInitialSessionData();
 
     usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
       "starting_date": _startingDate,
@@ -51,14 +31,6 @@ class _SignUpPrescriptionState extends State<SignUpPrescription> {
       "signup_status": 3,
     });
 
-    // List<DateTime> dates = _getDates(_startingDate, _endingDate);
-    // dates.forEach((date) {
-    //   String fDate = formatDate(date);
-    //   sessionsRef.doc(fDate).set({
-    //     "date": fDate,
-    //     "session_data": sessionData,
-    //   });
-    // });
 
     Navigator.pushAndRemoveUntil(
         context,

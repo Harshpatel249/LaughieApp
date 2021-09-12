@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:laughie_app/screens/homePage.dart';
-import 'package:laughie_app/screens/laughieFeedback.dart';
 import 'package:laughie_app/screens/prescriptionScreen.dart';
-import 'package:laughie_app/screens/sessionFeedback.dart';
-import 'package:laughie_app/screens/session_screen.dart';
 import 'package:laughie_app/screens/source_page.dart';
-import '../screens/record_screen.dart';
+
+import '../screens/homePage.dart';
 import '../screens/stats_page.dart';
 import '../screens/userProfile.dart';
-import '../screens/homePage.dart';
 
 class BottomNavBar extends StatefulWidget {
   String id;
@@ -38,7 +35,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 size: bottomBarHeight * 0.69,
                 color:
                     this.id == HomePage.id ? Color(0xfffbb313) : Colors.black,
-                //this.id == HomeScreen.id ? Colors.white : Color(0xFFC3C2C3),
               ),
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
@@ -50,7 +46,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
             IconButton(
               icon: Icon(
                 Icons.receipt_long,
-                //FontAwesomeIcons.americanSignLanguageInterpreting,
                 size: bottomBarHeight * 0.69,
                 color: this.id == PrescriptionScreen.id
                     ? Color(0xfffbb313)

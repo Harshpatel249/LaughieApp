@@ -13,6 +13,7 @@ class _ResetPassGetOTPState extends State<ResetPassGetOTP> {
   final _formKey = GlobalKey<FormState>();
   final emailPhoneCon = new TextEditingController();
 
+  // sends an email which contains a link to reset the user password.
   _sendRequest() {
     setState(() {
       if (_formKey.currentState.validate()) {
@@ -55,14 +56,7 @@ class _ResetPassGetOTPState extends State<ResetPassGetOTP> {
           ),
         );
       });
-    } catch (err) {
-      print("&&&&&&&&&&&&&&&&&&&&& $err");
-    }
-    // Navigator.of(context).pop();
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => ResetPassAuthOTP()),
-    // );
+    } catch (err) {}
   }
 
   @override

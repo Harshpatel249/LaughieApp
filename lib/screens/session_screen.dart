@@ -25,7 +25,6 @@ class _SessionScreenState extends State<SessionScreen> {
   @override
   Widget build(BuildContext context) {
     File fileMedia = File(widget.filePath);
-    // print("%%%%%%%%%%%%%%%%%%%%%% session ${widget.filePath}");
     final mediaQuery = MediaQuery.of(context);
 
     final appBar = AppBar(
@@ -43,20 +42,6 @@ class _SessionScreenState extends State<SessionScreen> {
             size: 30,
           ),
           onPressed: () async {
-            // final box = context.findRenderObject() as RenderBox;
-
-            // if (widget.filePath.isNotEmpty) {
-            //   await Share.shareFiles([fileMedia.path],
-            //       text: 'Laughie',
-            //       subject: 'Laughie',
-            //       sharePositionOrigin:
-            //           box.localToGlobal(Offset.zero) & box.size);
-            // } else {
-            //   await Share.share('File not found',
-            //       subject: 'File not found',
-            //       sharePositionOrigin:
-            //           box.localToGlobal(Offset.zero) & box.size);
-            // }
             if (widget.filePath.isNotEmpty) {
               try {
                 await Share.shareFiles([widget.filePath], text: 'Laughie');

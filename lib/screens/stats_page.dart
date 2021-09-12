@@ -11,6 +11,7 @@ import 'package:laughie_app/rewidgets/circularProgressBar.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:laughie_app/services/firebase/stats_details.dart';
 
+//Statistics page
 class StatsPage extends StatefulWidget {
   static String id = 'stats_page';
   @override

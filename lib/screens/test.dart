@@ -23,6 +23,8 @@ class Test extends StatefulWidget {
   _TestState createState() => _TestState();
 }
 
+// All the firebase instances are created here.
+// Also this file keeps track of the user progress while signing up, saves as signup_status
 class _TestState extends State<Test> {
   var status = 4;
   @override
@@ -58,15 +60,3 @@ class _TestState extends State<Test> {
     );
   }
 }
-// SafeArea(
-// child: Scaffold(
-// appBar: AppBar(
-// title: Text(
-// 'AppBar',
-// style: TextStyle(color: Colors.black),
-// ),
-// centerTitle: true,
-// ),
-// bottomNavigationBar: BottomNavBar(id: Test.id),
-// body: Text('Hello World!'),
-// ))

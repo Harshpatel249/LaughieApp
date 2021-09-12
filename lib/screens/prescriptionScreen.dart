@@ -23,6 +23,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
   bool _isFetched = false;
   String prescribedBy = '';
 
+  //fetches prescription details from firebase of a particular user
   _fetchDetails() async {
     DocumentSnapshot userSnapshot =
         await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();

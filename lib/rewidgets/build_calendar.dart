@@ -8,12 +8,14 @@ import 'package:table_calendar/table_calendar.dart';
 
 import 'daily_track.dart';
 
+//To render calendar widget.
 class BuildCalendar extends StatefulWidget {
-  final Timestamp startingTimestamp;
-  final Timestamp endingTimestamp;
+  final Timestamp startingTimestamp; //user's starting date of therapy
+  final Timestamp endingTimestamp; //user's ending date of therapy
   final double appBarHeight;
-  final int userGivenSessions;
-  final Map<String, List<Session>> numSessionAttended;
+  final int userGivenSessions; //max number of sessions per day
+  final Map<String, List<Session>>
+      numSessionAttended; //details of attended sessions where key is date in custom conventional string format.(ddMMyyyy)
 
   BuildCalendar({
     this.startingTimestamp,
@@ -30,26 +32,23 @@ class BuildCalendar extends StatefulWidget {
 class _BuildCalendarState extends State<BuildCalendar> {
   DateTime focused = DateTime.now();
   DateTime _selectedDay = DateTime.now();
-  // StatsDetails obj = StatsDetails();
-  // Map<String, List<Session>> numSessionAttended;
-  // bool _isLoaded = true;
 
   @override
   void initState() {
     super.initState();
   }
 
+  //method returns events to show in the calendar
   List<Session> _getEventsForDay(DateTime day) {
     return widget.numSessionAttended[formatDate(day)];
   }
 
+  //displays a simple dialog box on tapping the day
   _handleOnDaySelected(DateTime selectedDay, DateTime focusedDay) {
     setState(() {
       _selectedDay = selectedDay;
-      focused = focusedDay; // update `_focusedDay` here as well
+      focused = focusedDay;
     });
-    print(
-        "################################### ${widget.numSessionAttended[formatDate(selectedDay)].toString()}");
 
     if (parseDate(selectedDay).isAfter(parseDate(DateTime.now()))) {
       return;
@@ -68,15 +67,12 @@ class _BuildCalendarState extends State<BuildCalendar> {
 
   Widget _todayBuilder(
       BuildContext context, DateTime today, DateTime selectedDay) {
-    // print("!!!!!!!!!!!!!!!!!!!!!!!!!! day1: $selectedDay \n day2: $day2");
     return Center(
       child: Container(
         height: 25,
         width: 25,
         decoration: BoxDecoration(
-          // borderRadius: BorderRadius.circular(5),
           shape: BoxShape.circle,
-
           color: kPrimaryColor,
         ),
         child: Center(
@@ -93,7 +89,6 @@ class _BuildCalendarState extends State<BuildCalendar> {
 
   Widget _selectedBuilder(
       BuildContext contest, DateTime selectedDay, DateTime day2) {
-    // print("!!!!!!!!!!!!!!!!!!!!!!!!!! day1: $day1 \n day2: $day2");
     return Center(
       child: Container(
         height: 25,
@@ -118,10 +113,8 @@ class _BuildCalendarState extends State<BuildCalendar> {
 
   Widget _buildMarkers(
       BuildContext context, DateTime day, List<Session> sessions) {
-    // print("@@@@@@@@@@@@@@@@@@@@ ${sessions.toString()}");
     if (sessions.isNotEmpty) {
       return Row(
-        // mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: sessions.map((session) {
           return Padding(
@@ -130,17 +123,12 @@ class _BuildCalendarState extends State<BuildCalendar> {
               height: 7,
               width: 7,
               decoration: BoxDecoration(
-                // borderRadius: BorderRadius.circular(5),
                 shape: BoxShape.circle,
                 color: kDoneColor,
               ),
             ),
           );
         }).toList(),
-        //     (
-        //
-        // child: Text(sessions.length.toString()),
-        // )
       );
     }
     return null;
@@ -148,56 +136,43 @@ class _BuildCalendarState extends State<BuildCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    // print(
-    //     "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% inside build of buildCalendar()");
-    return LayoutBuilder(builder: (context, constraints) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TableCalendar(
-            calendarBuilders: CalendarBuilders(
-              // outsideBuilder: _outsideBuilder,
-              markerBuilder: _buildMarkers,
-              todayBuilder: _todayBuilder,
-              selectedBuilder: _selectedBuilder,
-            ),
-            rowHeight: constraints.maxHeight * 0.146,
-
-            firstDay: widget.startingTimestamp.toDate().toLocal(),
-            lastDay: widget.endingTimestamp.toDate().toLocal(),
-            focusedDay: focused,
-            eventLoader: _getEventsForDay,
-
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: _handleOnDaySelected,
-            // onDaySelected: (date, events) {
-            //   print(date.toUtc());
-            //   setState(() {
-            //     focused = date.toUtc();
-            //   }); //On click services
-            // },
-            onPageChanged: (focusedDay) {
-              focused = focusedDay;
-            },
-            headerStyle: HeaderStyle(
-              formatButtonVisible: false,
-              titleCentered: true,
-              titleTextFormatter: (date, locale) =>
-                  DateFormat.MMMM(locale).format(date),
-              titleTextStyle: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w400,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TableCalendar(
+              calendarBuilders: CalendarBuilders(
+                markerBuilder: _buildMarkers,
+                todayBuilder: _todayBuilder,
+                selectedBuilder: _selectedBuilder,
+              ),
+              rowHeight: constraints.maxHeight * 0.146,
+              firstDay: widget.startingTimestamp.toDate().toLocal(),
+              lastDay: widget.endingTimestamp.toDate().toLocal(),
+              focusedDay: focused,
+              eventLoader: _getEventsForDay,
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDay, day);
+              },
+              onDaySelected: _handleOnDaySelected,
+              onPageChanged: (focusedDay) {
+                focused = focusedDay;
+              },
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
+                titleCentered: true,
+                titleTextFormatter: (date, locale) =>
+                    DateFormat.MMMM(locale).format(date),
+                titleTextStyle: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
-          ),
-          // ..._getEventsForDay(_selectedDay).map((Session session) {
-          //   print("################### session: $session");
-          //   return Container();
-          // }),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 }

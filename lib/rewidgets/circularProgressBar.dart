@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//This is a custom circular progress bar.
 class CircularProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'test.dart';
 import 'package:date_field/date_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:laughie_app/screens/test.dart';
+
+import './test.dart';
 import 'prescriptionScreen.dart';
 
 class PrescriptionUpdate extends StatefulWidget {
@@ -18,6 +19,7 @@ class _PrescriptionUpdateState extends State<PrescriptionUpdate> {
   bool _calval1 = false;
   bool _calval2 = false;
 
+  //updates the user's prescription details based on the user input
   _uploadPrescriptionDetails() {
     FocusScope.of(context).unfocus();
     usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
@@ -103,7 +105,6 @@ class _PrescriptionUpdateState extends State<PrescriptionUpdate> {
                     },
                     onDateSelected: (DateTime value) {
                       _startingDate = value;
-                      print(value);
                       setState(() {
                         valid = value;
                         _calval1 = true;
@@ -140,7 +141,6 @@ class _PrescriptionUpdateState extends State<PrescriptionUpdate> {
                     onDateSelected: (DateTime value) {
                       _endingDate = value;
                       _calval2 = true;
-                      print(value);
                     },
                   ),
                 ),

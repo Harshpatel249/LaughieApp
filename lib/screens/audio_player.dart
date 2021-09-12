@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
+
 import 'laughieFeedback.dart';
 
 typedef _Fn = void Function();
@@ -16,6 +16,7 @@ class AudioPlayer extends StatefulWidget {
   _AudioPlayerState createState() => _AudioPlayerState();
 }
 
+// Implemented from the example in the documentation of flutter_sound
 class _AudioPlayerState extends State<AudioPlayer> {
   double progressValue = 0;
 
@@ -48,25 +49,17 @@ class _AudioPlayerState extends State<AudioPlayer> {
   }
 
   void play() {
-    print('%%%%%%%%%%%%%%%%%%%%%%% inside play %%%%%%%%%%%%%%%%%%%');
-    print('### path inside play: ${widget.audioFileSrc}');
-    print('_mPlayerIsInited: $_mPlayerIsInited');
-    print('_mplaybackReady: $_mplaybackReady');
-    print('_mPlayer.isStopped: ${_mPlayer.isStopped}');
     assert(_mPlayerIsInited && _mplaybackReady && _mPlayer.isStopped);
     _mPlayer
         .startPlayer(
             fromURI: widget.audioFileSrc,
             //codec: kIsWeb ? Codec.opusWebM : Codec.aacADTS,
             whenFinished: () {
-              print('inside whenFinished');
               setState(() {});
             })
         .then((value) {
-      print('inside then play');
       setState(() {});
     });
-    print('after player');
   }
 
   void stopPlayer() {
@@ -75,37 +68,27 @@ class _AudioPlayerState extends State<AudioPlayer> {
     });
   }
 
+  //starts the countdown of 1 minute.
   _Fn startCounter() {
     progressValue = 0;
 
-    print('########### inside startCounter');
     if (!_mPlayer.isStopped) {
-      print('inside !_mRecorderIsInited || !_mPlayer.isStopped');
       return null;
     }
     if (_timer != null) {
-      print('inside _timer != null');
       _timer.cancel();
 
       stopPlayer();
     }
-    print('${DateTime.now()}');
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (Timer _timer) {
-        print('inside anonymous function');
         setState(() {
-          print('${DateTime.now()}');
-          print('$progressValue');
           progressValue++;
           if (progressValue > _audioPlayerDuration) {
-            print('#### inside if');
-
             _timer.cancel();
             stopPlayer();
           } else {
-            print('#### inside else');
-
             // play();
           }
         });
@@ -115,11 +98,9 @@ class _AudioPlayerState extends State<AudioPlayer> {
 
   _onAudioButtonPressed() {
     if (_mPlayer.isStopped == true) {
-      print('@@@@inside if3');
       startCounter();
       play();
     } else {
-      print('@@@@inside if4');
       _timer.cancel();
       setState(() {
         progressValue = 0;
@@ -139,7 +120,6 @@ class _AudioPlayerState extends State<AudioPlayer> {
     return Column(
       children: [
         Container(
-          // color: Colors.red,
           height: (mediaQuery.size.height -
                   widget.appBarheight -
                   mediaQuery.padding.top) *
@@ -157,7 +137,6 @@ class _AudioPlayerState extends State<AudioPlayer> {
                     alignment: Alignment.center,
                     children: [
                       Container(
-                        // color: Colors.amber,
                         width: constraints.maxHeight * 0.57,
                         height: constraints.maxHeight * 0.57,
                         child: SfRadialGauge(
@@ -191,7 +170,6 @@ class _AudioPlayerState extends State<AudioPlayer> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           shape: CircleBorder(),
-                          // primary: Colors.orange,
                         ),
                         child: Container(
                           // width: 170,

@@ -5,6 +5,7 @@ import 'package:laughie_app/models/session.dart';
 import 'package:laughie_app/models/session_track.dart';
 import 'package:laughie_app/screens/test.dart';
 
+// to fetch stats details from firestore.
 class StatsDetails {
   int temp;
   DateTime startingDate;
@@ -12,7 +13,6 @@ class StatsDetails {
 
   Future<List<SessionTrack>> getSessionTrack() async {
     List<SessionTrack> sessionTrack = [];
-    // print("***************************** inside getSessionTrack");
     DocumentSnapshot userSnapshot =
         await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
     Timestamp startingTimestamp = userSnapshot['starting_date'];
@@ -24,14 +24,9 @@ class StatsDetails {
     QuerySnapshot querySnapshot = await sessionsRef
         .where("date", isLessThanOrEqualTo: "${formatDate(DateTime.now())}")
         .get();
-    // print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^${querySnapshot.size}");
     querySnapshot.docs.forEach((date) {
-      // print(
-      //     '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!${date['session_data']}');
       sessionTrack.add(SessionTrack.fromDocument(date));
     });
-
-    // print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${sessionTrack.length}");
 
     return sessionTrack;
   }

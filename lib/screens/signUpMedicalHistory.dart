@@ -19,11 +19,11 @@ class _SignUpMedicalHistoryState extends State<SignUpMedicalHistory> {
   COVID _covid = COVID.No;
   bool hasMedHistory = false;
 
+  //validates the fields and uploads the medical details to firestore.
   _nextButtonClicked() {
     if (_covid == COVID.Yes || _diseases == Diseases.do_have) {
       hasMedHistory = true;
     }
-    print(hasMedHistory);
     usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
       "has_medical_history": hasMedHistory,
       "signup_status": 2,

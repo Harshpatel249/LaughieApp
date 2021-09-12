@@ -6,9 +6,8 @@ import 'package:laughie_app/screens/homePage.dart';
 import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+//Checks if the user has already recorded a laughie or not. if he has, check the recorded file exists at the saved path or not.
 class SourcePage extends StatefulWidget {
-  // const SourcePage({Key? key}) : super(key: key);
 
   @override
   _SourcePageState createState() => _SourcePageState();
@@ -24,14 +23,10 @@ class _SourcePageState extends State<SourcePage> {
     DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
     final userData = documentSnapshot.data();
-    // Map<String, dynamic> userData =
-    //     documentSnapshot.data() as Map<String, dynamic>;
     setState(() {
       _recordLaughieStatus = userData['has_recorded_laughie'];
     });
 
-    print(
-        "#############################################$_recordLaughieStatus}");
     if (_recordLaughieStatus) {
       var storageStatus = await Permission.storage.status;
       if (!storageStatus.isGranted) {
@@ -40,8 +35,6 @@ class _SourcePageState extends State<SourcePage> {
       if (await Permission.storage.isGranted) {
         _filePath = userData['filePath'];
         _mediaType = userData['media'];
-        print(
-            "#############################################$_filePath \n ^^^^^^^^^^^^^^^^^^^^^^$_mediaType}");
       }
     }
     setState(() {
