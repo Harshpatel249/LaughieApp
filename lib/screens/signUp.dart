@@ -28,15 +28,13 @@ class _SignUpState extends State<SignUp> {
   IconData i1 = Icons.visibility;
   IconData i2 = Icons.visibility;
 
+  //First, it will validate the fields, then it will create a new user using firebase Auth
   _trySignUp() async {
     FocusScope.of(context).unfocus();
     bool isValid = _formKey.currentState.validate();
     if (isValid) {
       _formKey.currentState.save();
-      print('$_email\n$_userName\n$_password\n$_confirmPassword');
-      //
-      // Creating user
-      //
+
 
     }
     if (isValid) {
@@ -76,17 +74,14 @@ class _SignUpState extends State<SignUp> {
         var message;
         if (err.code == 'weak-password') {
           message = 'The password provided is too weak.';
-          // print('The password provided is too weak.');
         } else if (err.code == 'email-already-in-use') {
           message = 'The account already exists for that email.';
-          // print('The account already exists for that email.');
         }
         SnackBar snackBar = SnackBar(
           content: Text(message),
           backgroundColor: Theme.of(context).errorColor,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        print(err);
         setState(() {
           _isLoading = false;
         });

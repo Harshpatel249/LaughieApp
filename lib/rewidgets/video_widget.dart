@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+//To play a video on screen with play pause functionality
 class VideoWidget extends StatefulWidget {
   final File file;
   final screenHeight;
@@ -54,10 +55,6 @@ class VideoWidgetState extends State<VideoWidget> {
     super.dispose();
   }
 
-  // AspectRatio(
-  // aspectRatio: 16/9,
-  // child: _controller.value.isInitialized ? videoPlayer() : Container(),
-  // );
   @override
   Widget build(BuildContext context) =>
       _controller.value.isInitialized ? videoPlayer() : Container();
@@ -68,13 +65,9 @@ class VideoWidgetState extends State<VideoWidget> {
             child: Stack(
               children: <Widget>[
                 video(),
-
                 Center(
                   child: videoStatusAnimation,
                 ),
-                // Center(
-                //   child: controlIcon,
-                // )
               ],
             ),
           ),
@@ -94,10 +87,6 @@ class VideoWidgetState extends State<VideoWidget> {
       );
 
   Widget video() => GestureDetector(
-        // child: AspectRatio(
-        //   aspectRatio: _controller.value.aspectRatio,
-        //   child: VideoPlayer(_controller),
-        // ),
         child: VideoPlayer(_controller),
         onTap: () {
           if (!_controller.value.isInitialized) {
@@ -111,11 +100,6 @@ class VideoWidgetState extends State<VideoWidget> {
             return;
           }
           if (_controller.value.isPlaying) {
-            // controlIcon = Icon(
-            //   Icons.pause_circle_outline,
-            //   size: 100.0,
-            //   color: Colors.white,
-            // );
             videoStatusAnimation = FadeAnimation(
               child: const Icon(
                 Icons.pause_circle_outline,
@@ -125,11 +109,6 @@ class VideoWidgetState extends State<VideoWidget> {
             );
             _controller.pause();
           } else {
-            // controlIcon = Icon(
-            //   Icons.play_circle_outline,
-            //   size: 100.0,
-            //   color: Colors.white,
-            // );
             videoStatusAnimation = FadeAnimation(
               child: const Icon(
                 Icons.play_circle_outline,

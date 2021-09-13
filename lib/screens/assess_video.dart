@@ -10,8 +10,8 @@ import 'package:video_player/video_player.dart';
 
 import 'laughieFeedback.dart';
 
+//To make sure the recorded video's length is less than a minute
 class AssessVideo extends StatefulWidget {
-  // const AssessVideo({Key? key}) : super(key: key);
   final File recordedVideo;
 
   AssessVideo({this.recordedVideo});
@@ -23,7 +23,7 @@ class _AssessVideoState extends State<AssessVideo> {
   VideoPlayerController _controller;
   Future<void> _initializeVideoPlayerFuture;
 
-  int allowedVideoLength = 11;
+  int allowedVideoLength = 60;
 
   @override
   void initState() {
@@ -42,7 +42,6 @@ class _AssessVideoState extends State<AssessVideo> {
     final _saveResult =
         await ImageGallerySaver.saveFile(widget.recordedVideo.path);
 
-    print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
     usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
       "has_recorded_laughie": true,
       "media": "video",
@@ -58,8 +57,6 @@ class _AssessVideoState extends State<AssessVideo> {
 
   @override
   Widget build(BuildContext context) {
-    // AlertDialog warning = ;
-    print('##################### build called');
     return Scaffold(
       appBar: AppBar(
         title: Text(''),
@@ -67,21 +64,9 @@ class _AssessVideoState extends State<AssessVideo> {
       body: FutureBuilder(
         future: _initializeVideoPlayerFuture,
         builder: (context, snapshot) {
+          //when the video is loaded, check the length of it and if it's too much, go back to the record screen and if it's okay, save the video to the local storage.
           if (snapshot.connectionState == ConnectionState.done) {
-            print(
-                "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ duration: ${_controller.value.duration.inSeconds} s @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            // If the VideoPlayerController has finished initialization, use
-            // the data it provides to limit the aspect ratio of the video.
-            // return AspectRatio(
-            //   aspectRatio: _controller.value.aspectRatio,
-            //   // Use the VideoPlayer widget to display the video.
-            //   child: VideoPlayer(_controller),
-            // );
-
             if (_controller.value.duration.inSeconds > allowedVideoLength) {
-              print(
-                  '###################################### video is too long @################');
-
               return Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -128,15 +113,11 @@ class _AssessVideoState extends State<AssessVideo> {
                 ),
               );
             } else {
-              print(
-                  '###################################### video is not so long @################');
               _saveVideo();
             }
 
             return Container();
           } else {
-            // If the VideoPlayerController is still initializing, show a
-            // loading spinner.
             return Center(
               child: CircularProgressBar(),
             );

@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:laughie_app/rewidgets/show_toast.dart';
 import 'package:laughie_app/screens/laughieFeedback.dart';
@@ -20,6 +19,7 @@ import 'assess_video.dart';
 typedef _Fn = void Function();
 enum MediaType { audio, video }
 
+//To record a laughie audio or a video
 class RecordScreen extends StatefulWidget {
   static String id = 'record_screen';
 
@@ -36,9 +36,6 @@ class _RecordScreenState extends State<RecordScreen> {
   final _audioRecordDuration = 59.00;
 
   bool recordLaughieStatus;
-  String _filePath;
-  String _mediaType;
-  bool _isFetched = false;
 
   FlutterSoundPlayer _mPlayer = FlutterSoundPlayer();
   FlutterSoundRecorder _mRecorder = FlutterSoundRecorder();
@@ -54,12 +51,12 @@ class _RecordScreenState extends State<RecordScreen> {
   Timer _timer = Timer(Duration.zero, () {});
   double progressValue = 0;
 
+  //forms a path where we can save the recorded audio
   _getAudioSaveLocation(MediaType media) async {
     Directory directory;
 
     directory = await getExternalStorageDirectory();
-    print(
-        "--------------------------------------------------------------${directory.path}");
+
     if (media == MediaType.audio) {
       String audioFileLoc = directory.path + "/recorded_session.mp3";
       this._mPath = audioFileLoc;
@@ -69,10 +66,11 @@ class _RecordScreenState extends State<RecordScreen> {
     }
   }
 
-  //----------------------Functions for audio recorder
+  //----------------------Functions for audio recorder--------------
+  // Implemented from the example in the documentation of flutter_sound
+
   @override
   void initState() {
-    // _getRecordLaghieStatus();
     _getAudioSaveLocation(MediaType.audio);
     _mPlayer.openAudioSession().then((value) {
       setState(() {
@@ -113,31 +111,24 @@ class _RecordScreenState extends State<RecordScreen> {
   // ----------------------  Here is the code for recording and playback -------
 
   void record() {
-    print('%%%%%%%%%%%%%%%%%%%%%%% inside record %%%%%%%%%%%%%%%%%%%');
     _mRecorder
         .startRecorder(
       toFile: _mPath,
-      //codec: kIsWeb ? Codec.opusWebM : Codec.aacADTS,
     )
         .then((value) {
       setState(() {});
     });
-    print(_mPath);
   }
 
   void stopRecorder() async {
-    print('##### stopRecorder');
     await _mRecorder.stopRecorder().then((value) {
       setState(() {
-        //var url = value;
         _mplaybackReady = true;
       });
     });
   }
 
   void play() {
-    print('%%%%%%%%%%%%%%%%%%%%%%% inside play %%%%%%%%%%%%%%%%%%%');
-
     assert(_mPlayerIsInited &&
         _mplaybackReady &&
         _mRecorder.isStopped &&
@@ -145,18 +136,12 @@ class _RecordScreenState extends State<RecordScreen> {
     _mPlayer
         .startPlayer(
             fromURI: _mPath,
-            //codec: kIsWeb ? Codec.opusWebM : Codec.aacADTS,
             whenFinished: () {
               setState(() {});
             })
         .then((value) {
       setState(() {});
     });
-    // usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
-    //   "has_recorded_laughie": true,
-    //   "media": "audio",
-    //   "filePath": _mPath,
-    // });
   }
 
   void stopPlayer() {
@@ -165,34 +150,25 @@ class _RecordScreenState extends State<RecordScreen> {
     });
   }
 
-// ----------------------------- UI --------------------------------------------
-
+  //starts recording countdown
   _Fn startRecordCounter() {
     progressValue = 0;
 
-    print('########### inside startCounter');
     if (!_mRecorderIsInited || !_mPlayer.isStopped) {
-      print('inside !_mRecorderIsInited || !_mPlayer!.isStopped');
       return null;
     }
     if (_timer != null) {
-      print('inside _timer != null');
       _timer.cancel();
 
       stopRecorder();
     }
-    print('${DateTime.now()}');
     record();
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (Timer _timer) {
-        print('inside anonymous function');
         setState(() {
-          print('${DateTime.now()}');
-          print('$progressValue');
           progressValue++;
           if (progressValue > _audioRecordDuration) {
-            print('#### inside if');
             setState(() {
               _hasTimeCompleted = true;
             });
@@ -207,34 +183,23 @@ class _RecordScreenState extends State<RecordScreen> {
   _Fn startPlayerCounter() {
     progressValue = 0;
 
-    print('########### inside startCounter');
     if (!_mPlayer.isStopped) {
-      print('inside !_mRecorderIsInited || !_mPlayer.isStopped');
       return null;
     }
     if (_timer != null) {
-      print('inside _timer != null');
       _timer.cancel();
 
       stopPlayer();
     }
-    print('${DateTime.now()}');
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (Timer _timer) {
-        print('inside anonymous function');
         setState(() {
-          print('${DateTime.now()}');
-          print('$progressValue');
           progressValue++;
           if (progressValue > _audioPlayerDuration) {
-            print('#### inside if');
-
             _timer.cancel();
             stopPlayer();
           } else {
-            print('#### inside else');
-
             // play();
           }
         });
@@ -243,17 +208,13 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   _Fn getRecorderFn() {
-    print('###### inside getRecorderFn');
     if (!_mRecorderIsInited || !_mPlayer.isStopped) {
       return null;
     }
-    print('here');
-    // startCounter();
     return _mRecorder.isStopped ? record : stopRecorder;
   }
 
   _Fn getPlaybackFn() {
-    print('###### inside getPlaybackFn');
     if (!_mPlayerIsInited || !_mplaybackReady || !_mRecorder.isStopped) {
       return null;
     }
@@ -278,13 +239,10 @@ class _RecordScreenState extends State<RecordScreen> {
       setState(() {
         _isRecordingSelected = true;
       });
-      print('@@@@_mRecorder!.isRecording:${_mRecorder.isRecording}');
-      print('@@@@_hasTimeCompleted:${_hasTimeCompleted}');
+
       if (_mRecorder.isRecording == false && _hasTimeCompleted == false) {
-        print('@@@@inside if1');
         startRecordCounter();
       } else if (_mRecorder.isRecording == true && _hasTimeCompleted == false) {
-        print('@@@@inside if2');
         _timer.cancel();
         setState(() {
           progressValue = 0;
@@ -293,13 +251,11 @@ class _RecordScreenState extends State<RecordScreen> {
       } else if (_mRecorder.isStopped == true &&
           _hasTimeCompleted == true &&
           _mPlayer.isStopped == true) {
-        print('@@@@inside if3');
         startPlayerCounter();
         play();
       } else if (_mRecorder.isStopped == true &&
           _hasTimeCompleted == true &&
           _mPlayer.isStopped == false) {
-        print('@@@@inside if4');
         _timer.cancel();
         setState(() {
           progressValue = 0;
@@ -311,69 +267,29 @@ class _RecordScreenState extends State<RecordScreen> {
 
   //---------------Functions for video recorder-------------------------------
 
+  // return a recorded video.
+  // CAUTION: For devices running on android 11, there will be a separate screen for indicating that their recorded video is exceeded 1 min.
+  //          but for devices running on android <= 10, the recorder itself have a timer of 1 min.
   Future<File> pickCameraMedia(BuildContext context) async {
-    // bool saved = await saveFile('recording.mp4');
-    // ModalRoute is used to retrieve the info that has been passed down using Navigator
-    //final MediaSource source = ModalRoute.of(context).settings.arguments;
-    // ImagePicker is the plugin that we've integrated.
-    // source is used to determine whether to select getImage or getVideo
-    print('Here');
-    // final getMedia = ImagePicker().getVideo;
-    // // Since this widget is for picking images from gallery
-    // final media = await getMedia(source: ImageSource.camera);
     final media = await ImagePicker().getVideo(
       source: ImageSource.camera,
-      maxDuration: Duration(seconds: 15),
+      maxDuration: Duration(seconds: 60),
     );
     final file = File(media.path);
-    print("###################################################${media.path}");
     return file;
-    // Navigator.of(context).pop(file);
   }
 
+// As mentioned earlier, once the video is recorded it's passed down to AssessVideo to check its length.
   Future capture(BuildContext context) async {
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!! capture called !!!!!!!!!!!!!!!!!!!');
-    String fileName = 'recorded_laughie.mp4';
-    //
-    // if (fileMedia != null) {
-    //   setState(() {
-    //     this.fileMedia = null;
-    //   });
-    // }
-    // source is passed down to SourcePage() using a property called 'settings';
-    // The info wrapped inside RouteSettings will then be received on the other side
-    // final result = await Navigator.of(context).push(
-    //   MaterialPageRoute(
-    //     builder: (context) => SourcePage(),
-    //     settings: RouteSettings(
-    //       arguments: source,
-    //     ),
-    //   ),
-    // );
     final recordedVideo = await pickCameraMedia(context);
 
     if (recordedVideo == null) {
       return;
     } else {
-      final _saveResult = await ImageGallerySaver.saveFile(recordedVideo.path);
-
-      // print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%${_saveResult['filePath']}');
-      // usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
-      //   "has_recorded_laughie": true,
-      //   "media": "video",
-      //   "filePath": _saveResult['filePath'],
-      // });
-
       setState(() {
         fileMedia = recordedVideo;
         isRecorded = true;
 
-        // Navigator.pushAndRemoveUntil(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => LaughieFeedback(),
-        //     ),
-        //     (route) => false);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -386,6 +302,7 @@ class _RecordScreenState extends State<RecordScreen> {
     }
   }
 
+// asks user permission for reading and writing files, mic access and camera access
   checkPermission(BuildContext context) async {
     var cameraStatus = await Permission.camera.status;
     var micStatus = await Permission.microphone.status;
@@ -403,15 +320,9 @@ class _RecordScreenState extends State<RecordScreen> {
       if (await Permission.microphone.isGranted) {
         if (await Permission.storage.isGranted) {
           capture(context);
-        } else {
-          print('storage permission required');
-        }
-      } else {
-        print('mic permission required');
-      }
-    } else {
-      print('cam permission required');
-    }
+        } else {}
+      } else {}
+    } else {}
   }
 
   @override

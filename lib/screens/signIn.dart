@@ -17,20 +17,18 @@ class _SignInState extends State<SignIn> {
   bool _isLoading = false;
 
   final _formKey = GlobalKey<FormState>();
-  // final emailCon = new TextEditingController();
-  // final passwordCon = new TextEditingController();
 
   bool visi1 = true;
   IconData i1 = Icons.visibility;
   IconData i2 = Icons.visibility;
 
+  //First, it validates the email and password, if everything seems appropriate, it will try signing in the user with firebaseAuth.
   _trySignIn() async {
     UserCredential userCredential;
     FocusScope.of(context).unfocus();
     bool isValid = _formKey.currentState.validate();
     if (isValid) {
       _formKey.currentState.save();
-      print('$_email\n$_password');
     }
     if (isValid) {
       try {
@@ -42,19 +40,12 @@ class _SignInState extends State<SignIn> {
           password: _password,
         );
         if (_auth.currentUser.uid != null) {
-          print(
-              '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% user ${_auth.currentUser.uid} exists %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n ');
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                 builder: (context) => SourcePage(),
               ),
               (route) => false);
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //       builder: (context) => SourcePage(),),
-          // );
         }
       } on PlatformException catch (err) {
         var message = 'An error occured, please check your credentials!';
@@ -74,17 +65,14 @@ class _SignInState extends State<SignIn> {
         var message;
         if (err.code == 'user-not-found') {
           message = 'No user found for that email.';
-          // print('No user found for that email.');
         } else if (err.code == 'wrong-password') {
           message = 'Wrong password provided for that user.';
-          // print('Wrong password provided for that user.');
         }
         SnackBar snackBar = SnackBar(
           content: Text(message),
           backgroundColor: Theme.of(context).errorColor,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        print(err);
         setState(() {
           _isLoading = false;
         });

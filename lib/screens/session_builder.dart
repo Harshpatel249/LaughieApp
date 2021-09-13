@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+// Card for individual attended sessions of the day
 class SessionBuilder extends StatelessWidget {
   final int sessionNumber;
   final DateTime dateTime;

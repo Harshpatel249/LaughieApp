@@ -38,6 +38,7 @@ class _UserProfileState extends State<UserProfile> {
   bool _isUploading = false;
   String photoUrl;
 
+  // Fetches user details from the firestore.
   _fetchDetails() async {
     DocumentSnapshot userSnapshot =
         await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
@@ -49,7 +50,6 @@ class _UserProfileState extends State<UserProfile> {
     userContact = userSnapshot['contact_number'];
     _doB = userSnapshot['date_of_birth'];
     userDob = "${DateFormat.yMMMd().format(_doB.toDate())}";
-    print('---------------------' + userDob);
     photoUrl = userSnapshot['profile_picture'];
 
     setState(() {
@@ -80,7 +80,7 @@ class _UserProfileState extends State<UserProfile> {
     }
     _handleSubmit();
   }
-
+// uploads user's selected image to firebase Storage
   Future<String> _uploadProfilePicture(File imageFile) async {
     TaskSnapshot taskSnapshot;
 
@@ -93,12 +93,10 @@ class _UserProfileState extends State<UserProfile> {
       return downloadUrl;
     } on FirebaseException catch (err) {
       if (err.code == "404") {
-        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& ${err.message}");
       }
     }
-    // print("####################### downloadUrl of the fn: $downloadUrl");
   }
-
+// saves the upload image url to firestore
   updateFieldInFirestore(String url) {
     setState(() {
       photoUrl = url;
@@ -113,10 +111,9 @@ class _UserProfileState extends State<UserProfile> {
         });
       });
     } on FirebaseException catch (err) {
-      print("!!!!!!!!!!!!!!!!!!!!!!!!!!! ${err.code} \n ${err.message}");
     }
   }
-
+//uploading selected image to firebase storage and saving its url to that particular user
   _handleSubmit() async {
     setState(() {
       _isUploading = true;
@@ -126,6 +123,7 @@ class _UserProfileState extends State<UserProfile> {
     updateFieldInFirestore(url);
   }
 
+  // to compress the image
   _compressImage() async {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;

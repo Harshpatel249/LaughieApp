@@ -3,15 +3,13 @@ import 'package:intl/intl.dart';
 import 'package:laughie_app/models/session.dart';
 import 'package:laughie_app/screens/session_builder.dart';
 
+// renders a dialog box containing session data of the selected day
 class DailyTrack extends StatelessWidget {
-  // final int noSessions;
   final double appBarHeight;
   final List<Session> sessionsOfDay;
   final DateTime selectedDay;
   final int userGivenSessions;
   DailyTrack({
-    // this.noSessions,
-
     this.appBarHeight,
     this.sessionsOfDay,
     this.selectedDay,
@@ -31,8 +29,8 @@ class DailyTrack extends StatelessWidget {
       );
       i++;
     });
+    //TODO: implement noOfSessionAttended > maxSessions
     if (sessionsOfDay.length < userGivenSessions) {
-      //TODO: implement noOfSessionAttended > maxSessions
       for (var i = sessionsOfDay.length; i < userGivenSessions; i++) {
         sessionsDetails.add(SessionBuilder(
           sessionNumber: i + 1,
@@ -41,8 +39,6 @@ class DailyTrack extends StatelessWidget {
         ));
       }
     }
-
-    // print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% $sessionsDetails}');
 
     return sessionsDetails;
   }
@@ -63,7 +59,6 @@ class DailyTrack extends StatelessWidget {
         Container(
           height: screenHeight * 0.55,
           width: screenWidth * .75,
-          // color: Colors.blue,
           child: Card(
             color: Color(0xff222223),
             shape: RoundedRectangleBorder(
@@ -75,9 +70,9 @@ class DailyTrack extends StatelessWidget {
               builder: (context, constraints) {
                 return Container(
                   padding: EdgeInsets.symmetric(
-                      vertical: constraints.maxWidth * 0.05,
-                      horizontal: constraints.maxWidth * 0.1),
-                  // color: Colors.blue,
+                    vertical: constraints.maxWidth * 0.05,
+                    horizontal: constraints.maxWidth * 0.1,
+                  ),
                   child: Column(
                     children: [
                       SizedBox(
@@ -118,7 +113,6 @@ class DailyTrack extends StatelessWidget {
                       ),
                       Container(
                         height: constraints.maxHeight * .75,
-                        // color: Colors.blue,
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceAround,

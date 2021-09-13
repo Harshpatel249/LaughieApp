@@ -27,25 +27,18 @@ class _SessionFeedbackState extends State<SessionFeedback> {
     });
     DocumentSnapshot documentSnapshot = await sessionsRef.doc(fDate).get();
     if (documentSnapshot.exists) {
-      print("%%%%%%%%%%%%%%%%% sessions collection already exists");
-
       try {
         sessionsRef.doc(fDate).update({
           "session_data": FieldValue.arrayUnion(sessionData),
         });
-      } on FirebaseException catch (err) {
-        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& exception: ${err.message}");
-      }
+      } on FirebaseException catch (err) {}
     } else {
-      print("%%%%%%%%%%%%%%%%% sessions does not exist");
       try {
         sessionsRef.doc(fDate).set({
           "date": fDate,
           "session_data": sessionData,
         });
-      } on FirebaseException catch (err) {
-        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& exception: ${err.message}");
-      }
+      } on FirebaseException catch (err) {}
     }
     Navigator.pushAndRemoveUntil(
         context,

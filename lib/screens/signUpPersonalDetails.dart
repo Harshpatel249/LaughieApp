@@ -29,14 +29,12 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
   String _professionValue = 'Student';
   String _genderValue = 'Male';
 
+  // validates the fields and then upload the details in firestore.
   _submitDetails() {
     FocusScope.of(context).unfocus();
     bool isValid = _formKey.currentState.validate();
-    print("-----------------------------------$isValid");
     if (isValid) {
       _formKey.currentState.save();
-      print(
-          "name: $_fullName \n gender: $_genderValue \n DoB: $_birthday \n profession: $_professionValue \n contact Number: $_phoneNumber \n country: $_countryValue \n State: $_stateValue\n city: $_cityValue");
     }
     if (isValid) {
       usersRef.doc(FirebaseAuth.instance.currentUser.uid).update({
@@ -192,8 +190,6 @@ class _SignUpPersonalDetailsState extends State<SignUpPersonalDetails> {
                               : null;
                         },
                         onDateSelected: (DateTime value) {
-                          print(value);
-                          print(value.runtimeType);
                           _birthday = value;
                         },
                       ),
