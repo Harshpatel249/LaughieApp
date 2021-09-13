@@ -4,10 +4,14 @@ import 'package:laughie_app/rewidgets/bottomNavBar.dart';
 import 'package:laughie_app/rewidgets/video_widget.dart';
 import 'package:laughie_app/screens/session_screen.dart';
 
+/*
+* This is landing screen for logged in users
+* */
+
 class HomePage extends StatelessWidget {
   static String id = 'home_page';
-  final String mediaType;
-  final String filePath;
+  final String mediaType; //For fetching the media type of recorded laughie
+  final String filePath; //For fetching the location of the laughie
   HomePage({this.filePath, this.mediaType});
   @override
   Widget build(BuildContext context) {
@@ -20,13 +24,16 @@ class HomePage extends StatelessWidget {
       centerTitle: true,
     );
 
+    //Storing the bottomnavbar height to subtract and get the usable free space on screen
     final bottomBarHeight = MediaQuery.of(context).size.height * 0.08;
 
+    //Getting the usable free screen space for dynamic sizing
     final screenHeight = mediaQuery.size.height -
         appBar.preferredSize.height -
         mediaQuery.padding.top -
         bottomBarHeight;
 
+    //Dynamic and fixed side padding
     final padding = mediaQuery.size.width * 0.05;
 
     return SafeArea(
@@ -137,6 +144,7 @@ class HomePage extends StatelessWidget {
                   child: Container(
                     height: screenHeight * 0.45,
                     child: VideoWidget(
+                      //Tutorial video
                       screenHeight: screenHeight,
                       url:
                           "https://firebasestorage.googleapis.com/v0/b/laughie-52bd5.appspot.com/o/laugh_along.mp4?alt=media&token=9b7793f4-ca06-4829-b7e2-0af58809508e",

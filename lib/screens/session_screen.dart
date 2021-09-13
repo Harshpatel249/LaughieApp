@@ -7,6 +7,10 @@ import 'package:share_plus/share_plus.dart';
 
 import '../rewidgets/video_widget.dart';
 
+/*
+* This is the page where users go through their laughie sessions
+* */
+
 class SessionScreen extends StatefulWidget {
   static String id = 'session_screen';
   final String mediaType;

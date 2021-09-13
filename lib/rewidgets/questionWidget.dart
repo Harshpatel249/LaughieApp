@@ -2,6 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+/*
+* This is a reusable template for creating questions in feedback pages
+*
+* */
 class QuestionWidget extends StatefulWidget {
   String question;
   var id;
@@ -12,8 +16,8 @@ class QuestionWidget extends StatefulWidget {
 }
 
 class _QuestionWidgetState extends State<QuestionWidget> {
-  String question;
-  var id;
+  String question; //The question string
+  var id; //Unique identifier for the question
   int selected = 0;
   _QuestionWidgetState({this.id, this.question});
   @override

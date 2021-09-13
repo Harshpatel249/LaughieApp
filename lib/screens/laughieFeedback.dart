@@ -5,15 +5,18 @@ import 'package:laughie_app/screens/test.dart';
 
 import '../rewidgets/questionWidget.dart';
 
+/*
+* This is the feedback page after the user records the laughie
+* */
+
 class LaughieFeedback extends StatefulWidget {
   @override
   _LaughieFeedbackState createState() => _LaughieFeedbackState();
 }
 
+//Update the user data with the feedback
 class _LaughieFeedbackState extends State<LaughieFeedback> {
   _handleSubmit() async {
-    // TODO: Don't allow to submit until and unless something is selected.
-    print("============================================== handleSubmit called");
     Map<dynamic, int> response = {
       "q1": 1,
       "q2": 5,
@@ -40,6 +43,7 @@ class _LaughieFeedbackState extends State<LaughieFeedback> {
       centerTitle: true,
     );
 
+    //For dynamic sizing
     final screenHeight = mediaQuery.size.height -
         appBar.preferredSize.height -
         mediaQuery.padding.top;

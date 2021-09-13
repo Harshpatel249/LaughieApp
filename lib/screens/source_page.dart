@@ -6,9 +6,12 @@ import 'package:laughie_app/screens/homePage.dart';
 import 'package:laughie_app/screens/record_screen.dart';
 import 'package:laughie_app/screens/test.dart';
 import 'package:permission_handler/permission_handler.dart';
-//Checks if the user has already recorded a laughie or not. if he has, check the recorded file exists at the saved path or not.
-class SourcePage extends StatefulWidget {
 
+/*
+* Checks if the user has already recorded a laughie or not.
+* If he has, check the recorded file exists at the saved path or not.
+* */
+class SourcePage extends StatefulWidget {
   @override
   _SourcePageState createState() => _SourcePageState();
 }
@@ -19,6 +22,7 @@ class _SourcePageState extends State<SourcePage> {
   String _filePath;
   String _mediaType;
 
+  //Fetching the laughie status and location
   _getRecordLaghieStatus() async {
     DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await usersRef.doc(FirebaseAuth.instance.currentUser.uid).get();
@@ -50,6 +54,7 @@ class _SourcePageState extends State<SourcePage> {
 
   @override
   Widget build(BuildContext context) {
+    //Routing based on laughie status
     return _isFetched
         ? _recordLaughieStatus
             ? HomePage(
