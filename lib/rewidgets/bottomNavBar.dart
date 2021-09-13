@@ -7,8 +7,13 @@ import '../screens/homePage.dart';
 import '../screens/stats_page.dart';
 import '../screens/userProfile.dart';
 
+/*
+* Bottom NavBar is the reusable widget used in most screens for navigation within the app
+* It is dynamically sized using the media query
+* */
 class BottomNavBar extends StatefulWidget {
-  String id;
+  String
+      id; // Every page that calls the bottomNavBar is identified by it's id to represent the active page
 
   BottomNavBar({@required this.id});
   @override

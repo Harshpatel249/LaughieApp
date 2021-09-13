@@ -6,16 +6,18 @@ import 'package:laughie_app/screens/test.dart';
 
 import '../rewidgets/questionWidget.dart';
 
+/*
+* This is feedback for every laughie session
+* */
+
 class SessionFeedback extends StatefulWidget {
   @override
   _SessionFeedbackState createState() => _SessionFeedbackState();
 }
 
 class _SessionFeedbackState extends State<SessionFeedback> {
+  //Updating the user data with the feedback
   _handleSubmit() async {
-    // TODO: Don't allow to submit until and unless something is selected.
-    print(
-        "============================================== handleSubmit called from session feedback");
     DateTime currentDateTime = DateTime.now();
     String fDate = formatDate(currentDateTime);
     List<Map> sessionData = [];
